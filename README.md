@@ -1,6 +1,6 @@
-# project_pong
+# pong_is1500
 
-Advanced project in IS1500.
+Advanced project in IS1500. Pong on uno32/uc32 chipkit with IO Shield.
 
 ## Installation
 
