@@ -1,0 +1,16 @@
+# c
+*.o
+*.a
+*.elf
+*.hex
+.deps/
+
+# macOS
+./a
+.DS_Store
+
+# windows
+*.exe
+
+# other
+.vscode/
