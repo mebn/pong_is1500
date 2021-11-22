@@ -3,6 +3,7 @@
 #include "../include/display.h"
 #include "../include/graphics.h"
 #include "../include/timer.h"
+#include <stdbool.h>
 
 // (low to turn on)
 // RF4
@@ -26,6 +27,9 @@
  * everything on the oled display.
  * Each element currently set to 0.
  * 
+ * Valid x-range: 0-127 (both inclusive).
+ * Valid y-range: 0-31 (both inclusive).
+ * 
  */
 static uint8_t canvas[128*4] = {0};
 
@@ -34,6 +38,32 @@ uint8_t spi_send_recv(uint8_t data) {
     SPI2BUF = data; //  Write the next transmit byte.
     while(!(SPI2STAT & 0x01)); // Wait for receive byte.
     return SPI2BUF;
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Inverts all current pixel values stored in frame buffer
+ * in a rectangle from (xStart, yStart) to (xEnd, yEnd).
+ * 
+ * @param xStart Starting x-coordinate (inclusive)
+ * @param yStart Starting y-coordinate (inclusive)
+ * @param xEnd Ending x-coordinate (inclusive)
+ * @param yEnd Ending y-coordinate (inclusive)
+ */
+void display_invert(char xStart, char yStart, char xEnd, char yEnd) {
+    for (char x = xStart; x <= xEnd; x++) {
+        for (char y = yStart; y <= yEnd, y++) {
+            if (pixel_ison(x, y)) {
+                clear_pixel(x, y);
+            } else {
+                draw_pixel(x, y);
+            }
+        }
+    }
+    
+    short row = y / 8;
+    canvas[row * 128 + x] |= 1 << (y % 8);
 }
 
 /*
@@ -117,10 +147,45 @@ void display_init() {
     display_on();
 }
 
-void draw_pixel(unsigned int x, unsigned int y) {
-    short row = y / 8;
-    canvas[row * 128 + x] |= 1 << (y % 8);
+/**
+ * Written by: Marcus Nilszén
+ * Modified by: Alex Gunnarsson
+ * 
+ * @brief Fill the pixel (set to 1).
+ * 
+ * @param x X-coordinate for the pixel.
+ * @param y Y-coordinate for the pixel.
+ */
+void draw_pixel(char x, char y) {
+    canvas[(y / 8) * 128 + x] |= 1 << (y % 8);
 }
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Clear the pixel (set to 0).
+ * 
+ * @param x X-coordinate for the pixel.
+ * @param y Y-coordinate for the pixel.
+ */
+void clear_pixel(char x, char y) {
+    canvas[(y / 8) * 128 + x] &= ~(1 << (y % 8));
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Get the pixel value of a given pixel.
+ * 
+ * @param x X-coordinate for the pixel.
+ * @param y Y-coordinate for the pixel.
+ * @return true If current pixel value is 1.
+ * @return false If current pixel value is 0.
+ */
+bool pixel_ison(char x, char y) {
+    return (canvas[(y / 8) * 128 + x] & 1 << (y % 8)) == 1;
+}
+
 
 void draw_text(unsigned int x, unsigned int y, char *s) {
     if (x > 128 || x < 0 || y > 32 || y < 0) return;
