@@ -3,10 +3,10 @@
 
 #include <stdbool.h>
 
-bool get_btn1();
-bool get_btn2();
-bool get_btn3();
-bool get_btn4();
+bool btn1_ispressed();
+bool btn2_ispressed();
+bool btn3_ispressed();
+bool btn4_ispressed();
 
 void buttons_init();
 

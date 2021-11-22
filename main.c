@@ -47,19 +47,19 @@ selection menu() {
         draw_pixel(0, y_pos);
 
         // up
-        if (get_btn4() && y_pos != 8) {
+        if (btn4_ispressed() && y_pos != 8) {
             y_pos -= 8;
             current_selection--;
         }
 
         // down
-        if (get_btn3() && y_pos != 24) {
+        if (btn3_ispressed() && y_pos != 24) {
             y_pos += 8;
             current_selection++;
         }
 
         // select
-        if (get_btn1()) {
+        if (btn1_ispressed()) {
             return current_selection;
         }
 

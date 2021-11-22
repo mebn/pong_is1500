@@ -29,7 +29,7 @@ char get_btns() {
  * @return true if BTN1 is pressed.
  * @return false if BTN1 is not pressed.
  */
-bool get_btn1() {
+bool btn1_ispressed() {
     return ((get_btns() & 0x01) >> 0) == 1;
 }
 
@@ -39,7 +39,7 @@ bool get_btn1() {
  * @return true if BTN2 is pressed.
  * @return false if BTN2 is not pressed.
  */
-bool get_btn2() {
+bool btn2_ispressed() {
     return ((get_btns() & 0x02) >> 1) == 1;
 }
 
@@ -49,7 +49,7 @@ bool get_btn2() {
  * @return true if BTN3 is pressed.
  * @return false if BTN3 is not pressed.
  */
-bool get_btn3() {
+bool btn3_ispressed() {
     return ((get_btns() & 0x04) >> 2) == 1;
 }
 
@@ -59,7 +59,7 @@ bool get_btn3() {
  * @return true if BTN4 is pressed.
  * @return false if BTN4 is not pressed.
  */
-bool get_btn4() {
+bool btn4_ispressed() {
     return ((get_btns() & 0x08) >> 3) == 1;
 }
 
