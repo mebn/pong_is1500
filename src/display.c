@@ -40,32 +40,6 @@ uint8_t spi_send_recv(uint8_t data) {
     return SPI2BUF;
 }
 
-/**
- * Written by: Alex Gunnarsson
- * 
- * @brief Inverts all current pixel values stored in frame buffer
- * in a rectangle from (xStart, yStart) to (xEnd, yEnd).
- * 
- * @param xStart Starting x-coordinate (inclusive)
- * @param yStart Starting y-coordinate (inclusive)
- * @param xEnd Ending x-coordinate (inclusive)
- * @param yEnd Ending y-coordinate (inclusive)
- */
-void display_invert(char xStart, char yStart, char xEnd, char yEnd) {
-    for (char x = xStart; x <= xEnd; x++) {
-        for (char y = yStart; y <= yEnd, y++) {
-            if (pixel_ison(x, y)) {
-                clear_pixel(x, y);
-            } else {
-                draw_pixel(x, y);
-            }
-        }
-    }
-    
-    short row = y / 8;
-    canvas[row * 128 + x] |= 1 << (y % 8);
-}
-
 /*
 Power on sequence:
 1. Apply power to VDD.
@@ -186,6 +160,30 @@ bool pixel_ison(char x, char y) {
     return (canvas[(y / 8) * 128 + x] & 1 << (y % 8)) == 1;
 }
 
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Inverts all current pixel values stored in frame buffer
+ * in a rectangle from (xStart, yStart) to (xEnd, yEnd).
+ * 
+ * @param xStart Starting x-coordinate (inclusive)
+ * @param yStart Starting y-coordinate (inclusive)
+ * @param xEnd Ending x-coordinate (inclusive)
+ * @param yEnd Ending y-coordinate (inclusive)
+ */
+void display_invert(char xStart, char yStart, char xEnd, char yEnd) {
+    char x;
+    for (x = xStart; x <= xEnd; x++) {
+        char y;
+        for (y = yStart; y <= yEnd; y++) {
+            if (pixel_ison(x, y)) {
+                clear_pixel(x, y);
+            } else {
+                draw_pixel(x, y);
+            }
+        }
+    }
+}
 
 void draw_text(unsigned int x, unsigned int y, char *s) {
     if (x > 128 || x < 0 || y > 32 || y < 0) return;
