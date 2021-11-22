@@ -3,8 +3,6 @@
 
 #include <stdint.h>
 
-extern uint8_t canvas[128*4];
-
 void display_init();
 
 void draw_pixel(unsigned int x, unsigned int y);

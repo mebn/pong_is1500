@@ -1,7 +1,11 @@
 #include <stdint.h>
 #include "../include/graphics.h"
 
-// each letter = 8 pixels
+/**
+ * @brief The font used for text
+ * throughout the program.
+ * 
+ */
 const uint8_t const font[] = {
     0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
@@ -133,6 +137,16 @@ const uint8_t const font[] = {
     0, 120, 68, 66, 68, 120, 0, 0,
 };
 
+/*
+TODO: Guide on how to make an image.
+*/
+
+/**
+ * @brief The image used in loading()
+ * to display a loading image.
+ * Currently a temporary mario image.
+ * 
+ */
 const uint8_t const mario[] = {
     0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F, 0x7F, 0x9F, 0x9F, 0xCF,
     0xCF, 0xCF, 0xCF, 0xCF, 0xCF, 0xCF, 0xCF, 0x8F, 0x9F, 0x9F,

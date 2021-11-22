@@ -6,12 +6,31 @@
 #include "include/buttons.h"
 #include "include/screens.h"
 
+/**
+ * Written by Marcus Nilszén
+ * 
+ * @brief The different screens a user
+ * can navigate to after bootup and games.
+ * Not including subscreens from screens.
+ * 
+ */
 typedef enum {
     SINGLE_PLAYER,
     MULTI_PLAYER,
     HIGH_SCORE,
 } selection;
 
+/**
+ * Written by Marcus Nilszén
+ * 
+ * @brief The main menu a user see after bootup.
+ * Button 4 and 3 to navigate up respectively down in the menu.
+ * Button 1 to select and navigate to the selected screen.
+ * (NEEDS IMPROVMENT)
+ * 
+ * @return selection An enum value indicating what screen
+ * to navigate to.
+ */
 selection menu() {
     selection current_selection = SINGLE_PLAYER;
     int y_pos = 8;
@@ -45,15 +64,27 @@ selection menu() {
         }
 
         draw_canvas();
-        delay(100);
+        delay(100); // this causes som issues
     }
 }
 
+/**
+ * Written by Marcus Nilszén
+ * 
+ * @brief Displays a loading image on bootup and
+ * delays it for some specified time.
+ * 
+ */
 void loading() {
     display_fullscreen_image(0, mario);
     delay(1500);
 }
 
+/**
+ * @brief Collection of all Initializations
+ * from different files and hardware.
+ * 
+ */
 void inits() {
     timer2_init();
     buttons_init();
@@ -61,6 +92,12 @@ void inits() {
     display_init();
 }
 
+/**
+ * @brief Entrypoint of our program.
+ * Loads inits, loading screen and
+ * displays the main menu.
+ * 
+ */
 int main() {
     inits();
     loading();

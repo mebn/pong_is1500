@@ -21,8 +21,13 @@
 #define DISPLAY_VBAT_ON (PORTFCLR = 1 << 5)
 #define DISPLAY_VBAT_OFF (PORTFSET = 1 << 5)
 
-// set each element to 0
-uint8_t canvas[128*4] = {0};
+/**
+ * @brief A 128*4 array used to display
+ * everything on the oled display.
+ * Each element currently set to 0.
+ * 
+ */
+static uint8_t canvas[128*4] = {0};
 
 uint8_t spi_send_recv(uint8_t data) {
     while(!(SPI2STAT & 0x08)); // Wait for transmitter to be ready
@@ -75,29 +80,6 @@ void display_on() {
     
     spi_send_recv(0xAF); // 7. Send Display On command.
 }
-
-
-// https://digilent.com/reference/_media/chipkit_shield_basic_io_shield:chipkit_basic_io_shield_rm.pdf
-// void OledHostInit() {
-// 	// Initialize SPI port 2.
-// 	SPI2CON = 0;
-// 	SPI2BRG = 15; //8Mhz, with 80Mhz PB clock
-// 	SPI2STATbits.SPIROV = 0;
-// 	SPI2CONbits.CKP = 1;
-// 	SPI2CONbits.MSTEN = 1;
-// 	SPI2CONbits.ON = 1;
-// 	// Make pins RF4, RF5, and RF6 be outputs.
-// 	PORTSetBits(IOPORT_F, bitVddCtrl|bitVbatCtrl|bitDataCmd);
-// 	PORTSetPinsDigitalOut(prtDataCmd, bitDataCmd); //Data/Command# select
-// 	PORTSetPinsDigitalOut(prtVddCtrl, bitVddCtrl); //VDD power control (1=off)
-// 	PORTSetPinsDigitalOut(prtVbatCtrl, bitVbatCtrl); //VBAT power control (1=off)
-// 	// Make the RG9 pin be an output.
-// 	//On the Basic I/O Shield, this pin is tied to reset.
-// 	PORTSetBits(prtReset, bitReset);
-// 	PORTSetPinsDigitalOut(prtReset, bitReset);
-// }
-
-
 
 void display_init() {
     // I don't know if these are relevant to display of not

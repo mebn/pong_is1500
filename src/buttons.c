@@ -63,8 +63,12 @@ bool get_btn4() {
     return ((get_btns() & 0x08) >> 3) == 1;
 }
 
+/**
+ * @brief Initialize the four buttons
+ * found on the IO Shield as input.
+ * 
+ */
 void buttons_init() {
-    // buttons init as input
     TRISF |= 1 << 1; // BTN1
     TRISD |= 1 << 5; // BTN2
     TRISD |= 1 << 6; // BTN3
