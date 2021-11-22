@@ -6,13 +6,14 @@
 /**
  * Written by: Alex Gunnarsson & Marcus Nilszén
  * 
- * @brief Run game routine.
+ * @brief Run game routine for singleplayer and multiplayer gamemode.
  * 
- * @param MULTI_PLAYER True if multiplayer mode, false
- * if singleplayer mode. Determines if other paddle is
- * player- or AI-controlled, respectively.
+ * @param mode Enum value for playing singleplayer or multiplayer.
+ * Determines if other paddle is player- or AI-controlled, respectively.
+ * @param difficulty Enum value deciding difficult level
+ * in singleplayer vs AI. Has no effect when mode is set to multiplayer.
  */
-void game_screen(bool MULTIPLAYER) {
+void game_screen(game_mode mode, game_difficulty difficulty) {
     while (1) {
         draw_clear();
         
@@ -21,7 +22,7 @@ void game_screen(bool MULTIPLAYER) {
         if (btn3_ispressed()) draw_pixel(10, 1);      // implement BTN3 as player 1 move down
         
         // player2 movement
-        if (MULTIPLAYER) {
+        if (mode == MULTIPLAYER) {
             // player-controlled through buttons
             if (btn1_ispressed()) draw_pixel(20, 1);      // implement BTN1 as player 2 move up
             if (btn2_ispressed()) draw_pixel(30, 1);      // implement BTN2 as player 2 move down

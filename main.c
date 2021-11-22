@@ -109,8 +109,8 @@ int main() {
     while (1) {
         selection screen = menu();
 
-        if (screen == SINGLE_PLAYER) game_screen(false);
-        if (screen == MULTI_PLAYER) game_screen(true);
+        if (screen == SINGLE_PLAYER) game_screen(SINGLE_PLAYER, NORMAL);
+        if (screen == MULTI_PLAYER) game_screen(MULTI_PLAYER, NORMAL); // difficulty doesn't matter here
         if (screen == HIGH_SCORE) high_score_screen();
     }
 
