@@ -33,6 +33,14 @@
  */
 static uint8_t canvas[128*4] = {0};
 
+/**
+ * @brief Checks whether or not a pixel is valid.
+ * 
+ * @param x X-coordinate of the pixel.
+ * @param y Y-coordinate of the pixel.
+ * @return true If specified pixel is within bounds.
+ * @return false If specified pixel is not within bounds.
+ */
 bool is_pixel(char x, char y) {
     return (x >= 0 && x <= 127) && (y >= 0 && y <= 31);
 }
