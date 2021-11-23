@@ -140,7 +140,8 @@ void display_init() {
  * Written by Marcus Nilszén
  * 
  * @brief Draw a string where the specified cordinate
- * is its upper left corner.
+ * is its upper left corner. Accepts both upper- and
+ * lowercase letters but only prints uppercase.
  * 
  * @param str The string to draw.
  * @param x X posistion of upper left corner.
@@ -149,8 +150,11 @@ void display_init() {
 void draw_string(char *str, unsigned int x, unsigned int y) {
     int x_pos, y_pos;
     while (*str != '\0') {
-        char char_index = *str - 0x20; // 0x20 == space, first char
         char mask = 1;
+        char char_index = *str - 0x20;  // 0x20 == space, first char;
+        if (*str >= 97 && *str <= 122) {
+            char_index -= 32;           // make uppercase
+        }
         
         for (y_pos = y; y_pos < y + FONT_SIZE; y_pos++) {
             for (x_pos = x; x_pos < x + FONT_SIZE; x_pos++) {
