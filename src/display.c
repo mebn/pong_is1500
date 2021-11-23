@@ -142,8 +142,8 @@ void display_init() {
  * @brief Draw a string on a specific cordinate.
  * 
  * @param str The string to draw.
- * @param x X posistion. Limited from 0 to 122.
- * @param y Y posotion. Limited from 0 to 26.
+ * @param x X posistion.
+ * @param y Y posotion.
  */
 void draw_string(const char *str, unsigned int x, unsigned int y) {
     int x_pos, y_pos;
@@ -175,7 +175,7 @@ void draw_string(const char *str, unsigned int x, unsigned int y) {
  * relative to the screen.
  * 
  * @param str The string to draw.
- * @param y Y position. Limited from 0 to 26.
+ * @param y Y position.
  * @param align Align text on screen. LEFT, CENTER or RIGHT.
  */
 void draw_string_align(const char *str, unsigned int y, alignment align) {
