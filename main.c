@@ -77,7 +77,7 @@ selection menu() {
  * 
  */
 void loading() {
-    display_fullscreen_image(0, mario);
+    display_fullscreen_image(0, pong_image);
     delay(1500);
 }
 
