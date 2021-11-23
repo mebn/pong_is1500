@@ -22,6 +22,9 @@
 #define DISPLAY_VBAT_ON (PORTFCLR = 1 << 5)
 #define DISPLAY_VBAT_OFF (PORTFSET = 1 << 5)
 
+#define DISPLAY_WIDTH 128
+#define DISPLAY_HEIGHT 32
+
 /**
  * @brief A 128*4 array used to display
  * everything on the oled display.
@@ -134,6 +137,80 @@ void display_init() {
 }
 
 /**
+ * Written by Marcus Nilszén
+ * 
+ * @brief Draw a string where the specified cordinate
+ * is its upper left corner. Accepts both upper- and
+ * lowercase letters but only prints uppercase.
+ * 
+ * @param str The string to draw.
+ * @param x X posistion of upper left corner.
+ * @param y Y posotion of upper left corner.
+ */
+void draw_string(char *str, unsigned int x, unsigned int y) {
+    int x_pos, y_pos;
+
+    while (*str) {
+        char bit = 0;
+        char char_index = *str - 0x20;  // 0x20 == space, first char.
+        
+        if (*str >= 97 && *str <= 122) {
+            char_index -= 32;           // make uppercase
+        }
+        
+        for (y_pos = y; y_pos < y + FONT_SIZE; y_pos++) {
+            for (x_pos = x; x_pos < x + FONT_SIZE; x_pos++) {
+                if (font[char_index] & (1 << bit)) {
+                    draw_pixel(x_pos, y_pos);
+                }
+
+                bit++;
+            }
+        }
+
+        x += font_width[char_index] + FONT_SPACING;
+        str++;
+    }
+}
+
+/**
+ * Written by Marcus Nilszén
+ * 
+ * @brief Draw a string on a specified y cordinate
+ * and align in to the LEFT, CENTER or RIGHT
+ * relative to the screen.
+ * 
+ * @param str The string to draw.
+ * @param y Y position.
+ * @param align Align text on screen. LEFT, CENTER or RIGHT.
+ */
+void draw_string_align(char *str, unsigned int y, alignment align) {
+    if (align == LEFT) {
+        draw_string(str, 0, y);
+        return;
+    }
+
+    unsigned int x;
+    int len = 0;
+    char *str2 = str;
+
+    while (*str2) {
+        len += font_width[*str-0x20] + FONT_SPACING;
+        str2++;
+    }
+
+    len -= FONT_SPACING;
+
+    if (align == CENTER) {
+        x = DISPLAY_WIDTH/2 - len/2;
+    } else {
+        x = DISPLAY_WIDTH - len;
+    }
+
+    draw_string(str, x, y);
+}
+
+/**
  * Written by: Marcus Nilszén & Alex Gunnarsson
  * 
  * @brief Fill the pixel (set to 1).
@@ -143,7 +220,7 @@ void display_init() {
  */
 void draw_pixel(char x, char y) {
     if (!is_pixel(x, y)) return;
-    canvas[(y / 8) * 128 + x] |= 1 << (y % 8);
+    canvas[(y / 8) * DISPLAY_WIDTH + x] |= 1 << (y % 8);
 }
 
 /**
@@ -156,7 +233,7 @@ void draw_pixel(char x, char y) {
  */
 void clear_pixel(char x, char y) {
     if (!is_pixel(x, y)) return;
-    canvas[(y / 8) * 128 + x] &= ~(1 << (y % 8));
+    canvas[(y / 8) * DISPLAY_WIDTH + x] &= ~(1 << (y % 8));
 }
 
 /**
@@ -172,7 +249,7 @@ void clear_pixel(char x, char y) {
  */
 bool pixel_ison(char x, char y) {
     if (!is_pixel(x, y)) return false;
-    return (canvas[(y / 8) * 128 + x] & 1 << (y % 8)) == 1;
+    return (canvas[(y / 8) * DISPLAY_WIDTH + x] & 1 << (y % 8)) == 1;
 }
 
 /**
@@ -196,23 +273,6 @@ void display_invert(char xStart, char yStart, char xEnd, char yEnd) {
                 draw_pixel(x, y);
             }
         }
-    }
-}
-
-void draw_text(unsigned int x, unsigned int y, char *s) {
-    if (x > 128 || x < 0 || y > 32 || y < 0) return;
-    if (!s) return;
-    
-    short row = y / 8;
-    int i;
-    while (*s) {
-        // each char (*s) is 8 bits. see graphics.h/font
-        for (i = 0; i < 8; i++) {
-            canvas[row * 128 + x] |= font[(*s) * 8 + i];
-            x++;
-        }
-
-        s++;
     }
 }
 

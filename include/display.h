@@ -6,8 +6,16 @@
 
 void display_init();
 
+typedef enum {
+    LEFT,
+    CENTER,
+    RIGHT
+} alignment;
+
+void draw_string(char *str, unsigned int x, unsigned int y);
+void draw_string_align(char *str, unsigned int y, alignment align);
+
 void draw_pixel(char x, char y);
-void draw_text(unsigned int x, unsigned int y, char *s);
 
 void display_invert(char xStart, char yStart, char xEnd, char yEnd);
 

@@ -38,11 +38,11 @@ selection menu() {
 
     while (1) {
         draw_clear();
-        
-        // draw_text(0, 0, "PONG!");
-        draw_text(30, 8, "1 player");
-        draw_text(30, 16, "2 player");
-        draw_text(30, 24, "highscore");
+
+        draw_string_align("PONG!", 0, CENTER);
+        draw_string_align("SINGLEPLAYER", 15, LEFT);
+        draw_string_align("MULTIPLAYER", 25, LEFT);
+        draw_string_align("HIGHSCORE", 15, RIGHT);
 
         // selection indicator
         draw_pixel(0, y_pos);
