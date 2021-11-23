@@ -149,19 +149,22 @@ void display_init() {
  */
 void draw_string(char *str, unsigned int x, unsigned int y) {
     int x_pos, y_pos;
-    while (*str != '\0') {
-        char mask = 1;
-        char char_index = *str - 0x20;  // 0x20 == space, first char;
+
+    while (*str) {
+        char bit = 0;
+        char char_index = *str - 0x20;  // 0x20 == space, first char.
+        
         if (*str >= 97 && *str <= 122) {
             char_index -= 32;           // make uppercase
         }
         
         for (y_pos = y; y_pos < y + FONT_SIZE; y_pos++) {
             for (x_pos = x; x_pos < x + FONT_SIZE; x_pos++) {
-                if (font[char_index] & mask) {
+                if (font[char_index] & (1 << bit)) {
                     draw_pixel(x_pos, y_pos);
                 }
-                mask <<= 1;
+
+                bit++;
             }
         }
 
@@ -181,7 +184,7 @@ void draw_string(char *str, unsigned int x, unsigned int y) {
  * @param y Y position.
  * @param align Align text on screen. LEFT, CENTER or RIGHT.
  */
-void draw_string_align(const char *str, unsigned int y, alignment align) {
+void draw_string_align(char *str, unsigned int y, alignment align) {
     if (align == LEFT) {
         draw_string(str, 0, y);
         return;

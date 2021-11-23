@@ -12,8 +12,8 @@ typedef enum {
     RIGHT
 } alignment;
 
-void draw_string(const char *str, unsigned int x, unsigned int y);
-void draw_string_align(const char *str, unsigned int y, alignment align);
+void draw_string(char *str, unsigned int x, unsigned int y);
+void draw_string_align(char *str, unsigned int y, alignment align);
 
 void draw_pixel(char x, char y);
 
