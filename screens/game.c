@@ -13,30 +13,27 @@ typedef enum {
 
 game_difficulty difficulty_selection() {
     game_difficulty current_selection = EASY;
-    int y_pos = 8;
 
     while (1) {
         delay(100); // this causes som issues
         draw_clear();
 
-        draw_string_align("DIFFICULTY!", 0, CENTER);
-        draw_string_align("EASY", 15, LEFT);
-        draw_string_align("NORMAL", 25, LEFT);
-        draw_string_align("HARD", 15, RIGHT);
-        draw_string_align("IMPOSSIBLE", 25, RIGHT);
+        draw_string_align_menu("DIFFICULTY", 0, CENTER);
+        Text_info easy = draw_string_align_menu("EASY", 15, LEFT);
+        Text_info normal = draw_string_align_menu("NORMAL", 25, LEFT);
+        Text_info hard = draw_string_align_menu("HARD", 15, RIGHT);
+        Text_info impossible = draw_string_align_menu("IMPOSSIBLE", 25, RIGHT);
 
-        // selection indicator
-        draw_pixel(0, y_pos);
+        Text_info options[] = {easy, normal, hard, impossible};
+        draw_underline(&options[current_selection]);
 
         // up
         if (btn4_ispressed() && current_selection != EASY) {
-            y_pos -= 8;
             current_selection--;
         }
 
         // down
         if (btn3_ispressed() && current_selection != IMPOSSIBLE) {
-            y_pos += 8;
             current_selection++;
         }
 
