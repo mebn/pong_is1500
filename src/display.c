@@ -33,6 +33,10 @@
  */
 static uint8_t canvas[128*4] = {0};
 
+bool is_pixel(char x, char y) {
+    return (x >= 0 && x <= 127) && (y >= 0 && y <= 31);
+}
+
 uint8_t spi_send_recv(uint8_t data) {
     while(!(SPI2STAT & 0x08)); // Wait for transmitter to be ready
     SPI2BUF = data; //  Write the next transmit byte.
@@ -130,6 +134,7 @@ void display_init() {
  * @param y Y-coordinate for the pixel.
  */
 void draw_pixel(char x, char y) {
+    if (!is_pixel(x, y)) return;
     canvas[(y / 8) * 128 + x] |= 1 << (y % 8);
 }
 
@@ -142,6 +147,7 @@ void draw_pixel(char x, char y) {
  * @param y Y-coordinate for the pixel.
  */
 void clear_pixel(char x, char y) {
+    if (!is_pixel(x, y)) return;
     canvas[(y / 8) * 128 + x] &= ~(1 << (y % 8));
 }
 
@@ -156,6 +162,7 @@ void clear_pixel(char x, char y) {
  * @return false If current pixel value is 0.
  */
 bool pixel_ison(char x, char y) {
+    if (!is_pixel(x, y)) return;
     return (canvas[(y / 8) * 128 + x] & 1 << (y % 8)) == 1;
 }
 
@@ -171,9 +178,8 @@ bool pixel_ison(char x, char y) {
  * @param yEnd Ending y-coordinate (inclusive)
  */
 void display_invert(char xStart, char yStart, char xEnd, char yEnd) {
-    char x;
+    char x, y;
     for (x = xStart; x <= xEnd; x++) {
-        char y;
         for (y = yStart; y <= yEnd; y++) {
             if (pixel_ison(x, y)) {
                 clear_pixel(x, y);
