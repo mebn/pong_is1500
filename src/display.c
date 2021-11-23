@@ -139,11 +139,12 @@ void display_init() {
 /**
  * Written by Marcus Nilszén
  * 
- * @brief Draw a string on a specific cordinate.
+ * @brief Draw a string where the specified cordinate
+ * is its upper left corner.
  * 
  * @param str The string to draw.
- * @param x X posistion.
- * @param y Y posotion.
+ * @param x X posistion of upper left corner.
+ * @param y Y posotion of upper left corner.
  */
 void draw_string(const char *str, unsigned int x, unsigned int y) {
     int x_pos, y_pos;
