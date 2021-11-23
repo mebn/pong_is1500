@@ -7,6 +7,6 @@
 extern const unsigned int const font[59];
 extern const unsigned char const font_width[59];
 
-extern const uint8_t const mario[512];
+extern const uint8_t const pong_image[512];
 
 #endif
