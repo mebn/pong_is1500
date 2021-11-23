@@ -122,8 +122,7 @@ void display_init() {
 }
 
 /**
- * Written by: Marcus Nilszén
- * Modified by: Alex Gunnarsson
+ * Written by: Marcus Nilszén & Alex Gunnarsson
  * 
  * @brief Fill the pixel (set to 1).
  * 

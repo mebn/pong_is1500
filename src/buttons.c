@@ -3,6 +3,8 @@
 #include <stdbool.h>
 
 /**
+ * Written by: Alex Gunnarsson & Marcus Nilszén
+ * 
  * @brief Get the button pressed status.
  * 
  * @return char 4-bit int (char most appropriate, using 8-bit)
@@ -24,6 +26,8 @@ char get_btns() {
 }
 
 /**
+ * Written by: Alex Gunnarsson
+ * 
  * @brief Get the button pressed status for BTN1.
  * 
  * @return true if BTN1 is pressed.
@@ -34,6 +38,8 @@ bool btn1_ispressed() {
 }
 
 /**
+ * Written by: Alex Gunnarsson
+ * 
  * @brief Get the button pressed status for BTN2.
  * 
  * @return true if BTN2 is pressed.
@@ -44,6 +50,8 @@ bool btn2_ispressed() {
 }
 
 /**
+ * Written by: Alex Gunnarsson
+ * 
  * @brief Get the button pressed status for BTN3.
  * 
  * @return true if BTN3 is pressed.
@@ -54,6 +62,8 @@ bool btn3_ispressed() {
 }
 
 /**
+ * Written by: Alex Gunnarsson
+ * 
  * @brief Get the button pressed status for BTN4.
  * 
  * @return true if BTN4 is pressed.
@@ -64,6 +74,8 @@ bool btn4_ispressed() {
 }
 
 /**
+ * Written by: Alex Gunnarsson & Marcus Nilszén
+ * 
  * @brief Initialize the four buttons
  * found on the IO Shield as input.
  * 
