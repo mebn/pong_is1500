@@ -36,6 +36,18 @@
  */
 static uint8_t canvas[128*4] = {0};
 
+/**
+ * @brief Checks whether or not a pixel is valid.
+ * 
+ * @param x X-coordinate of the pixel.
+ * @param y Y-coordinate of the pixel.
+ * @return true If specified pixel is within bounds.
+ * @return false If specified pixel is not within bounds.
+ */
+bool is_pixel(char x, char y) {
+    return (x >= 0 && x <= 127) && (y >= 0 && y <= 31);
+}
+
 uint8_t spi_send_recv(uint8_t data) {
     while(!(SPI2STAT & 0x08)); // Wait for transmitter to be ready
     SPI2BUF = data; //  Write the next transmit byte.
@@ -193,8 +205,7 @@ void draw_string_align(const char *str, unsigned int y, alignment align) {
 }
 
 /**
- * Written by: Marcus Nilszén
- * Modified by: Alex Gunnarsson
+ * Written by: Marcus Nilszén & Alex Gunnarsson
  * 
  * @brief Fill the pixel (set to 1).
  * 
@@ -202,6 +213,7 @@ void draw_string_align(const char *str, unsigned int y, alignment align) {
  * @param y Y-coordinate for the pixel.
  */
 void draw_pixel(char x, char y) {
+    if (!is_pixel(x, y)) return;
     canvas[(y / 8) * DISPLAY_WIDTH + x] |= 1 << (y % 8);
 }
 
@@ -214,6 +226,7 @@ void draw_pixel(char x, char y) {
  * @param y Y-coordinate for the pixel.
  */
 void clear_pixel(char x, char y) {
+    if (!is_pixel(x, y)) return;
     canvas[(y / 8) * DISPLAY_WIDTH + x] &= ~(1 << (y % 8));
 }
 
@@ -225,9 +238,11 @@ void clear_pixel(char x, char y) {
  * @param x X-coordinate for the pixel.
  * @param y Y-coordinate for the pixel.
  * @return true If current pixel value is 1.
- * @return false If current pixel value is 0.
+ * @return false If current pixel value is 0 or
+ * pixel is invalid.
  */
 bool pixel_ison(char x, char y) {
+    if (!is_pixel(x, y)) return false;
     return (canvas[(y / 8) * DISPLAY_WIDTH + x] & 1 << (y % 8)) == 1;
 }
 
@@ -243,9 +258,8 @@ bool pixel_ison(char x, char y) {
  * @param yEnd Ending y-coordinate (inclusive)
  */
 void display_invert(char xStart, char yStart, char xEnd, char yEnd) {
-    char x;
+    char x, y;
     for (x = xStart; x <= xEnd; x++) {
-        char y;
         for (y = yStart; y <= yEnd; y++) {
             if (pixel_ison(x, y)) {
                 clear_pixel(x, y);
