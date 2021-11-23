@@ -22,6 +22,132 @@
 #define DISPLAY_VBAT_ON (PORTFCLR = 1 << 5)
 #define DISPLAY_VBAT_OFF (PORTFSET = 1 << 5)
 
+#define FONT_SIZE 5
+const unsigned int new_font[] = {
+    0x00000000, // ' '
+    0x00100421, // '!'
+    0x0,
+    0x0,
+    0x0,
+    0x0,
+    0x0,
+    0x0,
+    0x00208422, // '('
+    0x00110841, // ')'
+    0x0,
+    0x0,
+    0x0,
+    0x00007C00, // '-'
+    0x00100000, // '.'
+    0x0,
+    0x0064A526, // '0'
+    0x00710862, // '1'
+    0x00F09907, // '2'
+    0x00741907, // '3'
+    0x00843D29, // '4'
+    0x00741C2F, // '5'
+    0x00649C26, // '6'
+    0x0021110F, // '7'
+    0x00649926, // '8'
+    0x00643926, // '9'
+    0x00008020, // ':'
+    0x0,
+    0x0,
+    0x0,
+    0x0,
+    0x0,
+    0x0,
+    0x0094BD26, // 'A'
+    0x00749D27, // 'B'
+    0x00E0842E, // 'C'
+    0x0074A527, // 'D'
+    0x00F09C2F, // 'E'
+    0x00109C2F, // 'F'
+    0x00E4B42E, // 'G'
+    0x0094BD29, // 'H'
+    0x00710847, // 'I'
+    0x0064A10F, // 'J'
+    0x00928CA9, // 'K'
+    0x00F08421, // 'L'
+    0x0118D771, // 'M'
+    0x0094B569, // 'N'
+    0x0064A526, // 'O'
+    0x00109D27, // 'P'
+    0x00F6A52F, // 'Q'
+    0x00929D27, // 'R'
+    0x0074182E, // 'S'
+    0x00210847, // 'T'
+    0x0064A529, // 'U'
+    0x002294A5, // 'V'
+    0x00AAD6B1, // 'W'
+    0x00949929, // 'X'
+    0x002108A5, // 'Y'
+    0x00F0990F, // 'Z'
+};
+
+// Alla tecken har en unik bredd som lagras i den här vektorn.
+const unsigned char fontWidth[] = {
+    4, // ' '
+    1, // '!'
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    2, // '('
+    2, // ')'
+    0,
+    0,
+    0,
+    5,
+    1, // '.'
+    0,
+    4, // '0'
+    3, // '1'
+    4, // '2'
+    4, // '3'
+    4, // '4'
+    4, // '5'
+    4, // '6'
+    4, // '7'
+    4, // '8'
+    4, // '9'
+    1, // ':'
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    4, // 'A'
+    4, // 'B'
+    4, // 'C'
+    4, // 'D'
+    4, // 'E'
+    4, // 'F'
+    4, // 'G'
+    4, // 'H'
+    3, // 'I'
+    4, // 'J'
+    4, // 'K'
+    4, // 'L'
+    5, // 'M'
+    4, // 'N'
+    4, // 'O'
+    4, // 'P'
+    4, // 'Q'
+    4, // 'R'
+    4, // 'S'
+    3, // 'T'
+    4, // 'U'
+    3, // 'V'
+    5, // 'W'
+    4, // 'X'
+    3, // 'Y'
+    4, // 'Z'
+};
+
 /**
  * @brief A 128*4 array used to display
  * everything on the oled display.
@@ -119,6 +245,74 @@ void display_init() {
     SPI2CONSET = 0x8000; // Turn on SPI
     
     display_on();
+}
+
+/**
+ * Written by Marcus Nilszén
+ * 
+ * @brief Draw a string on a specific cordinate.
+ * 
+ * @param str The string to draw.
+ * @param x X posistion. Limited from 0 to 122.
+ * @param y Y posotion. Limited from 0 to 26.
+ */
+void draw_string(const char *str, unsigned int x, unsigned int y) {
+    int x_pos, y_pos;
+    
+    while (*str) {
+        char char_index = *str - 0x20; // 0x20 == space, first char
+        char bit = 0;
+        
+        for (y_pos = y; y_pos < y + FONT_SIZE; y_pos++) {
+            for (x_pos = x; x_pos < x + FONT_SIZE; x_pos++) {
+                if (new_font[char_index] & (1 << bit)) {
+                    draw_pixel(x_pos, y_pos);
+                }
+
+                bit++;
+            }
+        }
+
+        x += fontWidth[char_index] + 2;
+        str++;
+    }
+}
+
+/**
+ * Written by Marcus Nilszén
+ * 
+ * @brief Draw a string on a specified y cordinate
+ * and align in to the LEFT, CENTER or RIGHT
+ * relative to the screen.
+ * 
+ * @param str The string to draw.
+ * @param y Y position. Limited from 0 to 122.
+ * @param align Align text on screen. LEFT, CENTER or RIGHT.
+ */
+void draw_string_align(const char *str, unsigned int y, alignment align) {
+    if (align == LEFT) {
+        draw_string(str, 0, y);
+        return;
+    }
+
+    unsigned int x;
+    int len = 0;
+    char *str2 = str;
+
+    while (*str2) {
+        len += fontWidth[*str-0x20] + 2;
+        str2++;
+    }
+
+    len -= 2;
+
+    if (align == CENTER) {
+        x = 128/2 - len/2;
+    } else {
+        x = 128 - len;
+    }
+
+    draw_string(str, x, y);
 }
 
 /**

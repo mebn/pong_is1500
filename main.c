@@ -39,10 +39,15 @@ selection menu() {
     while (1) {
         draw_clear();
         
-        // draw_text(0, 0, "PONG!");
-        draw_text(30, 8, "1 player");
-        draw_text(30, 16, "2 player");
-        draw_text(30, 24, "highscore");
+        // draw_string("MARCUS", 10, 10);
+        draw_string_align("MARCUS", 0, LEFT);
+        draw_string_align("MARCUS", 10, CENTER);
+        draw_string_align("MARCUS", 20, RIGHT);
+
+        // draw_text(30, 0, "PONG!");
+        // draw_text(0, 16, "SINGLEPLAYER");
+        // draw_text(0, 24, "MULTIPLAYER");
+        // draw_text(100, 16, "HIGHSCORE");
 
         // selection indicator
         draw_pixel(0, y_pos);
