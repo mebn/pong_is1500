@@ -48,13 +48,13 @@ selection menu() {
         draw_pixel(0, y_pos);
 
         // up
-        if (btn4_ispressed() && y_pos != 8) {
+        if (btn4_ispressed() && current_selection != SINGLE_PLAYER) {
             y_pos -= 8;
             current_selection--;
         }
 
         // down
-        if (btn3_ispressed() && y_pos != 24) {
+        if (btn3_ispressed() && current_selection != HIGH_SCORE) {
             y_pos += 8;
             current_selection++;
         }
@@ -109,8 +109,8 @@ int main() {
     while (1) {
         selection screen = menu();
 
-        if (screen == SINGLE_PLAYER) game_screen(SINGLE_PLAYER, NORMAL);
-        if (screen == MULTI_PLAYER) game_screen(MULTI_PLAYER, NORMAL); // difficulty doesn't matter here
+        if (screen == SINGLE_PLAYER) game_screen(SINGLE_PLAYER);
+        if (screen == MULTI_PLAYER) game_screen(MULTI_PLAYER);
         if (screen == HIGH_SCORE) high_score_screen();
     }
 

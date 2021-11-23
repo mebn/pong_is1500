@@ -8,14 +8,7 @@ typedef enum {
     MULTIPLAYER
 } game_mode;
 
-typedef enum {
-    EASY,
-    NORMAL,
-    HARD,
-    IMPOSSIBLE
-} game_difficulty;
-
-void game_screen(game_mode mode, game_difficulty difficulty);
+void game_screen(game_mode mode);
 void high_score_screen();
 
 #endif
