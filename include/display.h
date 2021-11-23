@@ -16,7 +16,6 @@ void draw_string(const char *str, unsigned int x, unsigned int y);
 void draw_string_align(const char *str, unsigned int y, alignment align);
 
 void draw_pixel(char x, char y);
-void draw_text(unsigned int x, unsigned int y, char *s);
 
 void display_invert(char xStart, char yStart, char xEnd, char yEnd);
 

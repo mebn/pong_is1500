@@ -22,7 +22,11 @@
 #define DISPLAY_VBAT_ON (PORTFCLR = 1 << 5)
 #define DISPLAY_VBAT_OFF (PORTFSET = 1 << 5)
 
+#define DISPLAY_WIDTH 128
+#define DISPLAY_HEIGHT 32
+
 #define FONT_SIZE 5
+#define FONT_SPACING 1
 const unsigned int new_font[] = {
     0x00000000, // ' '
     0x00100421, // '!'
@@ -273,7 +277,7 @@ void draw_string(const char *str, unsigned int x, unsigned int y) {
             }
         }
 
-        x += fontWidth[char_index] + 2;
+        x += fontWidth[char_index] + FONT_SPACING;
         str++;
     }
 }
@@ -286,7 +290,7 @@ void draw_string(const char *str, unsigned int x, unsigned int y) {
  * relative to the screen.
  * 
  * @param str The string to draw.
- * @param y Y position. Limited from 0 to 122.
+ * @param y Y position. Limited from 0 to 26.
  * @param align Align text on screen. LEFT, CENTER or RIGHT.
  */
 void draw_string_align(const char *str, unsigned int y, alignment align) {
@@ -300,16 +304,16 @@ void draw_string_align(const char *str, unsigned int y, alignment align) {
     char *str2 = str;
 
     while (*str2) {
-        len += fontWidth[*str-0x20] + 2;
+        len += fontWidth[*str-0x20] + FONT_SPACING;
         str2++;
     }
 
-    len -= 2;
+    len -= FONT_SPACING;
 
     if (align == CENTER) {
-        x = 128/2 - len/2;
+        x = DISPLAY_WIDTH/2 - len/2;
     } else {
-        x = 128 - len;
+        x = DISPLAY_WIDTH - len;
     }
 
     draw_string(str, x, y);
@@ -325,7 +329,7 @@ void draw_string_align(const char *str, unsigned int y, alignment align) {
  * @param y Y-coordinate for the pixel.
  */
 void draw_pixel(char x, char y) {
-    canvas[(y / 8) * 128 + x] |= 1 << (y % 8);
+    canvas[(y / 8) * DISPLAY_WIDTH + x] |= 1 << (y % 8);
 }
 
 /**
@@ -337,7 +341,7 @@ void draw_pixel(char x, char y) {
  * @param y Y-coordinate for the pixel.
  */
 void clear_pixel(char x, char y) {
-    canvas[(y / 8) * 128 + x] &= ~(1 << (y % 8));
+    canvas[(y / 8) * DISPLAY_WIDTH + x] &= ~(1 << (y % 8));
 }
 
 /**
@@ -351,7 +355,7 @@ void clear_pixel(char x, char y) {
  * @return false If current pixel value is 0.
  */
 bool pixel_ison(char x, char y) {
-    return (canvas[(y / 8) * 128 + x] & 1 << (y % 8)) == 1;
+    return (canvas[(y / 8) * DISPLAY_WIDTH + x] & 1 << (y % 8)) == 1;
 }
 
 /**
@@ -376,23 +380,6 @@ void display_invert(char xStart, char yStart, char xEnd, char yEnd) {
                 draw_pixel(x, y);
             }
         }
-    }
-}
-
-void draw_text(unsigned int x, unsigned int y, char *s) {
-    if (x > 128 || x < 0 || y > 32 || y < 0) return;
-    if (!s) return;
-    
-    short row = y / 8;
-    int i;
-    while (*s) {
-        // each char (*s) is 8 bits. see graphics.h/font
-        for (i = 0; i < 8; i++) {
-            canvas[row * 128 + x] |= font[(*s) * 8 + i];
-            x++;
-        }
-
-        s++;
     }
 }
 
