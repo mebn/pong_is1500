@@ -146,20 +146,18 @@ void display_init() {
  * @param x X posistion of upper left corner.
  * @param y Y posotion of upper left corner.
  */
-void draw_string(const char *str, unsigned int x, unsigned int y) {
+void draw_string(char *str, unsigned int x, unsigned int y) {
     int x_pos, y_pos;
-    
-    while (*str) {
+    while (*str != '\0') {
         char char_index = *str - 0x20; // 0x20 == space, first char
-        char bit = 0;
+        char mask = 1;
         
         for (y_pos = y; y_pos < y + FONT_SIZE; y_pos++) {
             for (x_pos = x; x_pos < x + FONT_SIZE; x_pos++) {
-                if (font[char_index] & (1 << bit)) {
+                if (font[char_index] & mask) {
                     draw_pixel(x_pos, y_pos);
                 }
-
-                bit++;
+                mask <<= 1;
             }
         }
 
