@@ -137,8 +137,7 @@ void display_init() {
 }
 
 /**
- * Written by Marcus Nilszén
- * Modified by Alex Gunnarsson
+ * Written by Marcus Nilszén & Alex Gunnarsson
  * 
  * @brief Draw a string where the specified cordinate
  * is its upper left corner. Accepts both upper- and
