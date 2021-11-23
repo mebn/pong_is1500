@@ -167,10 +167,11 @@ void clear_pixel(char x, char y) {
  * @param x X-coordinate for the pixel.
  * @param y Y-coordinate for the pixel.
  * @return true If current pixel value is 1.
- * @return false If current pixel value is 0.
+ * @return false If current pixel value is 0 or
+ * pixel is invalid.
  */
 bool pixel_ison(char x, char y) {
-    if (!is_pixel(x, y)) return;
+    if (!is_pixel(x, y)) return false;
     return (canvas[(y / 8) * 128 + x] & 1 << (y % 8)) == 1;
 }
 
