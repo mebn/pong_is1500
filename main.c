@@ -5,6 +5,7 @@
 #include "include/timer.h"
 #include "include/buttons.h"
 #include "include/screens.h"
+#include <stdbool.h>
 
 /**
  * Written by Marcus Nilszén
@@ -108,8 +109,8 @@ int main() {
     while (1) {
         selection screen = menu();
 
-        if (screen == SINGLE_PLAYER) single_player_screen();
-        if (screen == MULTI_PLAYER) multi_player_screen();
+        if (screen == SINGLE_PLAYER) game_screen(SINGLE_PLAYER, NORMAL);
+        if (screen == MULTI_PLAYER) game_screen(MULTI_PLAYER, NORMAL); // difficulty doesn't matter here
         if (screen == HIGH_SCORE) high_score_screen();
     }
 
