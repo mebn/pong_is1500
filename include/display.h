@@ -12,8 +12,15 @@ typedef enum {
     RIGHT
 } alignment;
 
+typedef struct {
+    char x;
+    char y;
+    int len;
+} Text_info;
+
+void draw_underline(const Text_info *ti);
 void draw_string(char *str, unsigned int x, unsigned int y);
-void draw_string_align(char *str, unsigned int y, alignment align);
+Text_info draw_string_align_menu(char *str, unsigned int y, alignment align);
 
 void draw_pixel(char x, char y);
 

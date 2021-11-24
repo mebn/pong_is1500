@@ -137,7 +137,7 @@ void display_init() {
 }
 
 /**
- * Written by Marcus Nilszén
+ * Written by Marcus Nilszén & Alex Gunnarsson
  * 
  * @brief Draw a string where the specified cordinate
  * is its upper left corner. Accepts both upper- and
@@ -173,6 +173,14 @@ void draw_string(char *str, unsigned int x, unsigned int y) {
     }
 }
 
+void draw_underline(const Text_info *ti) {
+    char x = ti->x;
+    char y = ti->y + FONT_SIZE + 1;
+    int i, endX = x + ti->len;
+    for (i = x; i < endX; i++)
+        draw_pixel(i, y);
+}
+
 /**
  * Written by Marcus Nilszén
  * 
@@ -184,30 +192,33 @@ void draw_string(char *str, unsigned int x, unsigned int y) {
  * @param y Y position.
  * @param align Align text on screen. LEFT, CENTER or RIGHT.
  */
-void draw_string_align(char *str, unsigned int y, alignment align) {
-    if (align == LEFT) {
-        draw_string(str, 0, y);
-        return;
-    }
-
+Text_info draw_string_align_menu(char *str, unsigned int y, alignment align) {
     unsigned int x;
     int len = 0;
     char *str2 = str;
 
     while (*str2) {
-        len += font_width[*str-0x20] + FONT_SPACING;
+        len += font_width[*str2-0x20] + FONT_SPACING;
         str2++;
     }
 
     len -= FONT_SPACING;
 
-    if (align == CENTER) {
+    if (align == LEFT)
+        x = DISPLAY_WIDTH/2 - DISPLAY_WIDTH/4 - len/2;
+    else if (align == RIGHT)
+        x = DISPLAY_WIDTH/2 + DISPLAY_WIDTH/4 - len/2;
+    else
         x = DISPLAY_WIDTH/2 - len/2;
-    } else {
-        x = DISPLAY_WIDTH - len;
-    }
 
     draw_string(str, x, y);
+
+    Text_info ti;
+    ti.x = x;
+    ti.y = y;
+    ti.len = len;
+
+    return ti;
 }
 
 /**

@@ -34,28 +34,25 @@ typedef enum {
  */
 selection menu() {
     selection current_selection = SINGLE_PLAYER;
-    int y_pos = 8;
 
     while (1) {
         draw_clear();
 
-        draw_string_align("PONG!", 0, CENTER);
-        draw_string_align("SINGLEPLAYER", 15, LEFT);
-        draw_string_align("MULTIPLAYER", 25, LEFT);
-        draw_string_align("HIGHSCORE", 15, RIGHT);
+        draw_string_align_menu("PONG!", 0, CENTER);
+        Text_info single = draw_string_align_menu("SINGLEPLAYER", 15, LEFT);
+        Text_info multi = draw_string_align_menu("MULTIPLAYER", 15, RIGHT);
+        Text_info high = draw_string_align_menu("HIGHSCORE", 25, CENTER);
 
-        // selection indicator
-        draw_pixel(0, y_pos);
+        Text_info options[] = {single, multi, high};
+        draw_underline(&options[current_selection]);
 
         // up
-        if (btn4_ispressed() && y_pos != 8) {
-            y_pos -= 8;
+        if (btn4_ispressed() && current_selection != SINGLE_PLAYER) {
             current_selection--;
         }
 
         // down
-        if (btn3_ispressed() && y_pos != 24) {
-            y_pos += 8;
+        if (btn3_ispressed() && current_selection != HIGH_SCORE) {
             current_selection++;
         }
 
@@ -109,8 +106,8 @@ int main() {
     while (1) {
         selection screen = menu();
 
-        if (screen == SINGLE_PLAYER) game_screen(SINGLE_PLAYER, NORMAL);
-        if (screen == MULTI_PLAYER) game_screen(MULTI_PLAYER, NORMAL); // difficulty doesn't matter here
+        if (screen == SINGLE_PLAYER) game_screen(SINGLE_PLAYER);
+        if (screen == MULTI_PLAYER) game_screen(MULTI_PLAYER);
         if (screen == HIGH_SCORE) high_score_screen();
     }
 

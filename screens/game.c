@@ -2,6 +2,49 @@
 #include "../include/timer.h"
 #include "../include/screens.h"
 #include "../include/buttons.h"
+#include "../include/display.h"
+
+typedef enum {
+    EASY,
+    NORMAL,
+    HARD,
+    IMPOSSIBLE
+} game_difficulty;
+
+game_difficulty difficulty_selection() {
+    game_difficulty current_selection = EASY;
+
+    while (1) {
+        delay(100); // this causes som issues
+        draw_clear();
+
+        draw_string_align_menu("DIFFICULTY", 0, CENTER);
+        Text_info easy = draw_string_align_menu("EASY", 15, LEFT);
+        Text_info normal = draw_string_align_menu("NORMAL", 25, LEFT);
+        Text_info hard = draw_string_align_menu("HARD", 15, RIGHT);
+        Text_info impossible = draw_string_align_menu("IMPOSSIBLE", 25, RIGHT);
+
+        Text_info options[] = {easy, normal, hard, impossible};
+        draw_underline(&options[current_selection]);
+
+        // up
+        if (btn4_ispressed() && current_selection != EASY) {
+            current_selection--;
+        }
+
+        // down
+        if (btn3_ispressed() && current_selection != IMPOSSIBLE) {
+            current_selection++;
+        }
+
+        // select
+        if (btn1_ispressed()) {
+            return current_selection;
+        }
+
+        draw_canvas();
+    }
+}
 
 /**
  * Written by: Alex Gunnarsson & Marcus Nilszén
@@ -13,7 +56,13 @@
  * @param difficulty Enum value deciding difficult level
  * in singleplayer vs AI. Has no effect when mode is set to multiplayer.
  */
-void game_screen(game_mode mode, game_difficulty difficulty) {
+void game_screen(game_mode mode) {
+    game_difficulty difficulty;
+
+    if (mode == SINGLEPLAYER) {
+        difficulty = difficulty_selection();
+    }
+
     while (1) {
         draw_clear();
         
