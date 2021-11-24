@@ -179,23 +179,6 @@ void draw_string(char *str, unsigned int x, unsigned int y) {
 /**
  * Written by: Marcus Nilszén
  * 
- * @brief Draws a underline under a
- * string on the display.
- * 
- * @param ti A Text_info struct including x, y and length
- * of text (see Text_info struct docs).
- */
-void draw_underline(const Text_info *ti) {
-    char x = ti->x;
-    char y = ti->y + FONT_SIZE + 1;
-    int i, endX = x + ti->len;
-    for (i = x; i < endX; i++)
-        draw_pixel(i, y);
-}
-
-/**
- * Written by: Marcus Nilszén
- * 
  * @brief Draw a string on a specified y cordinate
  * and align in to the LEFT, CENTER or RIGHT
  * relative to the screen.
@@ -234,6 +217,23 @@ Text_info draw_string_grid(char *str, unsigned int y, grid_pos pos) {
     ti.len = len;
 
     return ti;
+}
+
+/**
+ * Written by: Marcus Nilszén
+ * 
+ * @brief Draws a underline under a
+ * string on the display.
+ * 
+ * @param ti A Text_info struct including x, y and length
+ * of text (see Text_info struct docs).
+ */
+void draw_underline(const Text_info *ti) {
+    char x = ti->x;
+    char y = ti->y + FONT_SIZE + 1;
+    int i, endX = x + ti->len;
+    for (i = x; i < endX; i++)
+        draw_pixel(i, y);
 }
 
 /**
