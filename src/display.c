@@ -175,7 +175,7 @@ void draw_string(char *str, unsigned int x, unsigned int y) {
 
 void draw_underline(const Text_info *ti) {
     char x = ti->x;
-    char y = ti->y + 6;
+    char y = ti->y + FONT_SIZE + 1;
     int i;
     for (i = x; i < x + ti->len; i++)
         draw_pixel(i, y);
