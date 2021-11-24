@@ -3,10 +3,14 @@
 #include "../include/timer.h"
 #include "../include/buttons.h"
 
+/**
+ * @brief Keeps track of time for timer2.
+ * 
+ */
 static int counter_ms = 0;
 
 /**
- * Written by Marcus Nilszén
+ * Written by: Marcus Nilszén
  * 
  * @brief Delay for a specified amount of time in milliseconds.
  * 
@@ -19,7 +23,7 @@ void delay(unsigned int ms) {
 }
 
 /**
- * Written by Marcus Nilszén
+ * Written by: Marcus Nilszén
  * 
  * @brief This code gets run every period specified
  * in timer2_init().

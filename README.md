@@ -43,3 +43,11 @@ https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf (p.34 for commands)
 
 ### IO Shield:
 https://digilent.com/reference/_media/chipkit_shield_basic_io_shield:chipkit_basic_io_shield_rm.pdf (incl. display startup procedure)
+
+
+## Contributions
+
+New font and draw_string function: https://github.com/alevarn/pic32-pong-game
+
+Display, `vector.S` and `stubs.c`: https://github.com/is1200-example-projects/hello-display
+

@@ -3,6 +3,11 @@
 
 #include <stdbool.h>
 
+/**
+ * @brief There's two different
+ * game modes, singleplayer and multiplayer.
+ * 
+ */
 typedef enum {
     SINGLEPLAYER,
     MULTIPLAYER

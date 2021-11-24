@@ -6,12 +6,26 @@
 
 void display_init();
 
+/**
+ * @brief The display is divided in
+ * 4 quadrants and text in these
+ * quadrants are centered. Not to be confused with 
+ * grid_pos.CENTER which centers text
+ * on x-axis on display.
+ * 
+ */
 typedef enum {
     LEFT,
     CENTER,
     RIGHT
-} alignment;
+} grid_pos;
 
+/**
+ * @brief Used when building menus
+ * to make it easy to draw a selection
+ * underline.
+ * 
+ */
 typedef struct {
     char x;
     char y;
@@ -20,7 +34,7 @@ typedef struct {
 
 void draw_underline(const Text_info *ti);
 void draw_string(char *str, unsigned int x, unsigned int y);
-Text_info draw_string_align_menu(char *str, unsigned int y, alignment align);
+Text_info draw_string_grid(char *str, unsigned int y, grid_pos pos);
 
 void draw_pixel(char x, char y);
 
@@ -30,5 +44,6 @@ void draw_clear();
 void draw_canvas();
 
 void display_image(const uint8_t *data);
+void display_fullscreen_image(unsigned int x, const uint8_t *data);
 
 #endif

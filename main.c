@@ -8,7 +8,7 @@
 #include <stdbool.h>
 
 /**
- * Written by Marcus Nilszén
+ * Written by: Marcus Nilszén
  * 
  * @brief The different screens a user
  * can navigate to after bootup and games.
@@ -22,7 +22,7 @@ typedef enum {
 } selection;
 
 /**
- * Written by Marcus Nilszén
+ * Written by: Marcus Nilszén
  * 
  * @brief The main menu a user see after bootup.
  * Button 4 and 3 to navigate up respectively down in the menu.
@@ -38,10 +38,10 @@ selection menu() {
     while (1) {
         draw_clear();
 
-        draw_string_align_menu("PONG!", 0, CENTER);
-        Text_info single = draw_string_align_menu("SINGLEPLAYER", 15, LEFT);
-        Text_info multi = draw_string_align_menu("MULTIPLAYER", 15, RIGHT);
-        Text_info high = draw_string_align_menu("HIGHSCORE", 25, CENTER);
+        draw_string_grid("PONG!", 0, CENTER);
+        Text_info single = draw_string_grid("SINGLEPLAYER", 15, LEFT);
+        Text_info multi = draw_string_grid("MULTIPLAYER", 15, RIGHT);
+        Text_info high = draw_string_grid("HIGHSCORE", 25, CENTER);
 
         Text_info options[] = {single, multi, high};
         draw_underline(&options[current_selection]);
@@ -67,7 +67,7 @@ selection menu() {
 }
 
 /**
- * Written by Marcus Nilszén
+ * Written by: Marcus Nilszén
  * 
  * @brief Displays a loading image on bootup and
  * delays it for some specified time.

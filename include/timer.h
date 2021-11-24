@@ -7,7 +7,4 @@ void delay(unsigned int ms);
 
 void timer2_init();
 
-void timer2_on();
-void timer2_off();
-
 #endif

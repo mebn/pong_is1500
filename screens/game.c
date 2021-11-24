@@ -4,6 +4,12 @@
 #include "../include/buttons.h"
 #include "../include/display.h"
 
+/**
+ * Written by: Marcus Nilszén
+ * @brief Enum containing the dirrerent
+ * game difficulties.
+ * 
+ */
 typedef enum {
     EASY,
     NORMAL,
@@ -11,6 +17,14 @@ typedef enum {
     IMPOSSIBLE
 } game_difficulty;
 
+/**
+ * Written by: Marcus Nilszén
+ * 
+ * @brief Singleplayer difficulty selection menu.
+ * 
+ * @return game_difficulty Enum value. The difficulty
+ * of a singleplayer game.
+ */
 game_difficulty difficulty_selection() {
     game_difficulty current_selection = EASY;
 
@@ -18,11 +32,11 @@ game_difficulty difficulty_selection() {
         delay(100); // this causes som issues
         draw_clear();
 
-        draw_string_align_menu("DIFFICULTY", 0, CENTER);
-        Text_info easy = draw_string_align_menu("EASY", 15, LEFT);
-        Text_info normal = draw_string_align_menu("NORMAL", 25, LEFT);
-        Text_info hard = draw_string_align_menu("HARD", 15, RIGHT);
-        Text_info impossible = draw_string_align_menu("IMPOSSIBLE", 25, RIGHT);
+        draw_string_grid("DIFFICULTY", 0, CENTER);
+        Text_info easy = draw_string_grid("EASY", 15, LEFT);
+        Text_info normal = draw_string_grid("NORMAL", 25, LEFT);
+        Text_info hard = draw_string_grid("HARD", 15, RIGHT);
+        Text_info impossible = draw_string_grid("IMPOSSIBLE", 25, RIGHT);
 
         Text_info options[] = {easy, normal, hard, impossible};
         draw_underline(&options[current_selection]);
