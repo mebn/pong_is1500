@@ -22,9 +22,6 @@
 #define DISPLAY_VBAT_ON (PORTFCLR = 1 << 5)
 #define DISPLAY_VBAT_OFF (PORTFSET = 1 << 5)
 
-#define DISPLAY_WIDTH 128
-#define DISPLAY_HEIGHT 32
-
 /**
  * @brief A 128*4 array used to display
  * everything on the oled display.

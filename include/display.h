@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define DISPLAY_WIDTH 128
+#define DISPLAY_HEIGHT 32
+
 void display_init();
 
 /**
