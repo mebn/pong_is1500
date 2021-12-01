@@ -17,23 +17,22 @@ typedef enum {
     IMPOSSIBLE
 } game_difficulty;
 
-/**
- * @brief The ball object.
- * 
- */
 typedef struct {
-    double x_pos;
-    double y_pos;
+    float x_pos;
+    float y_pos;
     char size;
-    int x_speed;
-    int y_speed;
+    float x_speed;
+    float y_speed;
 } Ball;
 
-/**
- * @brief 
- * 
- * @param ball 
- */
+typedef struct {
+    int x_pos;
+    int y_pos;
+    char x_size;
+    char y_size;
+    int score;
+} Paddle;
+
 void draw_ball(Ball *ball) {
     char size = ball->size;
     int i, j;
@@ -49,28 +48,22 @@ void ball_update(Ball *ball) {
         ball->y_speed *= -1;
     }
 
-    if (ball->x_pos > 128 + 50 || ball->x_pos < 0 - 50) ball->x_pos = 128/2;
-
     ball->y_pos += ball->y_speed;
     ball->x_pos += ball->x_speed;
 }
 
-/**
- * @brief The paddle object. 
- * 
- */
-typedef struct {
-    double x_pos;
-    double y_pos;
-    char x_size;
-    char y_size;
-} Paddle;
+void ball_miss(Ball *b, Paddle *p1, Paddle *p2) {
+    if (b->x_pos > 128 + 50) {
+        p1->score++;
+        b->x_pos = 128/2;
+    } else if (b->x_pos < 0 - 50) {
+        p2->score++;
+        b->x_pos = 128/2;
+    }
 
-/**
- * @brief 
- * 
- * @param paddle 
- */
+    draw_string_grid("0-0", 0, CENTER);
+}
+
 void draw_paddle(Paddle *paddle) {
     char x, y;
     char xStart = paddle->x_pos, yStart = paddle->y_pos;
@@ -86,38 +79,63 @@ typedef enum {UP, DOWN} move_dir;
 
 void move_paddle(Paddle *p, move_dir md) {
     if (md == UP && p->y_pos > 0) {
-        p->y_pos -= 1; 
+        p->y_pos--;
     } else if (md == DOWN && p->y_pos + p->y_size < 31) {
-        p->y_pos += 1; 
+        p->y_pos++;
     }
 };
 
-void ball_bounce(Ball *b) {
+/**
+ * @brief Get the ball relative position to paddle
+ * 
+ * @param b The ball
+ * @param p The paddle
+ * @return float Value between 1.0 and -1.0 depending on hit
+ */
+float get_ball_paddle_relative_pos(Ball *b, Paddle *p) {
+    float p_mid = (p->y_pos + ((float) p->y_size)) / 2.0;
+    float b_mid = (b->y_pos + ((float) b->size)) / 2.0;
+
+    float val = (p_mid - b_mid) / ((float) p->y_size / 2.0);
+    return val / 10;
+}
+
+// https://ourcodeworld.com/articles/read/884/how-to-get-the-square-root-of-a-number-without-using-the-sqrt-function-in-c
+float my_sqrt(float number) {
+    float sqrt = number / 2.0;
+    float temp = 0;
+    while(sqrt != temp){
+        temp = sqrt;
+        sqrt = ( number/temp + temp) / 2.0;
+    }
+    return sqrt;
+}
+
+void ball_bounce(Ball *b, Paddle *p) {
+    float ys = b->y_speed;
+    float xs = b->x_speed;
+
+    float hyp = my_sqrt(xs*xs + ys*ys);
+    float rel_pos = get_ball_paddle_relative_pos(b, p);
+    float new_ys = my_sqrt((hyp*hyp) - 1) + rel_pos;
+
+    // ball goes down
+    if (b->y_speed < 0) {
+        new_ys *= -1;
+    }
+
+    b->y_speed = new_ys;
     b->x_speed *= -1;
 }
 
-
+// this collision is bad. FIX
 void ball_collision(Ball *b, Paddle *p) {
-    if (p->x_pos <= b->x_pos && p->x_pos + p->x_size >= b->x_pos + b->size &&
-        p->y_pos <= b->y_pos && p->y_pos + p->y_size >= b->y_pos + b->size) {
-        ball_bounce(b);
+    if (p->x_pos <= b->x_pos &&
+        p->x_pos + p->x_size >= b->x_pos + b->size &&
+        p->y_pos <= b->y_pos &&
+        p->y_pos + p->y_size >= b->y_pos + b->size) {
+        ball_bounce(b, p);
     }
-
-    // char paddleUp, paddleDown, paddleLeft, paddleRight;
-    // char ballUp, ballDown, ballLeft, ballRight;
-    // paddleUp = p->y_pos;
-    // paddleDown = p->y_pos + p->y_size;
-    // paddleLeft = p->x_pos;
-    // paddleRight = p->x_pos + p->x_size;
-    // ballUp = b->y_pos;
-    // ballDown = b->y_pos + b->size;
-    // ballLeft = b->x_pos;
-    // ballRight = b->x_pos + b->size;
-    // if (paddleUp > ballDown) return;
-    // if (ballUp > paddleDown) return;
-    // if (paddleLeft > ballRight) return;
-    // if (ballLeft > paddleRight) return;
-    // ball_bounce(b);
 }
 
 /**
@@ -181,31 +199,39 @@ void game_screen(game_mode mode) {
     }
 
     Ball ball = {
-        .x_pos = 0,
-        .y_pos = 0,
+        .x_pos = 127/2,
+        .y_pos = 31/2,
         .size = BALLSIZE,
         .x_speed = 1,
-        .y_speed = 1
+        .y_speed = 0
     };
     
     Paddle p1 = {
         .x_pos = 0 + PADDLEGAP,
         .y_pos = 32/2 - PADDLESIZE_Y/2,
         .x_size = PADDLESIZE_X,
-        .y_size = PADDLESIZE_Y
+        .y_size = PADDLESIZE_Y,
+        .score = 0
     };
     
     Paddle p2 = {
         .x_pos = 128 - PADDLESIZE_X - PADDLEGAP,
         .y_pos = 32/2 - PADDLESIZE_Y/2,
         .x_size = PADDLESIZE_X,
-        .y_size = PADDLESIZE_Y
+        .y_size = PADDLESIZE_Y,
+        .score = 0
     };
 
     if (mode == SINGLEPLAYER && difficulty == IMPOSSIBLE) {
         p2.y_pos = 0;
         p2.y_size = 32;
     }
+
+    // loading screen
+    draw_clear();
+    draw_string_grid("GET READY...", 10, CENTER);
+    draw_canvas();
+    delay(1000);
 
     while (1) {
         draw_clear();
@@ -233,11 +259,13 @@ void game_screen(game_mode mode) {
         ball_collision(&ball, &p1);
         ball_collision(&ball, &p2);
 
+        ball_miss(&ball, &p1, &p2);
+
         ball_update(&ball);
         draw_ball(&ball);
 
         draw_canvas();
 
-        delay(10);
+        delay(100);
     }
 }
