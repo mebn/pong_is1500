@@ -275,6 +275,13 @@ bool pixel_ison(char x, char y) {
     return (canvas[(y / 8) * DISPLAY_WIDTH + x] & 1 << (y % 8)) == 1;
 }
 
+void draw_line(char x, char y, char length, char thickness) {
+    int i, j;
+    for (j = 0; j < thickness; j++)
+        for (i = 0; i < x+length; i++)
+            draw_pixel(x+i, y+j);
+}
+
 /**
  * Written by: Alex Gunnarsson
  * 

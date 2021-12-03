@@ -52,6 +52,44 @@ void ball_update(Ball *ball) {
     ball->x_pos += ball->x_speed;
 }
 
+// int to string
+void itos(int num, char *buffer) {
+    int pos = 0;
+
+    // zeros won't display otherwise.
+    if (num == 0) {
+        buffer[pos++] = 48;
+    } else {
+        while (num != 0) {
+            buffer[pos++] = num % 10 + 48;
+            num /= 10;
+        }
+    }
+
+    char from = 0, to = pos - 1;
+    while (from < to) {
+        char temp = buffer[from];
+        buffer[from++] = buffer[to];
+        buffer[to--] = temp;
+    }
+    buffer[pos] = '\0';
+}
+
+void draw_score(Paddle *p1, Paddle * p2) {
+    char b1[10], b2[10], b[20];
+    itos(p1->score, b1);
+    itos(p2->score, b2);
+
+    int b_pos = 0, b12_pos = 0;
+    while (b1[b12_pos]) b[b_pos++] = b1[b12_pos++]; // append p1 score
+    b[b_pos++] = '-';
+    b12_pos = 0;
+    while (b2[b12_pos]) b[b_pos++] = b2[b12_pos++]; // append p2 score
+    b[b_pos] = '\0';
+
+    draw_string_grid(b, 0, CENTER);
+}
+
 void ball_miss(Ball *b, Paddle *p1, Paddle *p2) {
     if (b->x_pos > 128 + 50) {
         p1->score++;
@@ -60,8 +98,6 @@ void ball_miss(Ball *b, Paddle *p1, Paddle *p2) {
         p2->score++;
         b->x_pos = 128/2;
     }
-
-    draw_string_grid("0-0", 0, CENTER);
 }
 
 void draw_paddle(Paddle *paddle) {
@@ -100,7 +136,6 @@ float get_ball_paddle_relative_pos(Ball *b, Paddle *p) {
     return val / 10;
 }
 
-// https://ourcodeworld.com/articles/read/884/how-to-get-the-square-root-of-a-number-without-using-the-sqrt-function-in-c
 float my_sqrt(float number) {
     float sqrt = number / 2.0;
     float temp = 0;
@@ -233,7 +268,7 @@ void game_screen(game_mode mode) {
     draw_canvas();
     delay(1000);
 
-    while (1) {
+    while (0) {
         draw_clear();
         
         // player 1
@@ -250,7 +285,8 @@ void game_screen(game_mode mode) {
             }
         } else {
             // AI
-            p2.y_pos = ball.y_pos;
+            if (difficulty == HARD)
+                p2.y_pos = ball.y_pos;
         }
 
         draw_paddle(&p1);
@@ -264,8 +300,23 @@ void game_screen(game_mode mode) {
         ball_update(&ball);
         draw_ball(&ball);
 
+        draw_score(&p1, &p2);
+
+        if (p1.score > 4) {
+            break;
+        }
+
         draw_canvas();
 
-        delay(100);
+        delay(20);
     }
+
+    draw_clear();
+    draw_string_grid("Game Over!", 0, CENTER);
+    draw_string_grid("Player 1 won!", 10, CENTER);
+    // draw_string_grid(p1.score > p2.score ? "Player 1 won!" : "Player 2 won!", 10, CENTER);
+    draw_canvas();
+    delay(4000);
+    // go to score screen
+    score_screen(p1.score);
 }

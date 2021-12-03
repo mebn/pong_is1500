@@ -40,6 +40,7 @@ void draw_string(char *str, unsigned int x, unsigned int y);
 Text_info draw_string_grid(char *str, unsigned int y, grid_pos pos);
 
 void draw_pixel(char x, char y);
+void draw_line(char x, char y, char length, char thickness);
 
 void display_invert(char xStart, char yStart, char xEnd, char yEnd);
 

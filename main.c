@@ -98,7 +98,7 @@ void inits() {
  */
 int main() {
     inits();
-    loading();
+    // loading();
     
     draw_clear();
     draw_canvas();
