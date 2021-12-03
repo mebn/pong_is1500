@@ -137,9 +137,7 @@ bool is_pixel(char x, char y) {
 }
 
 /**
- * Written by: Marcus Nilszén & Alex Gunnarsson
- * 
- * @brief Draw a string where the specified cordinate
+ * @brief [PRIVATE] Draw a string where the specified cordinate
  * is its upper left corner. Accepts both upper- and
  * lowercase letters but only prints uppercase.
  * 
@@ -147,7 +145,7 @@ bool is_pixel(char x, char y) {
  * @param x X posistion of upper left corner.
  * @param y Y posotion of upper left corner.
  */
-void draw_string(char *str, unsigned int x, unsigned int y) {
+void ds(char *str, unsigned int x, unsigned int y, int spacing) {
     int x_pos, y_pos;
 
     while (*str) {
@@ -168,9 +166,37 @@ void draw_string(char *str, unsigned int x, unsigned int y) {
             }
         }
 
-        x += font_width[char_index] + FONT_SPACING;
+        x += font_width[char_index] + spacing;
         str++;
     }
+}
+
+/**
+ * Written by: Marcus Nilszén & Alex Gunnarsson
+ * 
+ * @brief Draw a string where the specified cordinate
+ * is its upper left corner. Accepts both upper- and
+ * lowercase letters but only prints uppercase.
+ * 
+ * @param str The string to draw.
+ * @param x X posistion of upper left corner.
+ * @param y Y posotion of upper left corner.
+ */
+void draw_string(char *str, unsigned int x, unsigned int y) {
+    ds(str, x, y, FONT_SPACING);
+}
+
+/**
+ * @brief Same as draw_string but with custom spacing
+ * between letters.
+ * 
+ * @param str The string to draw.
+ * @param x X posistion of upper left corner.
+ * @param y Y posotion of upper left corner.
+ * @param spacing Spacing between letters.
+ */
+void draw_string_spacing(char *str, unsigned int x, unsigned int y, int spacing) {
+    ds(str, x, y, spacing);
 }
 
 /**

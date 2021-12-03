@@ -98,14 +98,12 @@ void inits() {
  */
 int main() {
     inits();
-    // loading();
+    loading();
     
     draw_clear();
     draw_canvas();
 
     while (1) {
-        score_screen();
-        
         selection screen = menu();
         if (screen == SINGLE_PLAYER) game_screen(SINGLE_PLAYER);
         if (screen == MULTI_PLAYER) game_screen(MULTI_PLAYER);

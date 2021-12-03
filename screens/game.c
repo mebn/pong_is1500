@@ -33,6 +33,11 @@ typedef struct {
     int score;
 } Paddle;
 
+/**
+ * @brief Draw the ball used in game.
+ * 
+ * @param ball Ball struct.
+ */
 void draw_ball(Ball *ball) {
     char size = ball->size;
     int i, j;
@@ -43,6 +48,11 @@ void draw_ball(Ball *ball) {
     }
 }
 
+/**
+ * @brief Update ball position when hitting roof and floor.
+ * 
+ * @param ball Ball struct.
+ */
 void ball_update(Ball *ball) {
     if (ball->y_pos + ball->y_speed < 0 || ball->y_pos + ball->y_speed >= DISPLAY_HEIGHT) {
         ball->y_speed *= -1;
@@ -52,7 +62,13 @@ void ball_update(Ball *ball) {
     ball->x_pos += ball->x_speed;
 }
 
-// int to string
+
+/**
+ * @brief Int to string.
+ * 
+ * @param num The integer number to convert.
+ * @param buffer The output location.
+ */
 void itos(int num, char *buffer) {
     int pos = 0;
 
@@ -75,6 +91,12 @@ void itos(int num, char *buffer) {
     buffer[pos] = '\0';
 }
 
+/**
+ * @brief Draw score ingame for both players.
+ * 
+ * @param p1 Paddle struct. Player1
+ * @param p2 Paddle struct. Player2
+ */
 void draw_score(Paddle *p1, Paddle * p2) {
     char b1[10], b2[10], b[20];
     itos(p1->score, b1);
@@ -90,6 +112,13 @@ void draw_score(Paddle *p1, Paddle * p2) {
     draw_string_grid(b, 0, CENTER);
 }
 
+/**
+ * @brief When ball misses one of the paddles.
+ * 
+ * @param b Ball struct
+ * @param p1 Paddle struct. Player1
+ * @param p2 Paddle struct. Player2
+ */
 void ball_miss(Ball *b, Paddle *p1, Paddle *p2) {
     if (b->x_pos > 128 + 50) {
         p1->score++;
@@ -100,6 +129,11 @@ void ball_miss(Ball *b, Paddle *p1, Paddle *p2) {
     }
 }
 
+/**
+ * @brief Draws the paddle.
+ * 
+ * @param paddle Paddle struct.
+ */
 void draw_paddle(Paddle *paddle) {
     char x, y;
     char xStart = paddle->x_pos, yStart = paddle->y_pos;
@@ -111,8 +145,20 @@ void draw_paddle(Paddle *paddle) {
     }
 }
 
+/**
+ * @brief [PRIVATE] Used in move_paddle.
+ * Used to know what direction player/paddle should move.
+ * 
+ */
 typedef enum {UP, DOWN} move_dir;
 
+/**
+ * @brief Moves the paddle with restrictions
+ * so paddle cannot go throught roof or floor.
+ * 
+ * @param p Paddle struct.
+ * @param md move_dir enum value.
+ */
 void move_paddle(Paddle *p, move_dir md) {
     if (md == UP && p->y_pos > 0) {
         p->y_pos--;
@@ -136,6 +182,12 @@ float get_ball_paddle_relative_pos(Ball *b, Paddle *p) {
     return val / 10;
 }
 
+/**
+ * @brief Custom sqrt function.
+ * 
+ * @param number Number to sqrt.
+ * @return float The sqrt of number.
+ */
 float my_sqrt(float number) {
     float sqrt = number / 2.0;
     float temp = 0;
@@ -146,6 +198,12 @@ float my_sqrt(float number) {
     return sqrt;
 }
 
+/**
+ * @brief Handles the ball bounce on paddles.
+ * 
+ * @param b Ball struct.
+ * @param p Paddle struct.
+ */
 void ball_bounce(Ball *b, Paddle *p) {
     float ys = b->y_speed;
     float xs = b->x_speed;
@@ -163,7 +221,13 @@ void ball_bounce(Ball *b, Paddle *p) {
     b->x_speed *= -1;
 }
 
-// this collision is bad. FIX
+/**
+ * @brief A bad collision that checks when
+ * ball collides with a paddle.
+ * 
+ * @param b Ball Struct.
+ * @param p Paddle struct.
+ */
 void ball_collision(Ball *b, Paddle *p) {
     if (p->x_pos <= b->x_pos &&
         p->x_pos + p->x_size >= b->x_pos + b->size &&
@@ -268,7 +332,7 @@ void game_screen(game_mode mode) {
     draw_canvas();
     delay(1000);
 
-    while (0) {
+    while (1) {
         draw_clear();
         
         // player 1
@@ -317,6 +381,5 @@ void game_screen(game_mode mode) {
     // draw_string_grid(p1.score > p2.score ? "PLAYER 1 WON!" : "PLAYER " WON!", 10, CENTER);
     draw_canvas();
     delay(1000);
-    // go to score screen
     score_screen(p1.score);
 }
