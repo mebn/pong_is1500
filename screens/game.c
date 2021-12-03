@@ -312,11 +312,11 @@ void game_screen(game_mode mode) {
     }
 
     draw_clear();
-    draw_string_grid("Game Over!", 0, CENTER);
-    draw_string_grid("Player 1 won!", 10, CENTER);
-    // draw_string_grid(p1.score > p2.score ? "Player 1 won!" : "Player 2 won!", 10, CENTER);
+    draw_string_grid("GAME OVER!", 0, CENTER);
+    draw_string_grid("PLAYER 1 WON!", 10, CENTER);
+    // draw_string_grid(p1.score > p2.score ? "PLAYER 1 WON!" : "PLAYER " WON!", 10, CENTER);
     draw_canvas();
-    delay(4000);
+    delay(1000);
     // go to score screen
     score_screen(p1.score);
 }

@@ -104,8 +104,9 @@ int main() {
     draw_canvas();
 
     while (1) {
+        score_screen();
+        
         selection screen = menu();
-
         if (screen == SINGLE_PLAYER) game_screen(SINGLE_PLAYER);
         if (screen == MULTI_PLAYER) game_screen(MULTI_PLAYER);
         if (screen == HIGH_SCORE) high_score_screen();

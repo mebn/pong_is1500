@@ -208,11 +208,7 @@ Text_info draw_string_grid(char *str, unsigned int y, grid_pos pos) {
 
     draw_string(str, x, y);
 
-    Text_info ti;
-    ti.x = x;
-    ti.y = y;
-    ti.len = len;
-
+    Text_info ti = {x, y, len};
     return ti;
 }
 
@@ -278,7 +274,7 @@ bool pixel_ison(char x, char y) {
 void draw_line(char x, char y, char length, char thickness) {
     int i, j;
     for (j = 0; j < thickness; j++)
-        for (i = 0; i < x+length; i++)
+        for (i = 0; i <length; i++)
             draw_pixel(x+i, y+j);
 }
 
