@@ -49,13 +49,67 @@ void draw_ball(Ball *ball) {
 }
 
 /**
- * @brief Update ball position and speed depending on if ball is going to hit roof or floor.
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Update ball position and speed depending on 
+ * if ball is going to hit roof or floor or collide with paddles.
  * 
  * @param ball Ball struct.
+ * @param p1 Left paddle struct.
+ * @param p2 Right paddle struct.
  */
-void ball_update(Ball *ball) {
+void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
+    // Bounce off roof and floor
     if (ball->y_pos + ball->y_speed < 0 || ball->y_pos + ball->y_speed >= DISPLAY_HEIGHT) {
         ball->y_speed *= -1;
+    }
+
+    // Check for bounce off Left paddle p1 iff it crosses border
+    if (ball->x_pos + ball->size > p1->x_pos + p1->x_size &&
+        ball->x_pos + ball->x_speed < p1->x_pos + p1->x_size) {
+        float xBef = ball->x_pos; // left side of ball
+        float yBef = ball->y_pos;
+        float t = (p1->x_pos + p1->x_size - xBef) / (ball->x_speed);
+        float yInt = yBef + t*ball->y_speed;  // intersection point
+        // if overlap
+        if ((yInt >= p1->y_pos && yInt < p1->y_pos + p1->y_size) // upper corner
+        || (yInt + ball->size >= p1->y_pos && yInt + ball->size < p1->y_pos + p1->y_size)) { // lower corner
+            // travel to intersection
+            ball->x_pos += t*ball->x_speed;
+            ball->y_pos += t*ball->y_speed;
+            // get new speeds
+            float modify = (ball->y_pos - (p1->y_pos + (p1->y_size - ball->size)/2.0)) / ((p1->y_size + ball->size)/2.0);
+            ball_bounce(ball, &modify);
+            // travel remaining distance
+            ball->x_pos += (1-t)*ball->x_speed;
+            ball->y_pos += (1-t)*ball->y_speed;
+            return;
+        }
+    }
+
+    // Check for bounce off Right paddle p2 iff it crosses border
+    if (ball->x_pos < p2->x_pos &&
+        ball->x_pos + ball->size + ball->x_speed > p2->x_pos) {
+    // if (ball->x_pos > 80) {
+        draw_pixel(10, 10);
+        float xBef = ball->x_pos + ball->size; // right side of ball
+        float yBef = ball->y_pos;
+        float t = (p2->x_pos - xBef) / (ball->x_speed);
+        float yInt = yBef + t*ball->y_speed;  // intersection point
+        // if overlap
+        if ((yInt >= p2->y_pos && yInt < p2->y_pos + p2->y_size) // upper corner
+        || (yInt + ball->size >= p2->y_pos && yInt + ball->size < p2->y_pos + p2->y_size)) { // lower corner
+            // travel to intersection
+            ball->x_pos += t*ball->x_speed;
+            ball->y_pos += t*ball->y_speed;
+            // get new speeds
+            float modify = (ball->y_pos - (p2->y_pos + (p2->y_size - ball->size)/2.0)) / ((p2->y_size + ball->size)/2.0);
+            ball_bounce(ball, &modify);
+            // travel remaining distance
+            ball->x_pos += (1-t)*ball->x_speed;
+            ball->y_pos += (1-t)*ball->y_speed;
+            return;
+        }
     }
 
     ball->y_pos += ball->y_speed;
@@ -168,22 +222,8 @@ void move_paddle(Paddle *p, move_dir md) {
 };
 
 /**
- * @brief Get the ball relative position to paddle
- * 
- * @param b The ball
- * @param p The paddle
- * @return float Value between 1.0 and -1.0 depending on hit
- */
-float get_ball_paddle_relative_pos(Ball *b, Paddle *p) {
-    float p_mid = p->y_pos + ((float) p->y_size / 2.0);
-    float b_mid = b->y_pos + ((float) b->size / 2.0);
-
-    float val = (p_mid - b_mid) / ((float) p->y_size / 2.0);
-    return val;
-}
-
-/**
  * @brief Custom sqrt function.
+ * Source: https://ourcodeworld.com/articles/read/884/how-to-get-the-square-root-of-a-number-without-using-the-sqrt-function-in-c
  * 
  * @param number Number to sqrt.
  * @return float The sqrt of number.
@@ -199,42 +239,34 @@ float my_sqrt(float number) {
 }
 
 /**
- * @brief Handles the ball bounce on paddles.
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Gives the ball new speed vectors on paddle bounce.
  * 
  * @param b Ball struct.
- * @param p Paddle struct.
+ * @param modify Modification factor [-1, 1].
  */
-void ball_bounce(Ball *b, Paddle *p) {
+void ball_bounce(Ball *b, float *modify) {
+    // char buffer[10];
+    // itos((int) 100*(*modify), buffer);
+    // draw_string(buffer, 10, 10);
+    // draw_canvas();
+    // delay(1000);
+
+    // max bounce angle +/- 60 degrees
+    // tan(60deg) = sqrt(3)
     float ys = b->y_speed;
     float xs = b->x_speed;
+    xs *= -1;
 
-    float hyp = my_sqrt(xs*xs + ys*ys);
-    float rel_pos = get_ball_paddle_relative_pos(b, p);
-    float new_ys = my_sqrt((hyp*hyp) - 1) + rel_pos;
+    // modify y-speed, modify = 0 -> no modification, modify = +/- 1 -> max modification
+    float max_ys = my_sqrt(1-1/4) * BALLSPEED;
+    float diff = *modify > 0 ? max_ys - b->y_speed : -1*max_ys - b->y_speed;
+    float absmod = *modify > 0 ? *modify : -1 * (*modify);
+    b->y_speed += absmod*diff;
 
-    // ball goes down
-    if (b->y_speed < 0) {
-        new_ys *= -1;
-    }
-
-    b->y_speed = new_ys;
-    b->x_speed *= -1;
-}
-
-/**
- * @brief A bad collision that checks when
- * ball collides with a paddle.
- * 
- * @param b Ball Struct.
- * @param p Paddle struct.
- */
-void ball_collision(Ball *b, Paddle *p) {
-    if (p->x_pos <= b->x_pos &&
-        p->x_pos + p->x_size >= b->x_pos + b->size &&
-        p->y_pos <= b->y_pos &&
-        p->y_pos + p->y_size >= b->y_pos + b->size) {
-        ball_bounce(b, p);
-    }
+    // corret x-speed
+    b->x_speed = (xs > 0 ? 1 : -1) * my_sqrt(BALLSPEED*BALLSPEED - b->y_speed*b->y_speed);
 }
 
 /**
@@ -353,25 +385,19 @@ void game_screen(game_mode mode) {
                 p2.y_pos = ball.y_pos;
         }
 
-        draw_paddle(&p1);
-        draw_paddle(&p2);
-
-        ball_collision(&ball, &p1);
-        ball_collision(&ball, &p2);
-
+        ball_update(&ball, &p1, &p2);
         ball_miss(&ball, &p1, &p2);
 
-        ball_update(&ball);
+        draw_paddle(&p1);
+        draw_paddle(&p2);
         draw_ball(&ball);
-
         draw_score(&p1, &p2);
 
-        if (p1.score > 4) {
-            break;
-        }
+        // if (p1.score > 4) {
+        //     break;
+        // }
 
         draw_canvas();
-
         delay(20);
     }
 

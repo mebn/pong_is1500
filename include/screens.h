@@ -8,6 +8,7 @@
 #define PADDLEGAP 0
 
 #define BALLSIZE 2
+#define BALLSPEED 1
 
 /**
  * @brief There's two different
