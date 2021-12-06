@@ -21,5 +21,6 @@ typedef enum {
 
 void game_screen(game_mode mode);
 void high_score_screen();
+void score_screen();
 
 #endif

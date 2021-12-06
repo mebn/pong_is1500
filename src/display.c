@@ -137,9 +137,7 @@ bool is_pixel(char x, char y) {
 }
 
 /**
- * Written by: Marcus Nilszén & Alex Gunnarsson
- * 
- * @brief Draw a string where the specified cordinate
+ * @brief [PRIVATE] Draw a string where the specified cordinate
  * is its upper left corner. Accepts both upper- and
  * lowercase letters but only prints uppercase.
  * 
@@ -147,7 +145,7 @@ bool is_pixel(char x, char y) {
  * @param x X posistion of upper left corner.
  * @param y Y posotion of upper left corner.
  */
-void draw_string(char *str, unsigned int x, unsigned int y) {
+void ds(char *str, unsigned int x, unsigned int y, int spacing) {
     int x_pos, y_pos;
 
     while (*str) {
@@ -168,9 +166,37 @@ void draw_string(char *str, unsigned int x, unsigned int y) {
             }
         }
 
-        x += font_width[char_index] + FONT_SPACING;
+        x += font_width[char_index] + spacing;
         str++;
     }
+}
+
+/**
+ * Written by: Marcus Nilszén & Alex Gunnarsson
+ * 
+ * @brief Draw a string where the specified cordinate
+ * is its upper left corner. Accepts both upper- and
+ * lowercase letters but only prints uppercase.
+ * 
+ * @param str The string to draw.
+ * @param x X posistion of upper left corner.
+ * @param y Y posotion of upper left corner.
+ */
+void draw_string(char *str, unsigned int x, unsigned int y) {
+    ds(str, x, y, FONT_SPACING);
+}
+
+/**
+ * @brief Same as draw_string but with custom spacing
+ * between letters.
+ * 
+ * @param str The string to draw.
+ * @param x X posistion of upper left corner.
+ * @param y Y posotion of upper left corner.
+ * @param spacing Spacing between letters.
+ */
+void draw_string_spacing(char *str, unsigned int x, unsigned int y, int spacing) {
+    ds(str, x, y, spacing);
 }
 
 /**
@@ -208,11 +234,7 @@ Text_info draw_string_grid(char *str, unsigned int y, grid_pos pos) {
 
     draw_string(str, x, y);
 
-    Text_info ti;
-    ti.x = x;
-    ti.y = y;
-    ti.len = len;
-
+    Text_info ti = {x, y, len};
     return ti;
 }
 
@@ -273,6 +295,13 @@ void clear_pixel(char x, char y) {
 bool pixel_ison(char x, char y) {
     if (!is_pixel(x, y)) return false;
     return (canvas[(y / 8) * DISPLAY_WIDTH + x] & 1 << (y % 8)) == 1;
+}
+
+void draw_line(char x, char y, char length, char thickness) {
+    int i, j;
+    for (j = 0; j < thickness; j++)
+        for (i = 0; i <length; i++)
+            draw_pixel(x+i, y+j);
 }
 
 /**
