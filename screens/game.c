@@ -65,7 +65,7 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
     }
 
     // Check for bounce off Left paddle p1 iff it crosses border
-    if (ball->x_pos > p1->x_pos + p1->x_size && ball->x_pos + ball->x_speed < p1->x_pos + p1->x_size) {
+    if (ball->x_pos < p1->x_pos + p1->x_size && ball->x_pos + ball->size > p1->x_pos) {
         float xBef = ball->x_pos; // left side of ball
         float yBef = ball->y_pos;
         float t = (p1->x_pos + p1->x_size - xBef) / (ball->x_speed);
@@ -82,12 +82,12 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
             // travel remaining distance
             ball->x_pos += (1-t)*ball->x_speed;
             ball->y_pos += (1-t)*ball->y_speed;
+            return;
         }
-        return;
     }
 
     // Check for bounce off Right paddle p2 iff it crosses border
-    if (ball->x_pos < p2->x_pos && ball->x_pos + ball->x_speed > p2->x_pos) {
+    if (ball->x_pos < p2->x_pos && ball->x_pos + ball->size > p2->x_pos) {
         float xBef = ball->x_pos + ball->size; // right side of ball
         float yBef = ball->y_pos;
         float t = (p2->x_pos - xBef) / (ball->x_speed);
@@ -104,8 +104,8 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
             // travel remaining distance
             ball->x_pos += (1-t)*ball->x_speed;
             ball->y_pos += (1-t)*ball->y_speed;
+            return;
         }
-        return;
     }
 
     ball->y_pos += ball->y_speed;
