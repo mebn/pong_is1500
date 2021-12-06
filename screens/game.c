@@ -175,11 +175,11 @@ void move_paddle(Paddle *p, move_dir md) {
  * @return float Value between 1.0 and -1.0 depending on hit
  */
 float get_ball_paddle_relative_pos(Ball *b, Paddle *p) {
-    float p_mid = (p->y_pos + ((float) p->y_size)) / 2.0;
-    float b_mid = (b->y_pos + ((float) b->size)) / 2.0;
+    float p_mid = p->y_pos + ((float) p->y_size / 2.0);
+    float b_mid = b->y_pos + ((float) b->size / 2.0);
 
     float val = (p_mid - b_mid) / ((float) p->y_size / 2.0);
-    return val / 10;
+    return val;
 }
 
 /**
