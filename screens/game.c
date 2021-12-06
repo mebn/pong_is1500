@@ -65,7 +65,8 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
     }
 
     // Check for bounce off Left paddle p1 iff it crosses border
-    if (ball->x_pos < p1->x_pos + p1->x_size && ball->x_pos + ball->size > p1->x_pos) {
+    if (ball->x_pos + ball->size > p1->x_pos + p1->x_size &&
+        ball->x_pos + ball->x_speed < p1->x_pos + p1->x_size) {
         float xBef = ball->x_pos; // left side of ball
         float yBef = ball->y_pos;
         float t = (p1->x_pos + p1->x_size - xBef) / (ball->x_speed);
@@ -77,8 +78,8 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
             ball->x_pos += t*ball->x_speed;
             ball->y_pos += t*ball->y_speed;
             // get new speeds
-            float modify = (p1->y_pos - (p1->y_pos + (p1->y_size + ball->size)/2)) / ((p1->y_size + ball->size)/2);
-            ball_bounce(ball, modify);
+            float modify = (ball->y_pos - (p1->y_pos + (p1->y_size - ball->size)/2.0)) / ((p1->y_size + ball->size)/2.0);
+            ball_bounce(ball, &modify);
             // travel remaining distance
             ball->x_pos += (1-t)*ball->x_speed;
             ball->y_pos += (1-t)*ball->y_speed;
@@ -87,7 +88,10 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
     }
 
     // Check for bounce off Right paddle p2 iff it crosses border
-    if (ball->x_pos < p2->x_pos && ball->x_pos + ball->size > p2->x_pos) {
+    if (ball->x_pos < p2->x_pos &&
+        ball->x_pos + ball->size + ball->x_speed > p2->x_pos) {
+    // if (ball->x_pos > 80) {
+        draw_pixel(10, 10);
         float xBef = ball->x_pos + ball->size; // right side of ball
         float yBef = ball->y_pos;
         float t = (p2->x_pos - xBef) / (ball->x_speed);
@@ -99,8 +103,8 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
             ball->x_pos += t*ball->x_speed;
             ball->y_pos += t*ball->y_speed;
             // get new speeds
-            float modify = (p2->y_pos - (p2->y_pos + (p2->y_size + ball->size)/2)) / ((p2->y_size + ball->size)/2);
-            ball_bounce(ball, modify);
+            float modify = (ball->y_pos - (p2->y_pos + (p2->y_size - ball->size)/2.0)) / ((p2->y_size + ball->size)/2.0);
+            ball_bounce(ball, &modify);
             // travel remaining distance
             ball->x_pos += (1-t)*ball->x_speed;
             ball->y_pos += (1-t)*ball->y_speed;
@@ -242,7 +246,13 @@ float my_sqrt(float number) {
  * @param b Ball struct.
  * @param modify Modification factor [-1, 1].
  */
-void ball_bounce(Ball *b, float modify) {
+void ball_bounce(Ball *b, float *modify) {
+    // char buffer[10];
+    // itos((int) 100*(*modify), buffer);
+    // draw_string(buffer, 10, 10);
+    // draw_canvas();
+    // delay(1000);
+
     // max bounce angle +/- 60 degrees
     // tan(60deg) = sqrt(3)
     float ys = b->y_speed;
@@ -251,8 +261,8 @@ void ball_bounce(Ball *b, float modify) {
 
     // modify y-speed, modify = 0 -> no modification, modify = +/- 1 -> max modification
     float max_ys = my_sqrt(1-1/4) * BALLSPEED;
-    float diff = modify > 0 ? max_ys - b->y_speed : -max_ys - b->y_speed;
-    float absmod = modify > 0 ? modify : -modify;
+    float diff = *modify > 0 ? max_ys - b->y_speed : -1*max_ys - b->y_speed;
+    float absmod = *modify > 0 ? *modify : -1 * (*modify);
     b->y_speed += absmod*diff;
 
     // corret x-speed
@@ -383,9 +393,9 @@ void game_screen(game_mode mode) {
         draw_ball(&ball);
         draw_score(&p1, &p2);
 
-        if (p1.score > 4) {
-            break;
-        }
+        // if (p1.score > 4) {
+        //     break;
+        // }
 
         draw_canvas();
         delay(20);
