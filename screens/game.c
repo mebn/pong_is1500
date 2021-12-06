@@ -49,7 +49,7 @@ void draw_ball(Ball *ball) {
 }
 
 /**
- * @brief Update ball position when hitting roof and floor.
+ * @brief Update ball position and speed depending on if ball is going to hit roof or floor.
  * 
  * @param ball Ball struct.
  */
