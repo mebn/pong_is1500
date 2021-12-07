@@ -1,34 +1,35 @@
 # pong_is1500
 
-Advanced project in IS1500. Pong on uno32/uc32 chipkit with IO Shield.
+Advanced project in IS1500 Datorteknik och komponenter (dtek) at KTH 2021.
 
-## Installation
+Classic pong game on uno32/uc32 chipkit with IO Shield.
 
-Follow [this guide](https://github.com/is1200-example-projects/mcb32tools/releases/).
+Written by [Marcus Nilszén](https://github.com/mebn) and [Alex Gunnarsson](https://github.com/alexarne).
 
-## Run on chipkit
+## How To
 
-### Windows
+Before you can run this program some preparations needs to be made.
 
-Open MSYS terminal.
+### Install mcb32tools environment
 
-Enter MCB32 environment: `. /opt/mcb32tools/environment`.
+Follow the steps for your OS specified [here](https://github.com/is1200-example-projects/mcb32tools/releases/).
 
-cd to correct path: `cd <path>/IS1500_project`.
+### Install on chipkit (uno32/uc32)
 
-Find the correct serial device. Run `ls /dev` both with and without the chipkit connected to see what serial device pops up. In this case it's `ttyS2`.
+#### Windows
 
-Run: `make && make install TTYDEV=/dev/ttyS2`.
+1. Open MSYS terminal.
+1. Find the correct serial device. Run `ls /dev` both with and without the chipkit connected to see what serial device pops up. In this case it's `ttyS2`.
+1. Enter MCB32 environment: `. /opt/mcb32tools/environment`.
+1. Navigate to the correct path: `cd <path>/IS1500_project`.
+1. Run: `make && make install TTYDEV=/dev/ttyS2`.
 
-### MacOS
+#### MacOS
 
-Open MCB32Tools.app.
-
-cd to correct path: `cd <path>/IS1500_project`.
-
-Find the correct serial device. Run `ls /dev` both with and without the chipkit connected to see what serial device pops up. In this case it's `tty.usbserial-A503WFTK`.
-
-Run: `make && make install TTYDEV=/dev/tty.usbserial-A503WFTK`.
+1. Open MCB32Tools.app.
+1. Find the correct serial device. Run `ls /dev` both with and without the chipkit connected to see what serial device pops up. In this case it's `tty.usbserial-A503WFTK`.
+1. Navigate to the correct path: `cd <path>/IS1500_project`.
+1. Run: `make && make install TTYDEV=/dev/tty.usbserial-A503WFTK`.
 
 ## Resources
 
