@@ -72,8 +72,8 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
         float t = (p1->x_pos + p1->x_size - xBef) / (ball->x_speed);
         float yInt = yBef + t*ball->y_speed;  // intersection point
         // if overlap
-        if ((yInt >= p1->y_pos && yInt < p1->y_pos + p1->y_size) // upper corner
-        || (yInt + ball->size >= p1->y_pos && yInt + ball->size < p1->y_pos + p1->y_size)) { // lower corner
+        if ((yInt >= p1->y_pos && yInt < p1->y_pos + p1->y_size) || // upper corner
+            (yInt + ball->size >= p1->y_pos && yInt + ball->size < p1->y_pos + p1->y_size)) { // lower corner
             // travel to intersection
             ball->x_pos += t*ball->x_speed;
             ball->y_pos += t*ball->y_speed;
@@ -90,15 +90,13 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
     // Check for bounce off Right paddle p2 iff it crosses border
     if (ball->x_pos < p2->x_pos &&
         ball->x_pos + ball->size + ball->x_speed > p2->x_pos) {
-    // if (ball->x_pos > 80) {
-        draw_pixel(10, 10);
         float xBef = ball->x_pos + ball->size; // right side of ball
         float yBef = ball->y_pos;
         float t = (p2->x_pos - xBef) / (ball->x_speed);
         float yInt = yBef + t*ball->y_speed;  // intersection point
         // if overlap
-        if ((yInt >= p2->y_pos && yInt < p2->y_pos + p2->y_size) // upper corner
-        || (yInt + ball->size >= p2->y_pos && yInt + ball->size < p2->y_pos + p2->y_size)) { // lower corner
+        if ((yInt >= p2->y_pos && yInt < p2->y_pos + p2->y_size) || // upper corner
+            (yInt + ball->size >= p2->y_pos && yInt + ball->size < p2->y_pos + p2->y_size)) { // lower corner
             // travel to intersection
             ball->x_pos += t*ball->x_speed;
             ball->y_pos += t*ball->y_speed;
@@ -260,10 +258,14 @@ void ball_bounce(Ball *b, float *modify) {
     xs *= -1;
 
     // modify y-speed, modify = 0 -> no modification, modify = +/- 1 -> max modification
-    float max_ys = my_sqrt(1-1/4) * BALLSPEED;
+    float max_ys = my_sqrt(3)/2 * BALLSPEED;
     float diff = *modify > 0 ? max_ys - b->y_speed : -1*max_ys - b->y_speed;
     float absmod = *modify > 0 ? *modify : -1 * (*modify);
     b->y_speed += absmod*diff;
+
+    if (b->y_speed > max_ys || b->y_speed < -1*max_ys) {
+        b->y_speed = b->y_speed > 0 ? max_ys : -1*max_ys;
+    }
 
     // corret x-speed
     b->x_speed = (xs > 0 ? 1 : -1) * my_sqrt(BALLSPEED*BALLSPEED - b->y_speed*b->y_speed);
