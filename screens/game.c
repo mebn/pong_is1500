@@ -141,6 +141,8 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
 
 
 /**
+ * Written by: Marcus Nilszén
+ * 
  * @brief Int to string.
  * 
  * @param num The integer number to convert.
@@ -169,6 +171,8 @@ void itos(int num, char *buffer) {
 }
 
 /**
+ * Written by: Marcus Nilszén
+ * 
  * @brief Draw score ingame for both players.
  * 
  * @param p1 Paddle struct. Player1
@@ -190,6 +194,8 @@ void draw_score(Paddle *p1, Paddle * p2) {
 }
 
 /**
+ * Written by: Marcus Nilszén
+ * 
  * @brief When ball misses one of the paddles.
  * 
  * @param b Ball struct
@@ -207,6 +213,8 @@ void ball_miss(Ball *b, Paddle *p1, Paddle *p2) {
 }
 
 /**
+ * Written by: Alex Gunnarsson
+ * 
  * @brief Draws the paddle.
  * 
  * @param paddle Paddle struct.
@@ -223,6 +231,8 @@ void draw_paddle(Paddle *paddle) {
 }
 
 /**
+ * Written by: Alex Gunnarsson
+ * 
  * @brief [PRIVATE] Used in move_paddle.
  * Used to know what direction player/paddle should move.
  * 
@@ -230,6 +240,8 @@ void draw_paddle(Paddle *paddle) {
 typedef enum {UP, DOWN} move_dir;
 
 /**
+ * Written by: Alex Gunnarsson
+ * 
  * @brief Moves the paddle with specified speed and restrictions
  * so paddle cannot go through roof or floor.
  * 
@@ -246,6 +258,8 @@ void move_paddle_speed(Paddle *p, move_dir md, float speed) {
 }
 
 /**
+ * Written by: Alex Gunnarsson
+ * 
  * @brief Moves the paddle with restrictions
  * so paddle cannot go through roof or floor.
  * 
@@ -257,8 +271,10 @@ void move_paddle(Paddle *p, move_dir md) {
 }
 
 /**
- * @brief Custom sqrt function.
+ * Written by: Marcus Nilszén
  * Source: https://ourcodeworld.com/articles/read/884/how-to-get-the-square-root-of-a-number-without-using-the-sqrt-function-in-c
+ * 
+ * @brief Custom sqrt function.
  * 
  * @param number Number to sqrt.
  * @return float The sqrt of number.
@@ -311,6 +327,8 @@ void ball_bounce(Ball *b, float *modify) {
 }
 
 /**
+ * Written by: Alex Gunnarsson
+ * 
  * @brief Move the AI's paddle based on the ball's position
  * and an incr value.
  * 
