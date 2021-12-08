@@ -11,6 +11,8 @@
 #define BALLSIZE 2
 #define BALLSPEED 1
 
+#define TOLERANCE 0.001
+
 /**
  * @brief There's two different
  * game modes, singleplayer and multiplayer.

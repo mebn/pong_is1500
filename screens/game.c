@@ -341,7 +341,7 @@ void move_ai_incr(Paddle *p2, Ball *b, float incr) {
     float ball_mid = b->y_pos + b->size/2;
     float paddle_mid = p2->y_pos + p2->y_size/2;
     incr = 0.5*PADDLESPEED;
-    if (ball_mid - paddle_mid < incr) {
+    if (ball_mid - paddle_mid < (-1) * incr) {
         move_paddle_speed(p2, UP, 0.5*PADDLESPEED);
     } else if (ball_mid - paddle_mid > incr) {
         move_paddle_speed(p2, DOWN, 0.5*PADDLESPEED);
