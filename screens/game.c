@@ -359,6 +359,20 @@ void move_ai_incr(Paddle *p2, Ball *b, int delay) {
 
 /**
  * Written by: Alex Gunnarsson
+ * Source: https://stackoverflow.com/a/14997413
+ * 
+ * @brief Performs modulo operation but ensures output is positive.
+ * 
+ * @param num The dividend.
+ * @param mod The divisor.
+ * @return int The positive remainder.
+ */
+int positive_modulo(int num, int mod) {
+    return (num % mod + mod) % mod;
+}
+
+/**
+ * Written by: Alex Gunnarsson
  * 
  * @brief Control the AI's paddle with respect to difficulty.
  * 
@@ -383,7 +397,7 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
             if (b->x_speed > 0 && !calculated) {
                 float t = (DISPLAY_WIDTH - PADDLESIZE_X - PADDLEGAP - b->size - b->x_pos) / b->x_speed;  // game updates (time) until ball crosses paddle border
                 // global variables
-                endPos = ((int) (b->y_pos + t*b->y_speed)) % (DISPLAY_HEIGHT - b->size);   // unfold display, act as if ball wouldnt bounce off roof/floor
+                endPos = positive_modulo((int) (b->y_pos + t*b->y_speed), DISPLAY_HEIGHT - b->size);   // unfold display, act as if ball wouldnt bounce off roof/floor, positive modulo
                 calculated = true;
             }
             float distance = (endPos - p2->y_size/2 + b->size/2) - p2->y_pos;
