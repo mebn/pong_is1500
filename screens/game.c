@@ -39,8 +39,8 @@ typedef struct {
  * 
  */
 typedef struct {
-    int x_pos;
-    int y_pos;
+    float x_pos;
+    float y_pos;
     char x_size;
     char y_size;
     int score;
@@ -337,7 +337,7 @@ void ball_bounce(Ball *b, float *modify) {
  * @param incr The maximum value which the AI may update its
  * paddle position by.
  */
-void move_ai_incr(Paddle *p2, Ball *b, int incr) {
+void move_ai_incr(Paddle *p2, Ball *b, float incr) {
     float ball_mid = b->y_pos + b->size/2;
     float paddle_mid = p2->y_pos + p2->y_size/2;
     if (ball_mid - paddle_mid < (-1) * incr) {
@@ -370,7 +370,7 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
     switch (difficulty) {
         // follow ball's y-position, 50% speed
         case EASY:
-            move_ai_incr(p2, b, PADDLESPEED);
+            move_ai_incr(p2, b, 0.5*PADDLESPEED);
             break;
 
         // follow ball's y-position, 100% speed
