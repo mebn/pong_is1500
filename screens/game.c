@@ -344,9 +344,11 @@ void move_ai_incr(Paddle *p2, Ball *b, int react) {
         move_paddle_speed(p2, UP, PADDLESPEED);
     } else if (ball_mid - paddle_mid > PADDLESPEED + react) {
         move_paddle_speed(p2, DOWN, PADDLESPEED);
-    } else {
-        p2->y_pos = ball_mid - p2->y_size/2;
-    }
+    } 
+    
+    // else {
+    //     p2->y_pos = ball_mid - p2->y_size/2;
+    // }
 }
 
 /**
