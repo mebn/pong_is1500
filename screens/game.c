@@ -340,19 +340,20 @@ void ball_bounce(Ball *b, float *modify) {
 void move_ai_incr(Paddle *p2, Ball *b, float incr) {
     float ball_mid = b->y_pos + b->size/2;
     float paddle_mid = p2->y_pos + p2->y_size/2;
-    incr = 0.5*PADDLESPEED;
     // if (ball_mid - paddle_mid < (-1) * incr) {
-    //     move_paddle_speed(p2, UP, 0.5*PADDLESPEED);
+    //     move_paddle_speed(p2, UP, incr);
     // } else if (ball_mid - paddle_mid > incr) {
-    //     move_paddle_speed(p2, DOWN, 0.5*PADDLESPEED);
+    //     move_paddle_speed(p2, DOWN, incr);
     // } else {
     //     p2->y_pos = ball_mid - p2->y_size/2;
     // }
-    if (b->y_pos < p2->y_pos) {
-        move_paddle_speed(p2, UP, 0.5*PADDLESPEED);
-    } else {
-        move_paddle_speed(p2, DOWN, 0.5*PADDLESPEED);
-    }
+
+    // if (b->y_pos < p2->y_pos) {
+    //     move_paddle_speed(p2, UP, incr);
+    // } else {
+    //     move_paddle_speed(p2, DOWN, incr);
+    // }
+    p2->y_pos = b->y_pos - p2->y_size/2 + b->size/2;
 }
 
 /**
