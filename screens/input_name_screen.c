@@ -23,30 +23,30 @@ void input_name_screen() {
 
         // left
         if (btn4_ispressed() && current_selection != 0) {
-            current_selection--;
             while (btn4_ispressed());
+            current_selection--;
         }
 
         // right
         if (btn3_ispressed()) {
-            current_selection++;
             while (btn3_ispressed());
+            current_selection++;
         }
 
         // char up
         if (btn2_ispressed() && name[current_selection] != 'Z') {
-            name[current_selection]++;
             while (btn2_ispressed());
+            name[current_selection]++;
         }
 
         // char down
         if (btn1_ispressed() && name[current_selection] != 'A' - 1) {
-            name[current_selection]--;
             while (btn1_ispressed());
+            name[current_selection]--;
         }
 
         if (current_selection == 6) {
-            // add name to highscore list
+            // add name and score to highscore list
             break;
         }
 
