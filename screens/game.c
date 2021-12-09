@@ -339,6 +339,8 @@ void ball_bounce(Ball *b, float *modify) {
 void move_ai_incr(Paddle *p2, Ball *b, int delay) {
     // not moving towards, ignore
     if (b->x_speed < 0) return;
+    // just recently bounced, ignore
+    if (b->x_pos - delay*b->x_speed < PADDLEGAP + PADDLESIZE_X) return;
 
     float past_pos = b->y_pos - delay*b->y_speed;
     float ball_mid = past_pos + b->size/2;
