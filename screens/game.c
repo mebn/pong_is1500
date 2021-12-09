@@ -337,12 +337,16 @@ void ball_bounce(Ball *b, float *modify) {
  * @param incr The maximum value which the AI may update its
  * paddle position by.
  */
-void move_ai_incr(Paddle *p2, Ball *b, int react) {
-    float ball_mid = b->y_pos + b->size/2;
+void move_ai_incr(Paddle *p2, Ball *b, int delay) {
+    // not moving towards, ignore
+    if (b->x_speed < 0) return;
+
+    float past_pos = b->y_pos - delay*b->y_speed;
+    float ball_mid = past_pos + b->size/2;
     float paddle_mid = p2->y_pos + p2->y_size/2;
-    if (ball_mid - paddle_mid < (-1) * PADDLESPEED - react) {
+    if (ball_mid - paddle_mid < (-1) * PADDLESPEED) {
         move_paddle_speed(p2, UP, PADDLESPEED);
-    } else if (ball_mid - paddle_mid > PADDLESPEED + react) {
+    } else if (ball_mid - paddle_mid > PADDLESPEED) {
         move_paddle_speed(p2, DOWN, PADDLESPEED);
     } 
     
