@@ -74,6 +74,27 @@ void draw_ball(Ball *ball) {
 }
 
 /**
+ * Written by: Marcus Nilszén
+ * 
+ * @brief When ball misses one of the paddles.
+ * 
+ * @param b Ball struct
+ * @param p1 Paddle struct. Player1
+ * @param p2 Paddle struct. Player2
+ */
+void ball_miss(Ball *b, Paddle *p1, Paddle *p2) {
+    if (b->x_pos > 128 + 50) {
+        p1->score++;
+        b->x_pos = 128/2;
+        calculated = false;
+    } else if (b->x_pos < 0 - 50) {
+        p2->score++;
+        b->x_pos = 128/2;
+        calculated = false;
+    }
+}
+
+/**
  * Written by: Alex Gunnarsson
  * 
  * @brief Update ball position and speed depending on 
@@ -137,6 +158,9 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
 
     ball->y_pos += ball->y_speed;
     ball->x_pos += ball->x_speed;
+
+    if (calculated) draw_pixel(p2->x_pos - 10, (char) endPos);
+    ball_miss(ball, p1, p2);
 }
 
 
@@ -191,25 +215,6 @@ void draw_score(Paddle *p1, Paddle * p2) {
     b[b_pos] = '\0';
 
     draw_string_grid(b, 0, CENTER);
-}
-
-/**
- * Written by: Marcus Nilszén
- * 
- * @brief When ball misses one of the paddles.
- * 
- * @param b Ball struct
- * @param p1 Paddle struct. Player1
- * @param p2 Paddle struct. Player2
- */
-void ball_miss(Ball *b, Paddle *p1, Paddle *p2) {
-    if (b->x_pos > 128 + 50) {
-        p1->score++;
-        b->x_pos = 128/2;
-    } else if (b->x_pos < 0 - 50) {
-        p2->score++;
-        b->x_pos = 128/2;
-    }
 }
 
 /**
@@ -334,7 +339,7 @@ void ball_bounce(Ball *b, float *modify) {
  * 
  * @param p2 The AI's paddle struct.
  * @param b The ball struct.
- * @param delay The number of game updates until it reacts.
+ * @param delay The number of game updates until a reaction.
  */
 void move_ai_incr(Paddle *p2, Ball *b, int delay) {
     // not moving towards, ignore
@@ -380,7 +385,7 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
                 // global variables
                 endPos = ((int) (b->y_pos + t*b->y_speed)) % (DISPLAY_HEIGHT - b->size);   // unfold display, act as if ball wouldnt bounce off roof/floor
                 calculated = true;
-            } 
+            }
             float distance = (endPos - p2->y_size/2 + b->size/2) - p2->y_pos;
             if (distance > BALLSPEED || distance < (-1) * BALLSPEED) {
                 move_paddle(p2, (distance > 0 ? DOWN : UP));
@@ -513,7 +518,6 @@ void game_screen(game_mode mode) {
         }
 
         ball_update(&ball, &p1, &p2);
-        ball_miss(&ball, &p1, &p2);
 
         draw_paddle(&p1);
         draw_paddle(&p2);
