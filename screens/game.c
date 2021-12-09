@@ -283,7 +283,6 @@ game_difficulty difficulty_selection() {
     game_difficulty current_selection = EASY;
 
     while (1) {
-        delay(100); // this causes som issues
         draw_clear();
 
         draw_string_grid("DIFFICULTY", 0, CENTER);
@@ -297,20 +296,24 @@ game_difficulty difficulty_selection() {
 
         // up
         if (btn4_ispressed() && current_selection != EASY) {
+            while (btn4_ispressed());
             current_selection--;
         }
 
         // down
         if (btn3_ispressed() && current_selection != IMPOSSIBLE) {
+            while (btn3_ispressed());
             current_selection++;
         }
 
         // select
         if (btn1_ispressed()) {
+            while (btn1_ispressed());
             return current_selection;
         }
 
         draw_canvas();
+        delay(10);
     }
 }
 
@@ -395,9 +398,9 @@ void game_screen(game_mode mode) {
         draw_ball(&ball);
         draw_score(&p1, &p2);
 
-        // if (p1.score > 4) {
-        //     break;
-        // }
+        if (p1.score > 5) {
+            break;
+        }
 
         draw_canvas();
         delay(20);
@@ -405,9 +408,8 @@ void game_screen(game_mode mode) {
 
     draw_clear();
     draw_string_grid("GAME OVER!", 0, CENTER);
-    draw_string_grid("PLAYER 1 WON!", 10, CENTER);
-    // draw_string_grid(p1.score > p2.score ? "PLAYER 1 WON!" : "PLAYER " WON!", 10, CENTER);
+    draw_string_grid(p1.score > p2.score ? "PLAYER 1 WON!" : "PLAYER 2 WON!", 10, CENTER);
     draw_canvas();
-    delay(1000);
-    score_screen(p1.score);
+    delay(2000);
+    input_name_screen(p1.score > p2.score ? p1.score : p2.score);
 }

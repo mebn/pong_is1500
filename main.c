@@ -5,6 +5,7 @@
 #include "include/timer.h"
 #include "include/buttons.h"
 #include "include/screens.h"
+#include "include/eeprom.h"
 #include <stdbool.h>
 
 /**
@@ -48,21 +49,24 @@ selection menu() {
 
         // up
         if (btn4_ispressed() && current_selection != SINGLE_PLAYER) {
+            while (btn4_ispressed());
             current_selection--;
         }
 
         // down
         if (btn3_ispressed() && current_selection != HIGH_SCORE) {
+            while (btn3_ispressed());
             current_selection++;
         }
 
         // select
         if (btn1_ispressed()) {
+            while (btn1_ispressed());
             return current_selection;
         }
 
         draw_canvas();
-        delay(100); // this causes som issues
+        delay(10);
     }
 }
 
@@ -88,6 +92,7 @@ void inits() {
     buttons_init();
     isr_init();
     display_init();
+    eeprom_init();
 }
 
 /**
