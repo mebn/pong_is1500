@@ -367,7 +367,7 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
 
         // follow ball's y-position, 100% speed
         case NORMAL:
-            move_ai_incr(p2, b, 2);
+            move_ai_incr(p2, b, 5);
             break;
 
         // predict where the ball is going to end up and move there
