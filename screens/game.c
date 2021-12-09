@@ -249,7 +249,7 @@ typedef enum {UP, DOWN} move_dir;
  * @param md move_dir enum value {UP, DOWN}.
  * @param speed Speed value to move by.
  */
-void move_paddle_speed(Paddle *p, move_dir md, float speed) {
+void move_paddle_speed(Paddle *p, move_dir md, int speed) {
     if (md == UP && p->y_pos > 0) {
         p->y_pos -= speed;
     } else if (md == DOWN && p->y_pos + p->y_size < 31) {
@@ -337,23 +337,24 @@ void ball_bounce(Ball *b, float *modify) {
  * @param incr The maximum value which the AI may update its
  * paddle position by.
  */
-void move_ai_incr(Paddle *p2, Ball *b, float incr) {
+void move_ai_incr(Paddle *p2, Ball *b, int incr) {
     float ball_mid = b->y_pos + b->size/2;
     float paddle_mid = p2->y_pos + p2->y_size/2;
-    // if (ball_mid - paddle_mid < (-1) * incr) {
-    //     move_paddle_speed(p2, UP, incr);
-    // } else if (ball_mid - paddle_mid > incr) {
-    //     move_paddle_speed(p2, DOWN, incr);
-    // } else {
-    //     p2->y_pos = ball_mid - p2->y_size/2;
-    // }
+    if (ball_mid - paddle_mid < (-1) * incr) {
+        move_paddle_speed(p2, UP, incr);
+    } else if (ball_mid - paddle_mid > incr) {
+        move_paddle_speed(p2, DOWN, incr);
+    } else {
+        p2->y_pos = ball_mid - p2->y_size/2;
+    }
 
     // if (b->y_pos < p2->y_pos) {
     //     move_paddle_speed(p2, UP, incr);
     // } else {
     //     move_paddle_speed(p2, DOWN, incr);
     // }
-    p2->y_pos = b->y_pos - p2->y_size/2 + b->size/2;
+
+    // p2->y_pos = b->y_pos - p2->y_size/2 + b->size/2;
 }
 
 /**
@@ -369,7 +370,7 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
     switch (difficulty) {
         // follow ball's y-position, 50% speed
         case EASY:
-            move_ai_incr(p2, b, 0.5*PADDLESPEED);
+            move_ai_incr(p2, b, PADDLESPEED);
             break;
 
         // follow ball's y-position, 100% speed
