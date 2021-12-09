@@ -14,7 +14,10 @@ void eeprom_init() {
 }
 
 /**
- * @brief 
+ * Written by: Marcus Nilszén
+ * 
+ * @brief [PRIVATE] Waits for "Transmit Status bit" to be 0
+ * before proceeding.
  * 
  */
 void eeprom_wait() {
@@ -23,7 +26,10 @@ void eeprom_wait() {
 }
 
 /**
- * @brief 
+ * Written by: Marcus Nilszén
+ * 
+ * @brief [PRIVATE] Initiate Start condition on SDAx and SCLx pins.
+ * Necessary for communication.
  * 
  */
 void eeprom_start() {
@@ -33,7 +39,9 @@ void eeprom_start() {
 }
 
 /**
- * @brief 
+ * Written by: Marcus Nilszén
+ * 
+ * @brief [PRIVATE] Initiate Stop condition on SDAx and SCLx pins.
  * 
  */
 void eeprom_stop() {
@@ -42,7 +50,9 @@ void eeprom_stop() {
 }
 
 /**
- * @brief 
+ * Written by: Marcus Nilszén
+ * 
+ * @brief [PRIVATE] Sends an acknowledge condition.
  * 
  */
 void eeprom_ack() {
@@ -53,7 +63,9 @@ void eeprom_ack() {
 }
 
 /**
- * @brief 
+ * Written by: Marcus Nilszén
+ * 
+ * @brief [PRIVATE] Sends an not acknowledge condition.
  * 
  */
 void eeprom_nack() {
@@ -64,10 +76,12 @@ void eeprom_nack() {
 }
 
 /**
- * @brief 
+ * Written by: Marcus Nilszén
  * 
- * @param address 
- * @param byte 
+ * @brief [PRIVATE] Writes a char to EEPROM memory.
+ * 
+ * @param address Address in EEPROM memory to write to.
+ * @param byte The char/data to write.
  */
 void eeprom_write(unsigned short address, unsigned char data) {
     do {
@@ -93,10 +107,12 @@ void eeprom_write(unsigned short address, unsigned char data) {
 }
 
 /**
- * @brief 
+ * Written by: Marcus Nilszén
  * 
- * @param address 
- * @return char 
+ * @brief [PRIVATE] Reads a char from EEPROM memory.
+ * 
+ * @param address Address in EEPROM memory to read from.
+ * @return char The char/data in given address location.
  */
 char eeprom_read(unsigned short address) {
     do {
@@ -135,10 +151,13 @@ char eeprom_read(unsigned short address) {
 }
 
 /**
- * @brief 
+ * Written by: Marcus Nilszén
  * 
- * @param address 
- * @param s 
+ * @brief Writes a string to EEPROM memory.
+ * Example usage: eeprom_write_str(0x100, "SOME TEXT");
+ * 
+ * @param address Address in EEPROM memory to write to.
+ * @param s String to write.
  */
 void eeprom_write_str(unsigned short address, char *s) {
     int i = 0;
@@ -151,10 +170,15 @@ void eeprom_write_str(unsigned short address, char *s) {
 }
 
 /**
- * @brief 
+ * Written by: Marcus Nilszén
  * 
- * @param address 
- * @param buffer 
+ * @brief Reads a string from EEPROM memory.
+ * Example usage:
+ * char buffer[20];
+ * eeprom_read_str(0x100, buffer);
+ * 
+ * @param address Address in EEPROM memory to read from.
+ * @param buffer The string/data in given address location.
  */
 void eeprom_read_str(unsigned short address, char *buffer) {
     int i = 0;
@@ -164,13 +188,3 @@ void eeprom_read_str(unsigned short address, char *buffer) {
         i++;
     }
 }
-
-/*
-HOW TO USE:
-When writing to eeprom:
-    eeprom_write_str(0x100, "SOME TEXT");
-
-When reading (and drawing): 
-    char buffer[20];
-    eeprom_read_str(0x100, buffer);
-*/
