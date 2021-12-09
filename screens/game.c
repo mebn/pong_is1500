@@ -281,8 +281,6 @@ void ball_bounce(Ball *b, float *modify) {
  */
 game_difficulty difficulty_selection() {
     game_difficulty current_selection = EASY;
-    
-    while (btn1_ispressed()); // select button from prev. menu
 
     while (1) {
         draw_clear();
@@ -298,20 +296,20 @@ game_difficulty difficulty_selection() {
 
         // up
         if (btn4_ispressed() && current_selection != EASY) {
-            current_selection--;
             while (btn4_ispressed());
+            current_selection--;
         }
 
         // down
         if (btn3_ispressed() && current_selection != IMPOSSIBLE) {
-            current_selection++;
             while (btn3_ispressed());
+            current_selection++;
         }
 
         // select
         if (btn1_ispressed()) {
-            return current_selection;
             while (btn1_ispressed());
+            return current_selection;
         }
 
         draw_canvas();

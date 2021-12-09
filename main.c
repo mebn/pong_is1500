@@ -48,20 +48,20 @@ selection menu() {
 
         // up
         if (btn4_ispressed() && current_selection != SINGLE_PLAYER) {
-            current_selection--;
             while (btn4_ispressed());
+            current_selection--;
         }
 
         // down
         if (btn3_ispressed() && current_selection != HIGH_SCORE) {
-            current_selection++;
             while (btn3_ispressed());
+            current_selection++;
         }
 
         // select
         if (btn1_ispressed()) {
-            return current_selection;
             while (btn1_ispressed());
+            return current_selection;
         }
 
         draw_canvas();
