@@ -281,9 +281,10 @@ void ball_bounce(Ball *b, float *modify) {
  */
 game_difficulty difficulty_selection() {
     game_difficulty current_selection = EASY;
+    
+    while (btn1_ispressed()); // select button from prev. menu
 
     while (1) {
-        delay(100); // this causes som issues
         draw_clear();
 
         draw_string_grid("DIFFICULTY", 0, CENTER);
@@ -298,19 +299,23 @@ game_difficulty difficulty_selection() {
         // up
         if (btn4_ispressed() && current_selection != EASY) {
             current_selection--;
+            while (btn4_ispressed());
         }
 
         // down
         if (btn3_ispressed() && current_selection != IMPOSSIBLE) {
             current_selection++;
+            while (btn3_ispressed());
         }
 
         // select
         if (btn1_ispressed()) {
             return current_selection;
+            while (btn1_ispressed());
         }
 
         draw_canvas();
+        delay(10);
     }
 }
 
