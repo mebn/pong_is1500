@@ -365,12 +365,12 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
     switch (difficulty) {
         // follow ball's y-position, 50% speed
         case EASY:
-            move_ai_incr(p2, b, 5);
+            move_ai_incr(p2, b, 20);
             break;
 
         // follow ball's y-position, 100% speed
         case NORMAL:
-            move_ai_incr(p2, b, 20);
+            move_ai_incr(p2, b, 10);
             break;
 
         // predict where the ball is going to end up and move there
