@@ -23,14 +23,14 @@ void high_score_screen() {
 
         // go left
         if (btn4_ispressed() && current_selection != 0) {
-            current_selection--;
             while (btn4_ispressed());
+            current_selection--;
         }
 
         // go right
         if (btn3_ispressed() && current_selection != 3) {
-            current_selection++;
             while (btn3_ispressed());
+            current_selection++;
         }
 
         // go back
