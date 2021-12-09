@@ -85,7 +85,7 @@ void draw_ball(Ball *ball) {
  */
 void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
     // Bounce off roof and floor
-    if (ball->y_pos + ball->y_speed < 0 || ball->y_pos + ball->y_speed >= DISPLAY_HEIGHT) {
+    if (ball->y_pos + ball->y_speed < 0 || ball->y_pos + ball->size + ball->y_speed >= DISPLAY_HEIGHT) {
         ball->y_speed *= -1;
     }
 
