@@ -5,6 +5,7 @@
 #include "include/timer.h"
 #include "include/buttons.h"
 #include "include/screens.h"
+#include "include/eeprom.h"
 #include <stdbool.h>
 
 /**
@@ -88,6 +89,7 @@ void inits() {
     buttons_init();
     isr_init();
     display_init();
+    eeprom_init();
 }
 
 /**

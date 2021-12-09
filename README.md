@@ -51,3 +51,13 @@ New font and draw_string function: https://github.com/alevarn/pic32-pong-game
 
 Display, `vector.S` and `stubs.c`: https://github.com/is1200-example-projects/hello-display
 
+### I2C and EEPROM
+http://ww1.microchip.com/downloads/en/DeviceDoc/61116F.pdf
+
+https://ww1.microchip.com/downloads/en/DeviceDoc/Section%2058.%20Data%20EEPROM_FRM_DS60001341E.pdf
+
+https://github.com/alevarn/pic32-pong-game/blob/master/drivers/eeprom.c
+
+https://www.aidanmocke.com/blog/2018/11/27/i2c/
+
+https://stackoverflow.com/questions/54728534/i2c-communication-with-eeprom
