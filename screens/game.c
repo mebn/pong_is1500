@@ -252,7 +252,7 @@ typedef enum {UP, DOWN} move_dir;
 void move_paddle_speed(Paddle *p, move_dir md, int speed) {
     if (md == UP && p->y_pos > 0) {
         p->y_pos -= speed;
-    } else if (md == DOWN && p->y_pos + p->y_size < 31) {
+    } else if (md == DOWN && p->y_pos + p->y_size < DISPLAY_HEIGHT) {
         p->y_pos += speed;
     }
 }
@@ -330,12 +330,11 @@ void ball_bounce(Ball *b, float *modify) {
  * Written by: Alex Gunnarsson
  * 
  * @brief Move the AI's paddle based on the ball's position
- * and an incr value.
+ * and a delay value.
  * 
  * @param p2 The AI's paddle struct.
  * @param b The ball struct.
- * @param incr The maximum value which the AI may update its
- * paddle position by.
+ * @param delay The number of game updates until it reacts.
  */
 void move_ai_incr(Paddle *p2, Ball *b, int delay) {
     // not moving towards, ignore
@@ -344,15 +343,11 @@ void move_ai_incr(Paddle *p2, Ball *b, int delay) {
     float past_pos = b->y_pos - delay*b->y_speed;
     float ball_mid = past_pos + b->size/2;
     float paddle_mid = p2->y_pos + p2->y_size/2;
-    if (ball_mid - paddle_mid < (-1) * PADDLESPEED) {
+    if (ball_mid - paddle_mid < (-1) * PADDLESPEED || past_pos < 0) {
         move_paddle_speed(p2, UP, PADDLESPEED);
-    } else if (ball_mid - paddle_mid > PADDLESPEED) {
+    } else if (ball_mid - paddle_mid > PADDLESPEED || past_pos >= DISPLAY_HEIGHT) {
         move_paddle_speed(p2, DOWN, PADDLESPEED);
-    } 
-    
-    // else {
-    //     p2->y_pos = ball_mid - p2->y_size/2;
-    // }
+    }
 }
 
 /**
