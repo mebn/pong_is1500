@@ -44,14 +44,16 @@ void high_score_screen() {
             itos(temp, scores[mode][place]);
 
             // add name and score into name_scores
-            char pos1 = 0, pos2 = 0;
+            char entry_pos = 0, name_score_pos = 0;
             // name
-            while (names[mode][place][pos1]) name_scores[mode][place][pos1++] = names[mode][place][pos2++];
-            name_scores[mode][place][pos1++] = ':';
-            pos2 = 0;
+            while (names[mode][place][name_score_pos])
+                name_scores[mode][place][entry_pos++] = names[mode][place][name_score_pos++];
+            name_scores[mode][place][entry_pos++] = ':';
+            name_score_pos = 0;
             // score
-            while (names[mode][place][pos1]) name_scores[mode][place][pos1++] = scores[mode][place][pos2++];
-            name_scores[mode][place][pos1] = '\0';
+            while (scores[mode][place][name_score_pos])
+                name_scores[mode][place][entry_pos++] = scores[mode][place][name_score_pos++];
+            name_scores[mode][place][entry_pos] = '\0';
         }
     }
 

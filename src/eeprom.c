@@ -47,6 +47,7 @@ void eeprom_start() {
 void eeprom_stop() {
     eeprom_wait();
     I2C1CONSET = PIC32_I2CCON_PEN;
+    while (I2C1CON & PIC32_I2CCON_PEN == 1);
 }
 
 /**

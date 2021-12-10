@@ -240,8 +240,8 @@ game_difficulty difficulty_selection() {
 
         draw_string_grid("DIFFICULTY", 0, CENTER);
         Text_info easy = draw_string_grid("EASY", 15, LEFT);
-        Text_info normal = draw_string_grid("NORMAL", 25, LEFT);
-        Text_info hard = draw_string_grid("HARD", 15, RIGHT);
+        Text_info normal = draw_string_grid("NORMAL", 15, RIGHT);
+        Text_info hard = draw_string_grid("HARD", 25, LEFT);
         Text_info impossible = draw_string_grid("IMPOSSIBLE", 25, RIGHT);
 
         Text_info options[] = {easy, normal, hard, impossible};
