@@ -4,6 +4,7 @@
 #include "../include/buttons.h"
 #include "../include/display.h"
 #include "../include/tools.h"
+#include "../include/eeprom.h"
 
 /**
  * Written by: Alex Gunnarsson & Marcus Nilszén
@@ -33,6 +34,16 @@ typedef struct {
     int score;
 } Paddle;
 
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Responsible for freezing the ball for an amount of updates.
+ * 
+ */
+int updateTimer;
+bool freeze;
+
 /**
  * Written by: Alex Gunnarsson
  * 
@@ -44,13 +55,80 @@ int endPos;
 bool calculated;
 
 /**
- * Written by: Marcus Nilszén
+ * Written by: Alex Gunnarsson
+ * Source: https://github.com/alevarn/pic32-pong-game/blob/2eb1203e1593d5eb2d4c56830e10e86cdea170c1/tools/utility.c
+ * 
+ * @brief Seed used for pseudo-random function.
+ * 
+ */
+static unsigned int seed = 326246914;
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Produces a pseudo-random unsigned integer.
+ * 
+ * @return unsigned int The pseudo-random result.
+ */
+unsigned int random() {
+    seed = seed * 1103515245 + 26475;
+    return seed;
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * Source: https://github.com/alevarn/pic32-pong-game/blob/2eb1203e1593d5eb2d4c56830e10e86cdea170c1/tools/utility.c
+ * 
+ * @brief 
+ * 
+ * @return unsigned int 
+ */
+unsigned int random_binary() {
+    seed = seed * 1103515245 + 12345;
+    return ((seed / 65536) % 2);
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * Source: https://github.com/alevarn/pic32-pong-game/blob/2eb1203e1593d5eb2d4c56830e10e86cdea170c1/tools/utility.c
+ * 
+ * @brief Produces a pseudo-random unsigned integer below a specified max.
+ * 
+ * @param max The maximum value for the return value (exclusive): [0, max)
+ * @return unsigned int The pseudo-random result.
+ */
+unsigned int random_max(unsigned int max) {
+    return random() % max;
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * Source: https://github.com/alevarn/pic32-pong-game/blob/2eb1203e1593d5eb2d4c56830e10e86cdea170c1/main.c
+ * 
+ * @brief Randomizes the seed before using it to ensure new results.
+ * 
+ */
+void init_seed(void) {
+    seed = eeprom_read_seed();
+
+    // shuffle
+    unsigned int i;
+    for (i = 0; i < 1000000; i++) {
+        random();
+    }
+
+    eeprom_write_seed(seed);
+}
+
+/**
+ * Written by: Marcus Nilszén & Alex Gunnarsson
  * 
  * @brief Draw the ball used in game.
  * 
  * @param ball Ball struct.
  */
 void draw_ball(Ball *ball) {
+    if (freeze && updateTimer >= FREEZETIME) return;
     char size = ball->size;
     int i, j;
     for (i = 0; i < size; i++) {
@@ -62,6 +140,80 @@ void draw_ball(Ball *ball) {
 
 /**
  * Written by: Marcus Nilszén
+ * Source: https://ourcodeworld.com/articles/read/884/how-to-get-the-square-root-of-a-number-without-using-the-sqrt-function-in-c
+ * 
+ * @brief Custom sqrt function.
+ * 
+ * @param number Number to sqrt.
+ * @return float The sqrt of number.
+ */
+float my_sqrt(float number) {
+    float sqrt = number / 2.0;
+    float temp = 0;
+    while(sqrt != temp){
+        temp = sqrt;
+        sqrt = (number/temp + temp) / 2.0;
+    }
+    return sqrt;
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Gives the ball new speed vectors on paddle bounce.
+ * 
+ * @param b Ball struct.
+ * @param modify Modification factor [-1, 1].
+ */
+void ball_bounce(Ball *b, float *modify) {
+    // char buffer[10];
+    // itos((int) 100*(*modify), buffer);
+    // draw_string(buffer, 10, 10);
+    // draw_canvas();
+    // delay(1000);
+
+    // max bounce angle +/- 60 degrees
+    // tan(60deg) = sqrt(3)
+    float ys = b->y_speed;
+    float xs = b->x_speed;
+    xs *= -1;
+
+    // modify y-speed, modify = 0 -> no modification, modify = +/- 1 -> max modification
+    float max_ys = my_sqrt(3)/2 * BALLSPEED;
+    float diff = *modify > 0 ? max_ys - b->y_speed : -1*max_ys - b->y_speed;
+    float absmod = *modify > 0 ? *modify : -1 * (*modify);
+    b->y_speed += absmod*diff;
+
+    if (b->y_speed > max_ys || b->y_speed < -1*max_ys) {
+        b->y_speed = b->y_speed > 0 ? max_ys : -1*max_ys;
+    }
+
+    // correct x-speed
+    b->x_speed = (xs > 0 ? 1 : -1) * my_sqrt(BALLSPEED*BALLSPEED - b->y_speed*b->y_speed);
+    // new direction, prediciton calculation invalid
+    calculated = false;
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Spawns the ball in the middle and begins freezetime.
+ * 
+ * @param b The ball struct.
+ */
+void ball_spawn(Ball *b) {
+    b->x_pos = DISPLAY_WIDTH/2 - b->size/2;
+    b->y_pos = DISPLAY_HEIGHT/2 - b->size/2;
+    b->x_speed = (random_binary() == 1 ? 1 : -1);
+    b->y_speed = 0;
+    float y = (float) random_max(2000001) / 1000000 - 1;    // range [-1, 1]
+    ball_bounce(b, &y);
+    freeze = true;
+    updateTimer = 2 * FREEZETIME;
+}
+
+/**
+ * Written by: Alex Gunnarsson
  * 
  * @brief When ball misses one of the paddles.
  * 
@@ -70,17 +222,14 @@ void draw_ball(Ball *ball) {
  * @param p2 Paddle struct. Player2
  */
 void ball_miss(Ball *b, Paddle *p1, Paddle *p2) {
-    if (b->x_pos > 128 + 50) {
+    if (b->x_pos > DISPLAY_WIDTH) {
         p1->score++;
-        b->x_pos = 128/2;
-        calculated = false;
-    } else if (b->x_pos < 0 - 50) {
+        ball_spawn(b);
+    } else if (b->x_pos < 0 - b->size) {
         p2->score++;
-        b->x_pos = 128/2;
-        calculated = false;
+        ball_spawn(b);
     }
 }
-
 
 /**
  * Written by: Alex Gunnarsson
@@ -111,6 +260,12 @@ void ball_incr(Ball *ball) {
  * @param p2 Right paddle struct.
  */
 void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
+    if (freeze) {
+        updateTimer--;
+        if (updateTimer < 0) freeze = false;
+        return;
+    }
+  
     // Check for bounce off Left paddle p1 iff it crosses border
     if (ball->x_pos + ball->size > p1->x_pos + p1->x_size &&
         ball->x_pos + ball->x_speed < p1->x_pos + p1->x_size) {
@@ -242,56 +397,6 @@ void move_paddle_speed(Paddle *p, move_dir md, int speed) {
  */
 void move_paddle(Paddle *p, move_dir md) {
     move_paddle_speed(p, md, PADDLESPEED);
-}
-
-/**
- * Written by: Marcus Nilszén
- * Source: https://ourcodeworld.com/articles/read/884/how-to-get-the-square-root-of-a-number-without-using-the-sqrt-function-in-c
- * 
- * @brief Custom sqrt function.
- * 
- * @param number Number to sqrt.
- * @return float The sqrt of number.
- */
-float my_sqrt(float number) {
-    float sqrt = number / 2.0;
-    float temp = 0;
-    while(sqrt != temp){
-        temp = sqrt;
-        sqrt = (number/temp + temp) / 2.0;
-    }
-    return sqrt;
-}
-
-/**
- * Written by: Alex Gunnarsson
- * 
- * @brief Gives the ball new speed vectors on paddle bounce.
- * 
- * @param b Ball struct.
- * @param modify Modification factor [-1, 1].
- */
-void ball_bounce(Ball *b, float *modify) {
-    // max bounce angle +/- 60 degrees
-    // tan(60deg) = sqrt(3)
-    float ys = b->y_speed;
-    float xs = b->x_speed;
-    xs *= -1;
-
-    // modify y-speed, modify = 0 -> no modification, modify = +/- 1 -> max modification
-    float max_ys = my_sqrt(3)/2 * BALLSPEED;
-    float diff = *modify > 0 ? max_ys - b->y_speed : -1*max_ys - b->y_speed;
-    float absmod = *modify > 0 ? *modify : -1 * (*modify);
-    b->y_speed += absmod*diff;
-
-    if (b->y_speed > max_ys || b->y_speed < -1*max_ys) {
-        b->y_speed = b->y_speed > 0 ? max_ys : -1*max_ys;
-    }
-
-    // corret x-speed
-    b->x_speed = (xs > 0 ? 1 : -1) * my_sqrt(BALLSPEED*BALLSPEED - b->y_speed*b->y_speed);
-    // new direction, prediciton calculation invalid
-    calculated = false;
 }
 
 /**
@@ -478,12 +583,9 @@ void game_screen(game_mode mode) {
     }
 
     Ball ball = {
-        .x_pos = 127/2,
-        .y_pos = 31/2,
-        .size = BALLSIZE,
-        .x_speed = -1,
-        .y_speed = 0
+        .size = BALLSIZE
     };
+    ball_spawn(&ball);
     
     Paddle p1 = {
         .x_pos = 0 + PADDLEGAP,
@@ -516,10 +618,13 @@ void game_screen(game_mode mode) {
     draw_clear();
     draw_string_grid("GET READY...", 10, CENTER);
     draw_canvas();
-    delay(1000);
+    
+    init_seed();
 
-    // init calculation stage (only used if difficulty is IMPOSSIBLE)
-    calculated = false;
+    // init global vars
+    calculated = false;         // used for reducing amount of calculations for HARD difficulty, not yet calculated
+    freeze = true;              // used to freeze the ball on respawn, inactive
+    updateTimer = FREEZETIME;   // different freezetime for first spawn
 
     while (1) {
         draw_clear();

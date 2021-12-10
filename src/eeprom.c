@@ -189,6 +189,20 @@ void eeprom_write_int(unsigned short address, unsigned int data) {
     eeprom_write(address + 3, data);
 }
 
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Writes the given value as seed on EEPROM.
+ * 
+ * @param value The value of the seed.
+ */
+void eeprom_write_seed(unsigned int value) {
+    eeprom_write(ADDR_SEED, value >> 24);
+    eeprom_write(ADDR_SEED + 1, value >> 16);
+    eeprom_write(ADDR_SEED + 2, value >> 8);
+    eeprom_write(ADDR_SEED + 3, value);
+}
+
 
 /***** EEPROM READ *****/
 
@@ -230,6 +244,25 @@ unsigned int eeprom_read_int(unsigned short address) {
     data |= eeprom_read(address + 3);
     return data;
 }
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Reads and returns the seed saved on EEPROM.
+ * 
+ * @return unsigned int The value stored as seed.
+ */
+unsigned int eeprom_read_seed() {
+    unsigned int value = 0;
+    value |= eeprom_read(ADDR_SEED) << 24;
+    value |= eeprom_read(ADDR_SEED + 1) << 16;
+    value |= eeprom_read(ADDR_SEED + 2) << 8;
+    value |= eeprom_read(ADDR_SEED + 3);
+    return value;
+}
+
+
+/***** EEPROM OTHER *****/
 
 /**
  * Written by: Marcus Nilszén
