@@ -4,28 +4,16 @@
 #include "../include/timer.h"
 #include "../include/eeprom.h"
 
-void asasd(int num, char *buffer) {
-    int pos = 0;
-
-    // zeros won't display otherwise.
-    if (num == 0) {
-        buffer[pos++] = 48;
-    } else {
-        while (num != 0) {
-            buffer[pos++] = num % 10 + 48;
-            num /= 10;
-        }
-    }
-
-    char from = 0, to = pos - 1;
-    while (from < to) {
-        char temp = buffer[from];
-        buffer[from++] = buffer[to];
-        buffer[to--] = temp;
-    }
-    buffer[pos] = '\0';
-}
-
+/**
+ * Written by: Marcus Nilszén
+ * 
+ * @brief Adds name and score to leaderboard
+ * if score is top 4.
+ * 
+ * @param name Name to add to leaderboard.
+ * @param score Score to add to leaderboard.
+ * @param difficulty The difficulty used to achieve this score.
+ */
 void add_to_eeprom(char *name, int score, game_difficulty difficulty) {
     short name_addrs[4][4] = {
         {0, 0, 0, 0},
@@ -71,6 +59,14 @@ void add_to_eeprom(char *name, int score, game_difficulty difficulty) {
 
 }
 
+/**
+ * Written by: Marcus Nilszén
+ * 
+ * @brief A screen were a player can enter a name.
+ * 
+ * @param score Score the player got.
+ * @param difficulty The difficulty used to achieve this score.
+ */
 void input_name_screen(int score, game_difficulty difficulty) {
     int current_selection = 0;
     char name[] = {'A'-1, 'A'-1, 'A'-1, 'A'-1, 'A'-1, 'A'-1, '\0'};

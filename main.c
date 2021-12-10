@@ -105,6 +105,7 @@ int main() {
     inits();
     loading();
 
+    // uncomment this to reset eeprom memory.
     // reset_eeprom();
     
     draw_clear();

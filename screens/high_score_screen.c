@@ -3,29 +3,15 @@
 #include "../include/display.h"
 #include "../include/buttons.h"
 #include "../include/eeprom.h"
+#include "../include/tools.h"
 
-void itosss(int num, char *buffer) {
-    int pos = 0;
-
-    // zeros won't display otherwise.
-    if (num == 0) {
-        buffer[pos++] = 48;
-    } else {
-        while (num != 0) {
-            buffer[pos++] = num % 10 + 48;
-            num /= 10;
-        }
-    }
-
-    char from = 0, to = pos - 1;
-    while (from < to) {
-        char temp = buffer[from];
-        buffer[from++] = buffer[to];
-        buffer[to--] = temp;
-    }
-    buffer[pos] = '\0';
-}
-
+/**
+ * Written by: Marcus Nilszén
+ * 
+ * @brief The leaderboard for different difficulty
+ * levels. Shows top 4 players (names and scores).
+ * 
+ */
 void high_score_screen() {
     char *screens[] = {
         "HIGHSCORE: NORMAL",
@@ -55,7 +41,7 @@ void high_score_screen() {
                 continue;
             }
             int temp = eeprom_read_int(score_addrs[mode][place]);
-            itosss(temp, scores[mode][place]);
+            itos(temp, scores[mode][place]);
 
             // add name and score into name_scores
             char pos1 = 0, pos2 = 0;
@@ -73,15 +59,11 @@ void high_score_screen() {
         draw_clear();
         draw_string_grid(screens[current_screen], 0, CENTER);
 
+        // displays top 4 players
         draw_string_grid(name_scores[current_screen][0], 15, LEFT);
         draw_string_grid(name_scores[current_screen][1], 15, RIGHT);
         draw_string_grid(name_scores[current_screen][2], 25, LEFT);
         draw_string_grid(name_scores[current_screen][3], 25, RIGHT);
-
-        // draw_string_grid(names[current_screen][0], 15, LEFT);
-        // draw_string_grid(scores[current_screen][0], 15, RIGHT);
-        // draw_string_grid(names[current_screen][1], 25, LEFT);
-        // draw_string_grid(scores[current_screen][1], 25, RIGHT);
 
         // go left
         if (btn4_ispressed() && current_screen != 0) {

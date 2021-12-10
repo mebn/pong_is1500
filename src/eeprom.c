@@ -230,7 +230,13 @@ unsigned int eeprom_read_int(unsigned short address) {
     return data;
 }
 
-
+/**
+ * Written by: Marcus Nilszén
+ * 
+ * @brief Used to reset EEPROM memory. Reset meaning
+ * setting name to "0" and score to 0.
+ * 
+ */
 void reset_eeprom() {
     short name_addrs[2][4] = {
         {ADDR_NORMAL1_NAME, ADDR_NORMAL2_NAME, ADDR_NORMAL3_NAME, ADDR_NORMAL4_NAME},

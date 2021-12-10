@@ -3,6 +3,7 @@
 #include "../include/screens.h"
 #include "../include/buttons.h"
 #include "../include/display.h"
+#include "../include/tools.h"
 
 typedef struct {
     float x_pos;
@@ -99,35 +100,6 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
 
     ball->y_pos += ball->y_speed;
     ball->x_pos += ball->x_speed;
-}
-
-
-/**
- * @brief Int to string.
- * 
- * @param num The integer number to convert.
- * @param buffer The output location.
- */
-void itos(int num, char *buffer) {
-    int pos = 0;
-
-    // zeros won't display otherwise.
-    if (num == 0) {
-        buffer[pos++] = 48;
-    } else {
-        while (num != 0) {
-            buffer[pos++] = num % 10 + 48;
-            num /= 10;
-        }
-    }
-
-    char from = 0, to = pos - 1;
-    while (from < to) {
-        char temp = buffer[from];
-        buffer[from++] = buffer[to];
-        buffer[to--] = temp;
-    }
-    buffer[pos] = '\0';
 }
 
 /**
@@ -232,12 +204,6 @@ float my_sqrt(float number) {
  * @param modify Modification factor [-1, 1].
  */
 void ball_bounce(Ball *b, float *modify) {
-    // char buffer[10];
-    // itos((int) 100*(*modify), buffer);
-    // draw_string(buffer, 10, 10);
-    // draw_canvas();
-    // delay(1000);
-
     // max bounce angle +/- 60 degrees
     // tan(60deg) = sqrt(3)
     float ys = b->y_speed;
