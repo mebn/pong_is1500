@@ -382,25 +382,36 @@ int positive_modulo(int num, int mod) {
  */
 void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
     switch (difficulty) {
-        // follow ball's y-position, 50% speed
+        // follow ball's y-position, 20 game updates delay
         case EASY:
             move_ai_incr(p2, b, 20);
             break;
 
-        // follow ball's y-position, 100% speed
+        // follow ball's y-position, 10 game updates delay
         case NORMAL:
             move_ai_incr(p2, b, 10);
             break;
 
         // predict where the ball is going to end up and move there
         case HARD:
-            if (b->x_speed > 0 && !calculated) {
-                float t = (DISPLAY_WIDTH - PADDLESIZE_X - PADDLEGAP - b->size - b->x_pos) / b->x_speed;  // game updates (time) until ball crosses paddle border
-                // global variables
-                endPos = positive_modulo((int) (b->y_pos + t*b->y_speed), DISPLAY_HEIGHT - b->size);   // unfold (mirror) display, act as if ball wouldnt bounce off roof/floor, positive modulo
-                int numBounces = (int) (b->y_pos + t*b->y_speed) / (DISPLAY_HEIGHT - b->size);  
-                if (positive_modulo(numBounces, 2) == 1) endPos = DISPLAY_HEIGHT - endPos;  // invert if odd amount of edge bounces
-                calculated = true;
+            if (b->x_speed > 0) {
+                if (!calculated) {
+                    float t = (DISPLAY_WIDTH - PADDLESIZE_X - PADDLEGAP - b->size - b->x_pos) / b->x_speed;  // game updates (time) until ball crosses paddle border
+                    // global variables
+                    endPos = positive_modulo((int) (b->y_pos + t*b->y_speed), DISPLAY_HEIGHT - b->size);   // unfold (mirror) display, act as if ball wouldnt bounce off roof/floor, positive modulo
+                    int numBounces = (int) (b->y_pos + t*b->y_speed) / (DISPLAY_HEIGHT - b->size);  
+                    if (positive_modulo(numBounces, 2) == 1) endPos = DISPLAY_HEIGHT - endPos;  // invert if odd amount of edge bounces
+                    // calculated = true;
+                }
+            } else {
+                char middle = DISPLAY_HEIGHT/2 - p2->y_size/2;
+                if (p2->y_pos != middle) {
+                    if (p2->y_pos > middle) {
+                        move_paddle(p2, UP);
+                    } else {
+                        move_paddle(p2, DOWN);
+                    }
+                }
             }
             float distance = (endPos - p2->y_size/2 + b->size/2) - p2->y_pos;
             if (distance > BALLSPEED || distance < (-1) * BALLSPEED) {
