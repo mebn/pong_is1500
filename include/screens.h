@@ -6,10 +6,13 @@
 #define PADDLESIZE_X 2
 #define PADDLESIZE_Y 10
 #define PADDLEGAP 0
+#define PADDLESPEED 1
 
 #define BALLSIZE 2
 #define BALLSPEED 1
 #define FREEZETIME 50
+
+#define TOLERANCE 0.001
 
 /**
  * @brief There's two different
