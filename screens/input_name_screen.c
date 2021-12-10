@@ -2,8 +2,27 @@
 #include "../include/screens.h"
 #include "../include/display.h"
 #include "../include/timer.h"
+#include "../include/eeprom.h"
 
-void input_name_screen() {
+// IMPROVE
+void add_to_eeprom(char *name, int score, game_mode gm) {
+    short name_addrs[] = {ADDR_EASY1_NAME, ADDR_EASY2_NAME, ADDR_EASY3_NAME, ADDR_EASY4_NAME};
+    short score_addrs[] = {ADDR_EASY1_SCORE, ADDR_EASY2_SCORE, ADDR_EASY3_SCORE, ADDR_EASY4_SCORE};
+    char pos = -1;
+    int i;
+    for (i = 3; i >= 0; i--) {
+        char eeprom_score[10];
+        eeprom_read_str(score_addrs[i], eeprom_score);
+        if (score >= eeprom_score) pos = i; // problem comp. int to char
+    }
+    if (pos != -1) {
+        eeprom_write_str(name_addrs[pos], name);
+        eeprom_write_str(score_addrs[pos], &score);
+    }
+
+}
+
+void input_name_screen(int score, game_mode gm) {
     int current_selection = 0;
     char name[] = {'A'-1, 'A'-1, 'A'-1, 'A'-1, 'A'-1, 'A'-1, '\0'};
     
@@ -47,6 +66,7 @@ void input_name_screen() {
 
         if (current_selection == 6) {
             // add name and score to highscore list
+            add_to_eeprom(name, score, gm);
             break;
         }
 
