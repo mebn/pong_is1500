@@ -404,6 +404,7 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
                     char* buffer[2];
                     itos(numBounces, buffer);
                     draw_string(buffer, 10, 10);
+                    draw_canvas();
                     delay(1000);
                     if (positive_modulo(numBounces, 2) == 1) endPos = DISPLAY_HEIGHT - endPos;  // invert if odd amount of edge bounces
                     calculated = true;
