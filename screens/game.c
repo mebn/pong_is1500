@@ -645,7 +645,8 @@ void game_screen(game_mode mode) {
 
     // init global vars
     calculated = false;     // used for reducing amount of calculations for HARD difficulty, not yet calculated
-    freeze = false;         // used to freeze the ball on respawn, inactive
+    freeze = true;          // used to freeze the ball on respawn, inactive
+    updateTimer = FREEZETIME;
 
     while (1) {
         draw_clear();
@@ -676,6 +677,12 @@ void game_screen(game_mode mode) {
         if (p1.score > 5) {
             break;
         }
+
+        draw_clear();
+        char buffer[3];
+        itos((int) random_max(100), buffer);
+        draw_string(buffer, 10, 10);
+        delay(1000);
 
         draw_canvas();
         delay(20);
