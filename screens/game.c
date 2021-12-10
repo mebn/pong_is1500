@@ -59,6 +59,16 @@ bool freeze;
 
 /**
  * Written by: Alex Gunnarsson
+ * 
+ * @brief Used for minimizing amount of calculations
+ * for the predicition used in IMPOSSIBLE.
+ * 
+ */
+int endPos;
+bool calculated;
+
+/**
+ * Written by: Alex Gunnarsson
  * Source: https://github.com/alevarn/pic32-pong-game/blob/2eb1203e1593d5eb2d4c56830e10e86cdea170c1/tools/utility.c
  * 
  * @brief Seed used for pseudo-random function.
@@ -109,16 +119,6 @@ void init_seed(void) {
 
     eeprom_write_seed(seed);
 }
-
-/**
- * Written by: Alex Gunnarsson
- * 
- * @brief Used for minimizing amount of calculations
- * for the predicition used in IMPOSSIBLE.
- * 
- */
-int endPos;
-bool calculated;
 
 /**
  * Written by: Marcus Nilszén
