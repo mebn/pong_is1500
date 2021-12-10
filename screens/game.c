@@ -6,6 +6,7 @@
 
 /**
  * Written by: Marcus Nilszén
+ * 
  * @brief Enum containing the dirrerent
  * game difficulties.
  * 
@@ -17,6 +18,12 @@ typedef enum {
     IMPOSSIBLE
 } game_difficulty;
 
+/**
+ * Written by: Alex Gunnarsson & Marcus Nilszén
+ * 
+ * @brief Ball struct containing position, size, and speed.
+ * 
+ */
 typedef struct {
     float x_pos;
     float y_pos;
@@ -25,6 +32,12 @@ typedef struct {
     float y_speed;
 } Ball;
 
+/**
+ * Written by: Alex Gunnarsson & Marcus Nilszén
+ * 
+ * @brief Paddle struct containing position, size, and speed.
+ * 
+ */
 typedef struct {
     int x_pos;
     int y_pos;
@@ -34,6 +47,18 @@ typedef struct {
 } Paddle;
 
 /**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Used for minimizing amount of calculations
+ * for the predicition used in IMPOSSIBLE.
+ * 
+ */
+int endPos;
+bool calculated;
+
+/**
+ * Written by: Marcus Nilszén
+ * 
  * @brief Draw the ball used in game.
  * 
  * @param ball Ball struct.
@@ -49,6 +74,46 @@ void draw_ball(Ball *ball) {
 }
 
 /**
+ * Written by: Marcus Nilszén
+ * 
+ * @brief When ball misses one of the paddles.
+ * 
+ * @param b Ball struct
+ * @param p1 Paddle struct. Player1
+ * @param p2 Paddle struct. Player2
+ */
+void ball_miss(Ball *b, Paddle *p1, Paddle *p2) {
+    if (b->x_pos > 128 + 50) {
+        p1->score++;
+        b->x_pos = 128/2;
+        calculated = false;
+    } else if (b->x_pos < 0 - 50) {
+        p2->score++;
+        b->x_pos = 128/2;
+        calculated = false;
+    }
+}
+
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Increment ball position, keeping inbetween roof and floor. 
+ * 
+ * @param ball The ball struct.
+ */
+void ball_incr(Ball *ball) {
+    // Bounce off roof and floor
+    if (ball->y_pos + ball->y_speed < 0 || ball->y_pos + ball->size + ball->y_speed >= DISPLAY_HEIGHT) {
+        ball->y_speed *= -1;
+    }
+
+    ball->y_pos += ball->y_speed;
+    ball->x_pos += ball->x_speed;
+
+}
+
+/**
  * Written by: Alex Gunnarsson
  * 
  * @brief Update ball position and speed depending on 
@@ -59,11 +124,6 @@ void draw_ball(Ball *ball) {
  * @param p2 Right paddle struct.
  */
 void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
-    // Bounce off roof and floor
-    if (ball->y_pos + ball->y_speed < 0 || ball->y_pos + ball->y_speed >= DISPLAY_HEIGHT) {
-        ball->y_speed *= -1;
-    }
-
     // Check for bounce off Left paddle p1 iff it crosses border
     if (ball->x_pos + ball->size > p1->x_pos + p1->x_size &&
         ball->x_pos + ball->x_speed < p1->x_pos + p1->x_size) {
@@ -110,12 +170,16 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
         }
     }
 
-    ball->y_pos += ball->y_speed;
-    ball->x_pos += ball->x_speed;
+    if (calculated) draw_pixel(p2->x_pos - 10, (char) endPos);
+    // if (calculated) draw_pixel(p2->x_pos - 10, DISPLAY_HEIGHT - (char) endPos);
+    ball_incr(ball);
+    ball_miss(ball, p1, p2);
 }
 
 
 /**
+ * Written by: Marcus Nilszén
+ * 
  * @brief Int to string.
  * 
  * @param num The integer number to convert.
@@ -144,6 +208,8 @@ void itos(int num, char *buffer) {
 }
 
 /**
+ * Written by: Marcus Nilszén
+ * 
  * @brief Draw score ingame for both players.
  * 
  * @param p1 Paddle struct. Player1
@@ -165,23 +231,8 @@ void draw_score(Paddle *p1, Paddle * p2) {
 }
 
 /**
- * @brief When ball misses one of the paddles.
+ * Written by: Alex Gunnarsson
  * 
- * @param b Ball struct
- * @param p1 Paddle struct. Player1
- * @param p2 Paddle struct. Player2
- */
-void ball_miss(Ball *b, Paddle *p1, Paddle *p2) {
-    if (b->x_pos > 128 + 50) {
-        p1->score++;
-        b->x_pos = 128/2;
-    } else if (b->x_pos < 0 - 50) {
-        p2->score++;
-        b->x_pos = 128/2;
-    }
-}
-
-/**
  * @brief Draws the paddle.
  * 
  * @param paddle Paddle struct.
@@ -198,6 +249,8 @@ void draw_paddle(Paddle *paddle) {
 }
 
 /**
+ * Written by: Alex Gunnarsson
+ * 
  * @brief [PRIVATE] Used in move_paddle.
  * Used to know what direction player/paddle should move.
  * 
@@ -205,23 +258,41 @@ void draw_paddle(Paddle *paddle) {
 typedef enum {UP, DOWN} move_dir;
 
 /**
- * @brief Moves the paddle with restrictions
- * so paddle cannot go throught roof or floor.
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Moves the paddle with specified speed and restrictions
+ * so paddle cannot go through roof or floor.
  * 
  * @param p Paddle struct.
- * @param md move_dir enum value.
+ * @param md move_dir enum value {UP, DOWN}.
+ * @param speed Speed value to move by.
  */
-void move_paddle(Paddle *p, move_dir md) {
+void move_paddle_speed(Paddle *p, move_dir md, int speed) {
     if (md == UP && p->y_pos > 0) {
-        p->y_pos--;
-    } else if (md == DOWN && p->y_pos + p->y_size < 31) {
-        p->y_pos++;
+        p->y_pos -= speed;
+    } else if (md == DOWN && p->y_pos + p->y_size < DISPLAY_HEIGHT) {
+        p->y_pos += speed;
     }
-};
+}
 
 /**
- * @brief Custom sqrt function.
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Moves the paddle with restrictions
+ * so paddle cannot go through roof or floor.
+ * 
+ * @param p Paddle struct.
+ * @param md move_dir enum value {UP, DOWN}.
+ */
+void move_paddle(Paddle *p, move_dir md) {
+    move_paddle_speed(p, md, PADDLESPEED);
+}
+
+/**
+ * Written by: Marcus Nilszén
  * Source: https://ourcodeworld.com/articles/read/884/how-to-get-the-square-root-of-a-number-without-using-the-sqrt-function-in-c
+ * 
+ * @brief Custom sqrt function.
  * 
  * @param number Number to sqrt.
  * @return float The sqrt of number.
@@ -231,7 +302,7 @@ float my_sqrt(float number) {
     float temp = 0;
     while(sqrt != temp){
         temp = sqrt;
-        sqrt = ( number/temp + temp) / 2.0;
+        sqrt = (number/temp + temp) / 2.0;
     }
     return sqrt;
 }
@@ -269,6 +340,120 @@ void ball_bounce(Ball *b, float *modify) {
 
     // corret x-speed
     b->x_speed = (xs > 0 ? 1 : -1) * my_sqrt(BALLSPEED*BALLSPEED - b->y_speed*b->y_speed);
+    // new direction, prediciton calculation invalid
+    calculated = false;
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Move the AI's paddle based on the ball's position
+ * and a delay value.
+ * 
+ * @param p2 The AI's paddle struct.
+ * @param b The ball struct.
+ * @param delay The number of game updates until a reaction.
+ */
+void move_ai_incr(Paddle *p2, Ball *b, int delay) {
+    // not moving towards, ignore
+    if (b->x_speed < 0) return;
+    // just recently bounced, ignore
+    if (b->x_pos - delay*b->x_speed < PADDLEGAP + PADDLESIZE_X) return;
+
+    float past_pos = b->y_pos - delay*b->y_speed;
+    float ball_mid = past_pos + b->size/2;
+    float paddle_mid = p2->y_pos + p2->y_size/2;
+    if (ball_mid - paddle_mid < (-1) * PADDLESPEED || past_pos < 0) {
+        move_paddle_speed(p2, UP, PADDLESPEED);
+    } else if (ball_mid - paddle_mid > PADDLESPEED || past_pos >= DISPLAY_HEIGHT) {
+        move_paddle_speed(p2, DOWN, PADDLESPEED);
+    }
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * Source: https://stackoverflow.com/a/14997413
+ * 
+ * @brief Performs modulo operation but ensures output is positive.
+ * 
+ * @param num The dividend.
+ * @param mod The divisor.
+ * @return int The positive remainder.
+ */
+int positive_modulo(int num, int mod) {
+    return (num % mod + mod) % mod;
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Control the AI's paddle with respect to difficulty.
+ * 
+ * @param p2 The AI's paddle struct.
+ * @param b The ball struct.
+ * @param difficulty The difficulty of the AI.
+ */
+void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
+    switch (difficulty) {
+        // follow ball's y-position, 20 game updates delay
+        case EASY:
+            move_ai_incr(p2, b, 20);
+            break;
+
+        // follow ball's y-position, 10 game updates delay
+        case NORMAL:
+            move_ai_incr(p2, b, 10);
+            break;
+
+        // simulate where the ball is going to end up and move there
+        case HARD:
+            if (b->x_speed > 0) {
+                if (!calculated) {
+                    float yp = b->y_pos;
+                    float xp = b->x_pos;
+                    float ys = b->y_speed;
+                    float xs = b->x_speed;
+
+                    while (b->x_pos < DISPLAY_WIDTH - PADDLEGAP - PADDLESIZE_X - b->size) {
+                        ball_incr(b);
+                    }
+                    endPos = (int) b->y_pos;
+
+                    b->y_pos = yp;
+                    b->x_pos = xp;
+                    b->y_speed = ys;
+                    b->x_speed = xs;
+
+                    // old calculation method which for some reason does not work... :C
+                    // float t = (DISPLAY_WIDTH - PADDLESIZE_X - PADDLEGAP - b->size - b->x_pos) / b->x_speed;  // game updates (time) until ball crosses paddle border
+                    // // global variables
+                    // endPos = positive_modulo((int) (b->y_pos + t*b->y_speed), DISPLAY_HEIGHT - b->size);   // unfold (mirror) display, act as if ball wouldnt bounce off roof/floor, positive modulo
+                    // int numBounces = (int) (b->y_pos + t*b->y_speed) / (DISPLAY_HEIGHT - b->size);  
+                    // char* buffer[2];
+                    // itos(numBounces, buffer);
+                    // draw_string(buffer, 10, 10);
+                    // draw_canvas();
+                    // delay(1000);
+                    // if (positive_modulo(numBounces, 2) == 1) endPos = DISPLAY_HEIGHT - endPos;  // invert if odd amount of edge bounces
+                    calculated = true;
+                } 
+
+                float distance = (endPos - p2->y_size/2 + b->size/2) - p2->y_pos;
+                if (distance > BALLSPEED || distance < (-1) * BALLSPEED) {
+                    move_paddle(p2, (distance > 0 ? DOWN : UP));
+                }
+            } else {
+                char middle = DISPLAY_HEIGHT/2 - p2->y_size/2;
+                if (p2->y_pos != middle) {
+                    if (p2->y_pos > middle) {
+                        move_paddle(p2, UP);
+                    } else {
+                        move_paddle(p2, DOWN);
+                    }
+                }
+            }
+            break;
+    }
 }
 
 /**
@@ -338,7 +523,7 @@ void game_screen(game_mode mode) {
         .x_pos = 127/2,
         .y_pos = 31/2,
         .size = BALLSIZE,
-        .x_speed = 1,
+        .x_speed = -1,
         .y_speed = 0
     };
     
@@ -358,9 +543,15 @@ void game_screen(game_mode mode) {
         .score = 0
     };
 
-    if (mode == SINGLEPLAYER && difficulty == IMPOSSIBLE) {
-        p2.y_pos = 0;
-        p2.y_size = 32;
+    // potentially different spawn conditions for singleplayer
+    if (mode == SINGLEPLAYER) {
+        if (difficulty == EASY) {
+            p1.y_pos = 0;
+            p1.y_size = 32;
+        } else if (difficulty == IMPOSSIBLE) {
+            p2.y_pos = 0;
+            p2.y_size = 32;
+        }
     }
 
     // loading screen
@@ -368,6 +559,9 @@ void game_screen(game_mode mode) {
     draw_string_grid("GET READY...", 10, CENTER);
     draw_canvas();
     delay(1000);
+
+    // init calculation stage (only used if difficulty is IMPOSSIBLE)
+    calculated = false;
 
     while (1) {
         draw_clear();
@@ -384,14 +578,11 @@ void game_screen(game_mode mode) {
                 if (btn1_ispressed()) move_paddle(&p2, UP);
                 if (btn2_ispressed()) move_paddle(&p2, DOWN);
             }
-        } else {
-            // AI
-            if (difficulty == HARD)
-                p2.y_pos = ball.y_pos;
+        } else if (difficulty != IMPOSSIBLE) {
+            move_ai(&p2, &ball, difficulty);
         }
 
         ball_update(&ball, &p1, &p2);
-        ball_miss(&ball, &p1, &p2);
 
         draw_paddle(&p1);
         draw_paddle(&p2);
