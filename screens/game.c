@@ -187,7 +187,7 @@ void ball_bounce(Ball *b, float *modify) {
         b->y_speed = b->y_speed > 0 ? max_ys : -1*max_ys;
     }
 
-    // corret x-speed
+    // correct x-speed
     b->x_speed = (xs > 0 ? 1 : -1) * my_sqrt(BALLSPEED*BALLSPEED - b->y_speed*b->y_speed);
     // new direction, prediciton calculation invalid
     calculated = false;
@@ -208,6 +208,12 @@ void ball_spawn(Ball *b) {
     ball_bounce(b, &y);
     freeze = true;
     updateTimer = FREEZETIME;
+
+    char buffer[10];
+    itos((int) 100*(y+1), buffer);
+    draw_string(buffer, 10, 10);
+    draw_canvas();
+    delay(1000);
 }
 
 /**
