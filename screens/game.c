@@ -659,7 +659,6 @@ void game_screen(game_mode mode) {
     draw_clear();
     draw_string_grid("GET READY...", 10, CENTER);
     draw_canvas();
-    delay(1000);
     
     init_seed();
 
