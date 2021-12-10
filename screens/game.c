@@ -408,6 +408,11 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
                     delay(1000);
                     if (positive_modulo(numBounces, 2) == 1) endPos = DISPLAY_HEIGHT - endPos;  // invert if odd amount of edge bounces
                     calculated = true;
+                } 
+                
+                float distance = (endPos - p2->y_size/2 + b->size/2) - p2->y_pos;
+                if (distance > BALLSPEED || distance < (-1) * BALLSPEED) {
+                    move_paddle(p2, (distance > 0 ? DOWN : UP));
                 }
             } else {
                 char middle = DISPLAY_HEIGHT/2 - p2->y_size/2;
@@ -418,10 +423,6 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
                         move_paddle(p2, DOWN);
                     }
                 }
-            }
-            float distance = (endPos - p2->y_size/2 + b->size/2) - p2->y_pos;
-            if (distance > BALLSPEED || distance < (-1) * BALLSPEED) {
-                move_paddle(p2, (distance > 0 ? DOWN : UP));
             }
             break;
     }
