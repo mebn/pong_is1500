@@ -94,6 +94,25 @@ void ball_miss(Ball *b, Paddle *p1, Paddle *p2) {
     }
 }
 
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Increment ball position, keeping inbetween roof and floor. 
+ * 
+ * @param ball The ball struct.
+ */
+void ball_incr(Ball *ball) {
+    // Bounce off roof and floor
+    if (ball->y_pos + ball->y_speed < 0 || ball->y_pos + ball->size + ball->y_speed >= DISPLAY_HEIGHT) {
+        ball->y_speed *= -1;
+    }
+
+    ball->y_pos += ball->y_speed;
+    ball->x_pos += ball->x_speed;
+
+}
+
 /**
  * Written by: Alex Gunnarsson
  * 
@@ -105,11 +124,6 @@ void ball_miss(Ball *b, Paddle *p1, Paddle *p2) {
  * @param p2 Right paddle struct.
  */
 void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
-    // Bounce off roof and floor
-    if (ball->y_pos + ball->y_speed < 0 || ball->y_pos + ball->size + ball->y_speed >= DISPLAY_HEIGHT) {
-        ball->y_speed *= -1;
-    }
-
     // Check for bounce off Left paddle p1 iff it crosses border
     if (ball->x_pos + ball->size > p1->x_pos + p1->x_size &&
         ball->x_pos + ball->x_speed < p1->x_pos + p1->x_size) {
@@ -156,11 +170,9 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
         }
     }
 
-    ball->y_pos += ball->y_speed;
-    ball->x_pos += ball->x_speed;
-
     if (calculated) draw_pixel(p2->x_pos - 10, (char) endPos);
-    if (calculated) draw_pixel(p2->x_pos - 10, DISPLAY_HEIGHT - (char) endPos);
+    // if (calculated) draw_pixel(p2->x_pos - 10, DISPLAY_HEIGHT - (char) endPos);
+    ball_incr(ball);
     ball_miss(ball, p1, p2);
 }
 
@@ -393,23 +405,38 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
             move_ai_incr(p2, b, 10);
             break;
 
-        // predict where the ball is going to end up and move there
+        // simulate where the ball is going to end up and move there
         case HARD:
             if (b->x_speed > 0) {
                 if (!calculated) {
-                    float t = (DISPLAY_WIDTH - PADDLESIZE_X - PADDLEGAP - b->size - b->x_pos) / b->x_speed;  // game updates (time) until ball crosses paddle border
-                    // global variables
-                    endPos = positive_modulo((int) (b->y_pos + t*b->y_speed), DISPLAY_HEIGHT - b->size);   // unfold (mirror) display, act as if ball wouldnt bounce off roof/floor, positive modulo
-                    int numBounces = (int) (b->y_pos + t*b->y_speed) / (DISPLAY_HEIGHT - b->size);  
-                    char* buffer[2];
-                    itos(numBounces, buffer);
-                    draw_string(buffer, 10, 10);
-                    draw_canvas();
-                    delay(1000);
-                    if (positive_modulo(numBounces, 2) == 1) endPos = DISPLAY_HEIGHT - endPos;  // invert if odd amount of edge bounces
+                    float yp = b->y_pos;
+                    float xp = b->x_pos;
+                    float ys = b->y_speed;
+                    float xs = b->x_speed;
+
+                    while (b->y_pos < DISPLAY_WIDTH - PADDLEGAP - PADDLESIZE_X - b->size) {
+                        ball_incr(b);
+                    }
+                    endPos = (int) b->y_pos;
+
+                    b->y_pos = yp;
+                    b->x_pos = xp;
+                    b->y_speed = ys;
+                    b->x_speed = xs;
+
+                    // float t = (DISPLAY_WIDTH - PADDLESIZE_X - PADDLEGAP - b->size - b->x_pos) / b->x_speed;  // game updates (time) until ball crosses paddle border
+                    // // global variables
+                    // endPos = positive_modulo((int) (b->y_pos + t*b->y_speed), DISPLAY_HEIGHT - b->size);   // unfold (mirror) display, act as if ball wouldnt bounce off roof/floor, positive modulo
+                    // int numBounces = (int) (b->y_pos + t*b->y_speed) / (DISPLAY_HEIGHT - b->size);  
+                    // char* buffer[2];
+                    // itos(numBounces, buffer);
+                    // draw_string(buffer, 10, 10);
+                    // draw_canvas();
+                    // delay(1000);
+                    // if (positive_modulo(numBounces, 2) == 1) endPos = DISPLAY_HEIGHT - endPos;  // invert if odd amount of edge bounces
                     calculated = true;
                 } 
-                
+
                 float distance = (endPos - p2->y_size/2 + b->size/2) - p2->y_pos;
                 if (distance > BALLSPEED || distance < (-1) * BALLSPEED) {
                     move_paddle(p2, (distance > 0 ? DOWN : UP));
