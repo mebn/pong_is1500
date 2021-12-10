@@ -74,7 +74,7 @@ unsigned int random() {
  * @param max The maximum value for the return value (exclusive): [0, max)
  * @return unsigned int The pseudo-random result.
  */
-unsigned int random(unsigned int max) {
+unsigned int random_max(unsigned int max) {
     return random() % max;
 }
 
@@ -91,7 +91,7 @@ void init_seed(void) {
     // shuffle
     unsigned int i;
     for (i = 0; i < 1000000; i++) {
-        random(123);
+        random();
     }
 
     eeprom_write_seed(seed);
@@ -244,8 +244,8 @@ void draw_score(Paddle *p1, Paddle * p2) {
 void ball_spawn(Ball *b) {
     b->x_pos = DISPLAY_WIDTH/2 - b->size/2;
     b->y_pos = DISPLAY_HEIGHT/2 - b->size/2;
-    b->x_speed = (random(2) == 1 ? 1 : -1);
-    float y = (float) random(2000001) / 1000000 - 1;    // range [-1, 1]
+    b->x_speed = (random_max(2) == 1 ? 1 : -1);
+    float y = (float) random_max(2000001) / 1000000 - 1;    // range [-1, 1]
     ball_bounce(b, &y);
     freeze = true;
     updateTimer = FREEZETIME;
