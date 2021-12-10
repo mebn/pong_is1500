@@ -150,6 +150,9 @@ char eeprom_read(unsigned short address) {
     return data;
 }
 
+
+/***** EEPROM WRITE *****/
+
 /**
  * Written by: Marcus Nilszén
  * 
@@ -172,13 +175,32 @@ void eeprom_write_str(unsigned short address, char *s) {
 /**
  * Written by: Marcus Nilszén
  * 
+ * @brief Writes a int to EEPROM memory.
+ * Example usage: eeprom_write_str(0x100, 101);
+ * 
+ * @param address Address in EEPROM memory to write to.
+ * @param data Int to write.
+ */
+void eeprom_write_int(unsigned short address, unsigned int data) {
+    eeprom_write(address, data >> 24);
+    eeprom_write(address + 1, data >> 16);
+    eeprom_write(address + 2, data >> 8);
+    eeprom_write(address + 3, data);
+}
+
+
+/***** EEPROM READ *****/
+
+/**
+ * Written by: Marcus Nilszén
+ * 
  * @brief Reads a string from EEPROM memory.
  * Example usage:
  * char buffer[20];
  * eeprom_read_str(0x100, buffer);
  * 
  * @param address Address in EEPROM memory to read from.
- * @param buffer The string/data in given address location.
+ * @param buffer The string in given address location.
  */
 void eeprom_read_str(unsigned short address, char *buffer) {
     int i = 0;
@@ -186,5 +208,43 @@ void eeprom_read_str(unsigned short address, char *buffer) {
         buffer[i] = eeprom_read(address + i);
         if (!buffer[i]) return;
         i++;
+    }
+}
+
+/**
+ * Written by: Marcus Nilszén
+ * 
+ * @brief Reads a int from EEPROM memory.
+ * Example usage:
+ * int res = eeprom_read_int(0x100);
+ * 
+ * @param address Address in EEPROM memory to read from.
+ * @return The int in given address location.
+ */
+unsigned int eeprom_read_int(unsigned short address) {
+    unsigned int data = 0;
+    data |= eeprom_read(address) << 24;
+    data |= eeprom_read(address + 1) << 16;
+    data |= eeprom_read(address + 2) << 8;
+    data |= eeprom_read(address + 3);
+    return data;
+}
+
+
+void reset_eeprom() {
+    short name_addrs[2][4] = {
+        {ADDR_NORMAL1_NAME, ADDR_NORMAL2_NAME, ADDR_NORMAL3_NAME, ADDR_NORMAL4_NAME},
+        {ADDR_HARD1_NAME, ADDR_HARD2_NAME, ADDR_HARD3_NAME, ADDR_HARD4_NAME}
+    };
+    short score_addrs[2][4] = {
+        {ADDR_NORMAL1_SCORE, ADDR_NORMAL2_SCORE, ADDR_NORMAL3_SCORE, ADDR_NORMAL4_SCORE},
+        {ADDR_HARD1_SCORE, ADDR_HARD2_SCORE, ADDR_HARD3_SCORE, ADDR_HARD4_SCORE}
+    };
+    char i, j;
+    for (i = 0; i < 2; i++) {
+        for (j = 0; j < 4; j++) {
+            eeprom_write_str(name_addrs[i][j], "0");
+            eeprom_write_int(score_addrs[i][j], 0);
+        }
     }
 }

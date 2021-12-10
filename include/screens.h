@@ -36,6 +36,6 @@ typedef enum {
 
 void game_screen(game_mode mode);
 void high_score_screen();
-void input_name_screen(int score, game_mode gm);
+void input_name_screen(int score, game_difficulty difficulty);
 
 #endif

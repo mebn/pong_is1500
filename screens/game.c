@@ -299,6 +299,12 @@ game_difficulty difficulty_selection() {
             return current_selection;
         }
 
+        // back
+        if (btn2_ispressed()) {
+            while (btn2_ispressed());
+            return -1;
+        }
+
         draw_canvas();
         delay(10);
     }
@@ -319,6 +325,8 @@ void game_screen(game_mode mode) {
 
     if (mode == SINGLEPLAYER) {
         difficulty = difficulty_selection();
+        if (difficulty == -1)
+            return;
     }
 
     Ball ball = {
@@ -386,7 +394,7 @@ void game_screen(game_mode mode) {
         draw_score(&p1, &p2);
 
         // for testing purposes.
-        if (p1.score > 3) {
+        if (p1.score > 2) {
             break;
         }
 
@@ -399,7 +407,10 @@ void game_screen(game_mode mode) {
     draw_string_grid(p1.score > p2.score ? "PLAYER 1 WON!" : "PLAYER 2 WON!", 10, CENTER);
     draw_canvas();
     delay(2000);
+
+    if (difficulty == NORMAL || difficulty == HARD) {
+        int score = p1.score > p2.score ? p1.score : p2.score;
+        input_name_screen(score, difficulty);
+    }
     
-    int score = p1.score > p2.score ? p1.score : p2.score;
-    input_name_screen(score, mode);
 }

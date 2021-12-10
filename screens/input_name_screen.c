@@ -4,29 +4,78 @@
 #include "../include/timer.h"
 #include "../include/eeprom.h"
 
-// IMPROVE
-void add_to_eeprom(char *name, int score, game_mode gm) {
-    short name_addrs[] = {ADDR_EASY1_NAME, ADDR_EASY2_NAME, ADDR_EASY3_NAME, ADDR_EASY4_NAME};
-    short score_addrs[] = {ADDR_EASY1_SCORE, ADDR_EASY2_SCORE, ADDR_EASY3_SCORE, ADDR_EASY4_SCORE};
-    char pos = -1;
-    int i;
-    for (i = 3; i >= 0; i--) {
-        char eeprom_score[10];
-        eeprom_read_str(score_addrs[i], eeprom_score);
-        if (score >= eeprom_score) pos = i; // problem comp. int to char
+void asasd(int num, char *buffer) {
+    int pos = 0;
+
+    // zeros won't display otherwise.
+    if (num == 0) {
+        buffer[pos++] = 48;
+    } else {
+        while (num != 0) {
+            buffer[pos++] = num % 10 + 48;
+            num /= 10;
+        }
     }
+
+    char from = 0, to = pos - 1;
+    while (from < to) {
+        char temp = buffer[from];
+        buffer[from++] = buffer[to];
+        buffer[to--] = temp;
+    }
+    buffer[pos] = '\0';
+}
+
+void add_to_eeprom(char *name, int score, game_difficulty difficulty) {
+    short name_addrs[4][4] = {
+        {0, 0, 0, 0},
+        {ADDR_NORMAL1_NAME, ADDR_NORMAL2_NAME, ADDR_NORMAL3_NAME, ADDR_NORMAL4_NAME},
+        {ADDR_HARD1_NAME, ADDR_HARD2_NAME, ADDR_HARD3_NAME, ADDR_HARD4_NAME},
+        {0, 0, 0, 0}
+    };
+    short score_addrs[2][4] = {
+        {0, 0, 0, 0},
+        {ADDR_NORMAL1_SCORE, ADDR_NORMAL2_SCORE, ADDR_NORMAL3_SCORE, ADDR_NORMAL4_SCORE},
+        {ADDR_HARD1_SCORE, ADDR_HARD2_SCORE, ADDR_HARD3_SCORE, ADDR_HARD4_SCORE},
+        {0, 0, 0, 0}
+    };
+
+    char temp_names[2][4][7];
+    int temp_scores[2][4];
+
+    char i, pos = -1, saved = 0;
+
+    for (i = 0; i < 4; i++) {
+        int eeprom_score = eeprom_read_int(score_addrs[difficulty][i]);
+        eeprom_read_str(name_addrs[difficulty][i], temp_names[difficulty][i]);
+        temp_scores[difficulty][i] = eeprom_score;
+
+        // change >= to > to avoid duplicate scores.
+        if (score >= eeprom_score && !saved) {
+            pos = i;
+            saved = 1;
+        }
+    }
+    
     if (pos != -1) {
-        eeprom_write_str(name_addrs[pos], name);
-        eeprom_write_str(score_addrs[pos], &score);
+        // push other scores down
+        for (i = pos; i < 4-1; i++) {
+            eeprom_write_str(name_addrs[difficulty][i + 1], temp_names[difficulty][i]);
+            eeprom_write_int(score_addrs[difficulty][i + 1], temp_scores[difficulty][i]);
+        }
+
+        // add new score to leaderboard
+        eeprom_write_str(name_addrs[difficulty][pos], name);
+        eeprom_write_int(score_addrs[difficulty][pos], score);
     }
 
 }
 
-void input_name_screen(int score, game_mode gm) {
+void input_name_screen(int score, game_difficulty difficulty) {
     int current_selection = 0;
     char name[] = {'A'-1, 'A'-1, 'A'-1, 'A'-1, 'A'-1, 'A'-1, '\0'};
-    
     char i, spacing = 3, len = 5, x = 43, y = 20;
+    
     while (1) {
         draw_clear();
         
@@ -66,7 +115,7 @@ void input_name_screen(int score, game_mode gm) {
 
         if (current_selection == 6) {
             // add name and score to highscore list
-            add_to_eeprom(name, score, gm);
+            add_to_eeprom(name, score, difficulty);
             break;
         }
 

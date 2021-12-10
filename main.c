@@ -104,6 +104,8 @@ void inits() {
 int main() {
     inits();
     loading();
+
+    // reset_eeprom();
     
     draw_clear();
     draw_canvas();
