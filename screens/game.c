@@ -134,13 +134,14 @@ void init_seed(void) {
 }
 
 /**
- * Written by: Marcus Nilszén
+ * Written by: Marcus Nilszén & Alex Gunnarsson
  * 
  * @brief Draw the ball used in game.
  * 
  * @param ball Ball struct.
  */
 void draw_ball(Ball *ball) {
+    if (freeze && updateTimer >= FREEZETIME) return;
     char size = ball->size;
     int i, j;
     for (i = 0; i < size; i++) {
@@ -221,13 +222,7 @@ void ball_spawn(Ball *b) {
     float y = (float) random_max(2000001) / 1000000 - 1;    // range [-1, 1]
     ball_bounce(b, &y);
     freeze = true;
-    updateTimer = FREEZETIME;
-
-    // char buffer[10];
-    // itos((int) (100*(y+1)), buffer);
-    // draw_string(buffer, 10, 0);
-    // draw_canvas();
-    // delay(1000);
+    updateTimer = 2 * FREEZETIME;
 }
 
 /**
@@ -280,7 +275,7 @@ void ball_incr(Ball *ball) {
 void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
     if (freeze) {
         updateTimer--;
-        if (updateTimer <= 0) freeze = false;
+        if (updateTimer < 0) freeze = false;
         return;
     }
   
@@ -663,9 +658,9 @@ void game_screen(game_mode mode) {
     init_seed();
 
     // init global vars
-    calculated = false;     // used for reducing amount of calculations for HARD difficulty, not yet calculated
-    freeze = true;          // used to freeze the ball on respawn, inactive
-    updateTimer = FREEZETIME;
+    calculated = false;         // used for reducing amount of calculations for HARD difficulty, not yet calculated
+    freeze = true;              // used to freeze the ball on respawn, inactive
+    updateTimer = FREEZETIME;   // different freezetime for first spawn
 
     while (1) {
         draw_clear();

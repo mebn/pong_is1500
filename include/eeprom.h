@@ -1,7 +1,7 @@
 #ifndef EEPROM_H
 #define EEPROM_H
 
-#define ADDR_SEED       0x200
+#define ADDR_SEED       0x100
 
 void eeprom_init();
 void eeprom_write_str(unsigned short address, char *s);
