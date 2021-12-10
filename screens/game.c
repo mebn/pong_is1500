@@ -562,7 +562,7 @@ void game_screen(game_mode mode) {
     draw_canvas();
     delay(2000);
 
-    if (difficulty == NORMAL || difficulty == HARD) {
+    if (difficulty != IMPOSSIBLE) {
         int score = p1.score > p2.score ? p1.score : p2.score;
         input_name_screen(score, difficulty);
     }

@@ -239,17 +239,19 @@ unsigned int eeprom_read_int(unsigned short address) {
  * 
  */
 void reset_eeprom() {
-    short name_addrs[2][4] = {
+    short name_addrs[DIFFICULTYLEVELS][TOPNPLAYERS] = {
+        {ADDR_EASY1_NAME, ADDR_EASY2_NAME, ADDR_EASY3_NAME, ADDR_EASY4_NAME},
         {ADDR_NORMAL1_NAME, ADDR_NORMAL2_NAME, ADDR_NORMAL3_NAME, ADDR_NORMAL4_NAME},
         {ADDR_HARD1_NAME, ADDR_HARD2_NAME, ADDR_HARD3_NAME, ADDR_HARD4_NAME}
     };
-    short score_addrs[2][4] = {
+    short score_addrs[DIFFICULTYLEVELS][TOPNPLAYERS] = {
+        {ADDR_EASY1_SCORE, ADDR_EASY2_SCORE, ADDR_EASY3_SCORE, ADDR_EASY4_SCORE},
         {ADDR_NORMAL1_SCORE, ADDR_NORMAL2_SCORE, ADDR_NORMAL3_SCORE, ADDR_NORMAL4_SCORE},
         {ADDR_HARD1_SCORE, ADDR_HARD2_SCORE, ADDR_HARD3_SCORE, ADDR_HARD4_SCORE}
     };
     char i, j;
-    for (i = 0; i < 2; i++) {
-        for (j = 0; j < 4; j++) {
+    for (i = 0; i < DIFFICULTYLEVELS; i++) {
+        for (j = 0; j < TOPNPLAYERS; j++) {
             eeprom_write_str(name_addrs[i][j], "0");
             eeprom_write_int(score_addrs[i][j], 0);
         }

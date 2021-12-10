@@ -15,25 +15,23 @@
  * @param difficulty The difficulty used to achieve this score.
  */
 void add_to_eeprom(char *name, int score, game_difficulty difficulty) {
-    short name_addrs[4][4] = {
-        {0, 0, 0, 0},
+    short name_addrs[DIFFICULTYLEVELS][TOPNPLAYERS] = {
+        {ADDR_EASY1_NAME, ADDR_EASY2_NAME, ADDR_EASY3_NAME, ADDR_EASY4_NAME},
         {ADDR_NORMAL1_NAME, ADDR_NORMAL2_NAME, ADDR_NORMAL3_NAME, ADDR_NORMAL4_NAME},
-        {ADDR_HARD1_NAME, ADDR_HARD2_NAME, ADDR_HARD3_NAME, ADDR_HARD4_NAME},
-        {0, 0, 0, 0}
+        {ADDR_HARD1_NAME, ADDR_HARD2_NAME, ADDR_HARD3_NAME, ADDR_HARD4_NAME}
     };
-    short score_addrs[2][4] = {
-        {0, 0, 0, 0},
+    short score_addrs[DIFFICULTYLEVELS][TOPNPLAYERS] = {
+        {ADDR_EASY1_SCORE, ADDR_EASY2_SCORE, ADDR_EASY3_SCORE, ADDR_EASY4_SCORE},
         {ADDR_NORMAL1_SCORE, ADDR_NORMAL2_SCORE, ADDR_NORMAL3_SCORE, ADDR_NORMAL4_SCORE},
-        {ADDR_HARD1_SCORE, ADDR_HARD2_SCORE, ADDR_HARD3_SCORE, ADDR_HARD4_SCORE},
-        {0, 0, 0, 0}
+        {ADDR_HARD1_SCORE, ADDR_HARD2_SCORE, ADDR_HARD3_SCORE, ADDR_HARD4_SCORE}
     };
 
-    char temp_names[2][4][7];
-    int temp_scores[2][4];
+    char temp_names[DIFFICULTYLEVELS][TOPNPLAYERS][7];
+    int temp_scores[DIFFICULTYLEVELS][TOPNPLAYERS];
 
     char i, pos = -1, saved = 0;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < TOPNPLAYERS; i++) {
         int eeprom_score = eeprom_read_int(score_addrs[difficulty][i]);
         eeprom_read_str(name_addrs[difficulty][i], temp_names[difficulty][i]);
         temp_scores[difficulty][i] = eeprom_score;
@@ -47,7 +45,7 @@ void add_to_eeprom(char *name, int score, game_difficulty difficulty) {
     
     if (pos != -1) {
         // push other scores down
-        for (i = pos; i < 4-1; i++) {
+        for (i = pos; i < TOPNPLAYERS - 1; i++) {
             eeprom_write_str(name_addrs[difficulty][i + 1], temp_names[difficulty][i]);
             eeprom_write_int(score_addrs[difficulty][i + 1], temp_scores[difficulty][i]);
         }
