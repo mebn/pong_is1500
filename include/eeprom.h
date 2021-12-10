@@ -1,7 +1,9 @@
 #ifndef EEPROM_H
 #define EEPROM_H
 
-#define ADDR_SEED 0x0
+// #define ADDR_SEED 0x0
+
+/***** EEPROM MEMORY ADDRESSES *****/
 
 // normal
 #define ADDR_NORMAL1_NAME 0x100
