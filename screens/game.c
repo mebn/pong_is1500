@@ -414,7 +414,7 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
                     float ys = b->y_speed;
                     float xs = b->x_speed;
 
-                    while (b->y_pos < DISPLAY_WIDTH - PADDLEGAP - PADDLESIZE_X - b->size) {
+                    while (b->x_pos < DISPLAY_WIDTH - PADDLEGAP - PADDLESIZE_X - b->size) {
                         ball_incr(b);
                     }
                     endPos = (int) b->y_pos;
@@ -519,7 +519,7 @@ void game_screen(game_mode mode) {
         .x_pos = 127/2,
         .y_pos = 31/2,
         .size = BALLSIZE,
-        .x_speed = 1,
+        .x_speed = -1,
         .y_speed = 0
     };
     
