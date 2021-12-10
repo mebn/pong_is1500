@@ -197,10 +197,10 @@ void eeprom_read_str(unsigned short address, char *buffer) {
  * @param value The value of the seed.
  */
 void eeprom_write_seed(unsigned int value) {
-    eeprom_write(A_SEED, value >> 24);
-    eeprom_write(A_SEED + 1, value >> 16);
-    eeprom_write(A_SEED + 2, value >> 8);
-    eeprom_write(A_SEED + 3, value);
+    eeprom_write(ADDR_SEED, value >> 24);
+    eeprom_write(ADDR_SEED + 1, value >> 16);
+    eeprom_write(ADDR_SEED + 2, value >> 8);
+    eeprom_write(ADDR_SEED + 3, value);
 }
 
 /**
@@ -212,9 +212,9 @@ void eeprom_write_seed(unsigned int value) {
  */
 unsigned int eeprom_read_seed() {
     unsigned int value = 0;
-    value |= eeprom_read(A_SEED) << 24;
-    value |= eeprom_read(A_SEED + 1) << 16;
-    value |= eeprom_read(A_SEED + 2) << 8;
-    value |= eeprom_read(A_SEED + 3);
+    value |= eeprom_read(ADDR_SEED) << 24;
+    value |= eeprom_read(ADDR_SEED + 1) << 16;
+    value |= eeprom_read(ADDR_SEED + 2) << 8;
+    value |= eeprom_read(ADDR_SEED + 3);
     return value;
 }

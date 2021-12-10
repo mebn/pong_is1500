@@ -9,6 +9,7 @@
 
 #define BALLSIZE 2
 #define BALLSPEED 1
+#define FREEZETIME 50
 
 /**
  * @brief There's two different

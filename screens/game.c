@@ -37,6 +37,15 @@ typedef struct {
 
 /**
  * Written by: Alex Gunnarsson
+ * 
+ * @brief Responsible for freezing the ball for an amount of updates.
+ * 
+ */
+int updateTimer;
+bool freeze;
+
+/**
+ * Written by: Alex Gunnarsson
  * Source: https://github.com/alevarn/pic32-pong-game/blob/2eb1203e1593d5eb2d4c56830e10e86cdea170c1/tools/utility.c
  * 
  * @brief Seed used for pseudo-random function.
@@ -114,6 +123,12 @@ void draw_ball(Ball *ball) {
  * @param p2 Right paddle struct.
  */
 void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
+    if (freeze) {
+        updateTimer--;
+        if (updateTimer <= 0) freeze = false;
+        return;
+    }
+
     // Bounce off roof and floor
     if (ball->y_pos + ball->y_speed < 0 || ball->y_pos + ball->y_speed >= DISPLAY_HEIGHT) {
         ball->y_speed *= -1;
@@ -220,6 +235,23 @@ void draw_score(Paddle *p1, Paddle * p2) {
 }
 
 /**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Spawns the ball in the middle and freezes it for some time.
+ * 
+ * @param b 
+ */
+void ball_spawn(Ball *b) {
+    b->x_pos = DISPLAY_WIDTH/2 - b->size/2;
+    b->y_pos = DISPLAY_HEIGHT/2 - b->size/2;
+    b->x_speed = (random(2) == 1 ? 1 : -1);
+    float y = (float) random(2000001) / 1000000 - 1;    // range [-1, 1]
+    ball_bounce(b, &y);
+    freeze = true;
+    updateTimer = FREEZETIME;
+}
+
+/**
  * @brief When ball misses one of the paddles.
  * 
  * @param b Ball struct
@@ -227,12 +259,12 @@ void draw_score(Paddle *p1, Paddle * p2) {
  * @param p2 Paddle struct. Player2
  */
 void ball_miss(Ball *b, Paddle *p1, Paddle *p2) {
-    if (b->x_pos > 128 + 50) {
+    if (b->x_pos > DISPLAY_WIDTH) {
         p1->score++;
-        b->x_pos = 128/2;
-    } else if (b->x_pos < 0 - 50) {
+        ball_spawn(b);
+    } else if (b->x_pos < 0 - b->size) {
         p2->score++;
-        b->x_pos = 128/2;
+        ball_spawn(b);
     }
 }
 
@@ -390,12 +422,9 @@ void game_screen(game_mode mode) {
     }
 
     Ball ball = {
-        .x_pos = 127/2,
-        .y_pos = 31/2,
-        .size = BALLSIZE,
-        .x_speed = 1,
-        .y_speed = 0
+        .size = BALLSIZE
     };
+    ball_spawn(&ball);
     
     Paddle p1 = {
         .x_pos = 0 + PADDLEGAP,
@@ -425,6 +454,10 @@ void game_screen(game_mode mode) {
     delay(1000);
 
     init_seed();
+
+    // init global vars
+    freeze = false;
+    updateTimer = 0;
 
     while (1) {
         draw_clear();
