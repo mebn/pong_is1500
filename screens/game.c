@@ -212,9 +212,9 @@ void ball_spawn(Ball *b) {
     updateTimer = FREEZETIME;
 
     char buffer[10];
-    itos((int) 100*(y+1), buffer);
+    itos((int) (100*(y+1)), buffer);
     draw_string(buffer, 10, 0);
-    itos((int) 100*rand, buffer);
+    itos((int) rand, buffer);
     draw_string(buffer, 10, 15);
     draw_canvas();
     delay(1000);
