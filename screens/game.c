@@ -678,12 +678,6 @@ void game_screen(game_mode mode) {
             break;
         }
 
-        draw_clear();
-        char buffer[3];
-        itos((int) random_max(100), buffer);
-        draw_string(buffer, 10, 10);
-        delay(1000);
-
         draw_canvas();
         delay(20);
     }
