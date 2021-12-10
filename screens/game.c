@@ -3,6 +3,7 @@
 #include "../include/screens.h"
 #include "../include/buttons.h"
 #include "../include/display.h"
+#include "../include/eeprom.h"
 
 /**
  * Written by: Marcus Nilszén
@@ -32,6 +33,60 @@ typedef struct {
     char y_size;
     int score;
 } Paddle;
+
+
+/**
+ * Written by: Alex Gunnarsson
+ * Source: https://github.com/alevarn/pic32-pong-game/blob/2eb1203e1593d5eb2d4c56830e10e86cdea170c1/tools/utility.c
+ * 
+ * @brief Seed used for pseudo-random function.
+ * 
+ */
+static unsigned int seed = 326246914;
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Produces a pseudo-random unsigned integer.
+ * 
+ * @return unsigned int The pseudo-random result.
+ */
+unsigned int random() {
+    seed = seed * 1103515245 + 26475;
+    return seed;
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * Source: https://github.com/alevarn/pic32-pong-game/blob/2eb1203e1593d5eb2d4c56830e10e86cdea170c1/tools/utility.c
+ * 
+ * @brief Produces a pseudo-random unsigned integer below a specified max.
+ * 
+ * @param max The maximum value for the return value (exclusive): [0, max)
+ * @return unsigned int The pseudo-random result.
+ */
+unsigned int random(unsigned int max) {
+    return random() % max;
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * Source: https://github.com/alevarn/pic32-pong-game/blob/2eb1203e1593d5eb2d4c56830e10e86cdea170c1/main.c
+ * 
+ * @brief Randomizes the seed before using it to ensure new results.
+ * 
+ */
+void init_seed(void) {
+    seed = eeprom_read_seed();
+
+    // shuffle
+    unsigned int i;
+    for (i = 0; i < 1000000; i++) {
+        random(123);
+    }
+
+    eeprom_write_seed(seed);
+}
 
 /**
  * @brief Draw the ball used in game.
@@ -368,6 +423,8 @@ void game_screen(game_mode mode) {
     draw_string_grid("GET READY...", 10, CENTER);
     draw_canvas();
     delay(1000);
+
+    init_seed();
 
     while (1) {
         draw_clear();
