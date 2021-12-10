@@ -160,6 +160,7 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
     ball->x_pos += ball->x_speed;
 
     if (calculated) draw_pixel(p2->x_pos - 10, (char) endPos);
+    if (calculated) draw_pixel(p2->x_pos - 10, DISPLAY_HEIGHT - (char) endPos);
     ball_miss(ball, p1, p2);
 }
 
@@ -400,8 +401,12 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
                     // global variables
                     endPos = positive_modulo((int) (b->y_pos + t*b->y_speed), DISPLAY_HEIGHT - b->size);   // unfold (mirror) display, act as if ball wouldnt bounce off roof/floor, positive modulo
                     int numBounces = (int) (b->y_pos + t*b->y_speed) / (DISPLAY_HEIGHT - b->size);  
+                    char* buffer[2];
+                    itos(numBounces, buffer);
+                    draw_string(buffer, 10, 10);
+                    delay(1000);
                     if (positive_modulo(numBounces, 2) == 1) endPos = DISPLAY_HEIGHT - endPos;  // invert if odd amount of edge bounces
-                    // calculated = true;
+                    calculated = true;
                 }
             } else {
                 char middle = DISPLAY_HEIGHT/2 - p2->y_size/2;
