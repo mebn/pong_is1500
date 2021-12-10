@@ -424,6 +424,7 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
                     b->y_speed = ys;
                     b->x_speed = xs;
 
+                    // old calculation method which for some reason does not work... :C
                     // float t = (DISPLAY_WIDTH - PADDLESIZE_X - PADDLEGAP - b->size - b->x_pos) / b->x_speed;  // game updates (time) until ball crosses paddle border
                     // // global variables
                     // endPos = positive_modulo((int) (b->y_pos + t*b->y_speed), DISPLAY_HEIGHT - b->size);   // unfold (mirror) display, act as if ball wouldnt bounce off roof/floor, positive modulo
