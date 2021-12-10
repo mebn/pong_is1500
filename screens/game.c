@@ -204,6 +204,7 @@ void ball_spawn(Ball *b) {
     b->x_pos = DISPLAY_WIDTH/2 - b->size/2;
     b->y_pos = DISPLAY_HEIGHT/2 - b->size/2;
     b->x_speed = (random_max(2) == 1 ? 1 : -1);
+    b->y_speed = 0;
     float y = (float) random_max(2000001) / 1000000 - 1;    // range [-1, 1]
     ball_bounce(b, &y);
     freeze = true;
