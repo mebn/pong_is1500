@@ -92,6 +92,19 @@ unsigned int random() {
  * Written by: Alex Gunnarsson
  * Source: https://github.com/alevarn/pic32-pong-game/blob/2eb1203e1593d5eb2d4c56830e10e86cdea170c1/tools/utility.c
  * 
+ * @brief 
+ * 
+ * @return unsigned int 
+ */
+unsigned int random_binary() {
+    seed = seed * 1103515245 + 12345;
+    return ((seed / 65536) % 2);
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * Source: https://github.com/alevarn/pic32-pong-game/blob/2eb1203e1593d5eb2d4c56830e10e86cdea170c1/tools/utility.c
+ * 
  * @brief Produces a pseudo-random unsigned integer below a specified max.
  * 
  * @param max The maximum value for the return value (exclusive): [0, max)
@@ -203,21 +216,18 @@ void ball_bounce(Ball *b, float *modify) {
 void ball_spawn(Ball *b) {
     b->x_pos = DISPLAY_WIDTH/2 - b->size/2;
     b->y_pos = DISPLAY_HEIGHT/2 - b->size/2;
-    b->x_speed = (random_max(2) == 1 ? 1 : -1);
+    b->x_speed = (random_binary() == 1 ? 1 : -1);
     b->y_speed = 0;
-    unsigned int rand = random_max(2000001);
-    float y = (float) rand / 1000000 - 1;    // range [-1, 1]
+    float y = (float) random_max(2000001) / 1000000 - 1;    // range [-1, 1]
     ball_bounce(b, &y);
     freeze = true;
     updateTimer = FREEZETIME;
 
-    char buffer[10];
-    itos((int) (100*(y+1)), buffer);
-    draw_string(buffer, 10, 0);
-    itos((int) rand, buffer);
-    draw_string(buffer, 10, 15);
-    draw_canvas();
-    delay(1000);
+    // char buffer[10];
+    // itos((int) (100*(y+1)), buffer);
+    // draw_string(buffer, 10, 0);
+    // draw_canvas();
+    // delay(1000);
 }
 
 /**
