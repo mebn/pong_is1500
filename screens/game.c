@@ -139,25 +139,6 @@ void draw_ball(Ball *ball) {
 }
 
 /**
- * Written by: Marcus Nilszén
- * Source: https://ourcodeworld.com/articles/read/884/how-to-get-the-square-root-of-a-number-without-using-the-sqrt-function-in-c
- * 
- * @brief Custom sqrt function.
- * 
- * @param number Number to sqrt.
- * @return float The sqrt of number.
- */
-float my_sqrt(float number) {
-    float sqrt = number / 2.0;
-    float temp = 0;
-    while(sqrt != temp){
-        temp = sqrt;
-        sqrt = (number/temp + temp) / 2.0;
-    }
-    return sqrt;
-}
-
-/**
  * Written by: Alex Gunnarsson
  * 
  * @brief Gives the ball new speed vectors on paddle bounce.
