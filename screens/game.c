@@ -41,8 +41,8 @@ typedef struct {
  * @brief Responsible for freezing the ball for an amount of updates.
  * 
  */
-int updateTimer;
-bool freeze;
+static int updateTimer;
+static bool freeze;
 
 /**
  * Written by: Alex Gunnarsson
@@ -51,8 +51,8 @@ bool freeze;
  * for the predicition used in IMPOSSIBLE.
  * 
  */
-int endPos;
-bool calculated;
+static int endPos;
+static bool calculated;
 
 /**
  * Written by: Alex Gunnarsson
