@@ -205,14 +205,17 @@ void ball_spawn(Ball *b) {
     b->y_pos = DISPLAY_HEIGHT/2 - b->size/2;
     b->x_speed = (random_max(2) == 1 ? 1 : -1);
     b->y_speed = 0;
-    float y = (float) random_max(2000001) / 1000000 - 1;    // range [-1, 1]
+    unsigned int rand = random_max(2000001);
+    float y = (float) rand / 1000000 - 1;    // range [-1, 1]
     ball_bounce(b, &y);
     freeze = true;
     updateTimer = FREEZETIME;
 
     char buffer[10];
     itos((int) 100*(y+1), buffer);
-    draw_string(buffer, 10, 10);
+    draw_string(buffer, 10, 0);
+    itos((int) 100*rand, buffer);
+    draw_string(buffer, 10, 15);
     draw_canvas();
     delay(1000);
 }
