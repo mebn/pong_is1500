@@ -104,7 +104,7 @@ void timer3_off() {
 void timer3_init() {
     T3CON |= 7 << 4;            // prescale 1:256
     PR3 = (80000000 / 256) / 5; // period
-    timer3_on()
+    timer3_on();
 }
 
 /**

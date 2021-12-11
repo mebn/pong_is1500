@@ -88,7 +88,7 @@ void draw_timer() {
     string[3] = (time % 60) / 10;
     string[4] = time % 60;
     string[5] = '\0';
-    draw_string_grid(time, DISPLAY_HEIGHT - FONT_SIZE, CENTER);
+    draw_string_grid(string, DISPLAY_HEIGHT - FONT_SIZE, CENTER);
 }
 
 /**
