@@ -32,12 +32,11 @@ void add_to_eeprom(char *name, int score, game_difficulty difficulty) {
     char i, pos = -1, saved = 0;
 
     for (i = 0; i < TOPNPLAYERS; i++) {
-        int eeprom_score = eeprom_read_int(score_addrs[difficulty][i]);
         eeprom_read_str(name_addrs[difficulty][i], temp_names[difficulty][i]);
-        temp_scores[difficulty][i] = eeprom_score;
+        temp_scores[difficulty][i] = eeprom_read(score_addrs[difficulty][i]);
 
         // change >= to > to avoid duplicate scores.
-        if (score >= eeprom_score && !saved) {
+        if (score >= temp_scores[difficulty][i] && !saved) {
             pos = i;
             saved = 1;
         }
@@ -47,12 +46,12 @@ void add_to_eeprom(char *name, int score, game_difficulty difficulty) {
         // push other scores down
         for (i = pos; i < TOPNPLAYERS - 1; i++) {
             eeprom_write_str(name_addrs[difficulty][i + 1], temp_names[difficulty][i]);
-            eeprom_write_int(score_addrs[difficulty][i + 1], temp_scores[difficulty][i]);
+            eeprom_write(score_addrs[difficulty][i + 1], temp_scores[difficulty][i]);
         }
 
         // add new score to leaderboard
         eeprom_write_str(name_addrs[difficulty][pos], name);
-        eeprom_write_int(score_addrs[difficulty][pos], score);
+        eeprom_write(score_addrs[difficulty][pos], score);
     }
 
 }
@@ -65,7 +64,7 @@ void add_to_eeprom(char *name, int score, game_difficulty difficulty) {
  * @param score Score the player got.
  * @param difficulty The difficulty used to achieve this score.
  */
-void input_name_screen(int score, game_difficulty difficulty) {
+void input_name_screen(char score, game_difficulty difficulty) {
     int current_selection = 0;
     char name[] = {'A'-1, 'A'-1, 'A'-1, 'A'-1, 'A'-1, 'A'-1, '\0'};
     char i, spacing = 3, len = 5, x = 43, y = 20;

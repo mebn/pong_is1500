@@ -34,27 +34,32 @@ void high_score_screen() {
 
     // [mode (normal/easy)][position (1-4)][len of string]
     char names[DIFFICULTYLEVELS][TOPNPLAYERS][7];
-    char scores[DIFFICULTYLEVELS][TOPNPLAYERS][10];
-    char name_scores[DIFFICULTYLEVELS][TOPNPLAYERS][30];
+    char scores[DIFFICULTYLEVELS][TOPNPLAYERS][4];
+    char name_scores[DIFFICULTYLEVELS][TOPNPLAYERS][13];
     
     char mode, place;
     for (mode = 0; mode < DIFFICULTYLEVELS; mode++) {
         for (place = 0; place < TOPNPLAYERS; place++) {
             eeprom_read_str(name_addrs[mode][place], names[mode][place]);
+            
             if (names[mode][place][0] == '0') {
                 name_scores[mode][place][0] = '\0';
                 continue;
             }
-            int temp = eeprom_read_int(score_addrs[mode][place]);
+
+            char temp = eeprom_read(score_addrs[mode][place]);
             itos(temp, scores[mode][place]);
 
             // add name and score into name_scores
             char entry_pos = 0, name_score_pos = 0;
+            
             // name
             while (names[mode][place][name_score_pos])
                 name_scores[mode][place][entry_pos++] = names[mode][place][name_score_pos++];
+            
             name_scores[mode][place][entry_pos++] = ':';
             name_score_pos = 0;
+            
             // score
             while (scores[mode][place][name_score_pos])
                 name_scores[mode][place][entry_pos++] = scores[mode][place][name_score_pos++];

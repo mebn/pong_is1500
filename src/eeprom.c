@@ -79,7 +79,7 @@ void eeprom_nack() {
 /**
  * Written by: Marcus Nilszén
  * 
- * @brief [PRIVATE] Writes a char to EEPROM memory.
+ * @brief Writes a char to EEPROM memory.
  * 
  * @param address Address in EEPROM memory to write to.
  * @param byte The char/data to write.
@@ -110,7 +110,7 @@ void eeprom_write(unsigned short address, unsigned char data) {
 /**
  * Written by: Marcus Nilszén
  * 
- * @brief [PRIVATE] Reads a char from EEPROM memory.
+ * @brief Reads a char from EEPROM memory.
  * 
  * @param address Address in EEPROM memory to read from.
  * @return char The char/data in given address location.
@@ -174,22 +174,6 @@ void eeprom_write_str(unsigned short address, char *s) {
 }
 
 /**
- * Written by: Marcus Nilszén
- * 
- * @brief Writes a int to EEPROM memory.
- * Example usage: eeprom_write_str(0x100, 101);
- * 
- * @param address Address in EEPROM memory to write to.
- * @param data Int to write.
- */
-void eeprom_write_int(unsigned short address, unsigned int data) {
-    eeprom_write(address, data >> 24);
-    eeprom_write(address + 1, data >> 16);
-    eeprom_write(address + 2, data >> 8);
-    eeprom_write(address + 3, data);
-}
-
-/**
  * Written by: Alex Gunnarsson
  * 
  * @brief Writes the given value as seed on EEPROM.
@@ -224,25 +208,6 @@ void eeprom_read_str(unsigned short address, char *buffer) {
         if (!buffer[i]) return;
         i++;
     }
-}
-
-/**
- * Written by: Marcus Nilszén
- * 
- * @brief Reads a int from EEPROM memory.
- * Example usage:
- * int res = eeprom_read_int(0x100);
- * 
- * @param address Address in EEPROM memory to read from.
- * @return The int in given address location.
- */
-unsigned int eeprom_read_int(unsigned short address) {
-    unsigned int data = 0;
-    data |= eeprom_read(address) << 24;
-    data |= eeprom_read(address + 1) << 16;
-    data |= eeprom_read(address + 2) << 8;
-    data |= eeprom_read(address + 3);
-    return data;
 }
 
 /**
@@ -286,7 +251,7 @@ void reset_eeprom() {
     for (i = 0; i < DIFFICULTYLEVELS; i++) {
         for (j = 0; j < TOPNPLAYERS; j++) {
             eeprom_write_str(name_addrs[i][j], "0");
-            eeprom_write_int(score_addrs[i][j], 0);
+            eeprom_write(score_addrs[i][j], 0);
         }
     }
 }

@@ -40,13 +40,13 @@
 void eeprom_init();
 
 /***** EEPROM WRITE *****/
+void eeprom_write(unsigned short address, unsigned char data);
 void eeprom_write_str(unsigned short address, char *s);
-void eeprom_write_int(unsigned short address, unsigned int data);
 void eeprom_write_seed(unsigned int value);
 
 /***** EEPROM READ *****/
+char eeprom_read(unsigned short address);
 void eeprom_read_str(unsigned short address, char *buffer);
-unsigned int eeprom_read_int(unsigned short address);
 unsigned int eeprom_read_seed();
 
 /***** EEPROM OTHER *****/

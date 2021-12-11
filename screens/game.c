@@ -31,7 +31,7 @@ typedef struct {
     int y_pos;
     char x_size;
     char y_size;
-    int score;
+    char score;
 } Paddle;
 
 
