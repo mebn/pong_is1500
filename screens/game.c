@@ -61,7 +61,7 @@ static bool calculated;
  * @brief Keeps track of the in-game time. 5 units is 1 second.
  * 
  */
-static short timer;
+static unsigned short timer;
 
 /**
  * Written by: Alex Gunnarsson
@@ -80,17 +80,26 @@ void decrement_timer() {
  * 
  */
 void draw_timer() {
-    char time = timer / 5;
+    unsigned char time = timer / 5;
     char string[6];
-    char digit[3];
-    itos(time / 60, digit);
+    char digit[2];
+    
+    itos((time / 60) / 10, digit);
     string[0] = digit[0];
-    string[1] = digit[1];
+
+    itos((time / 60) % 10, digit);
+    string[1] = digit[0];
+    
     string[2] = ':';
-    itos(time % 60, digit);
+    
+    itos((time % 60) / 10, digit);
     string[3] = digit[0];
-    string[4] = digit[1];
+
+    itos((time % 60) % 10, digit);
+    string[4] = digit[0];
+    
     string[5] = '\0';
+
     draw_string_grid(string, DISPLAY_HEIGHT - FONT_SIZE, CENTER);
 }
 
@@ -434,7 +443,7 @@ void move_ai_incr(Paddle *p2, Ball *b, int delay) {
     // not moving towards, ignore
     if (b->x_speed < 0) return;
     // just recently bounced, ignore
-    if (b->x_pos - delay*b->x_speed < PADDLEGAP + PADDLESIZE_X) return;
+    if (b->x_pos - delay*b->x_speed < PADDLEGAP + PADDLESIZE_X + 5) return;
 
     float past_pos = b->y_pos - delay*b->y_speed;
     float ball_mid = past_pos + b->size/2;
