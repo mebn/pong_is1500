@@ -48,7 +48,6 @@ void high_score_screen() {
             while (names[mode][place][name_score_pos])
                 name_scores[mode][place][entry_pos++] = names[mode][place][name_score_pos++];
             
-            name_scores[mode][place][entry_pos++] = ' ';
             name_scores[mode][place][entry_pos++] = ':';
             name_scores[mode][place][entry_pos++] = ' ';
             name_score_pos = 0;
