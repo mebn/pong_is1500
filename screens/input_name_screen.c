@@ -80,7 +80,7 @@ void input_name_screen(char score, game_difficulty difficulty) {
         draw_line(x + current_selection*(len+spacing), y, len, 2);
 
         // left
-        if (btn4_ispressed() && current_selection != 0) {
+        if (btn4_ispressed()) {
             while (btn4_ispressed());
             current_selection--;
         }
