@@ -3,21 +3,8 @@
 #include "../include/screens.h"
 #include "../include/buttons.h"
 #include "../include/display.h"
+#include "../include/tools.h"
 #include "../include/eeprom.h"
-
-/**
- * Written by: Marcus Nilszén
- * 
- * @brief Enum containing the dirrerent
- * game difficulties.
- * 
- */
-typedef enum {
-    EASY,
-    NORMAL,
-    HARD,
-    IMPOSSIBLE
-} game_difficulty;
 
 /**
  * Written by: Alex Gunnarsson & Marcus Nilszén
@@ -44,7 +31,7 @@ typedef struct {
     int y_pos;
     char x_size;
     char y_size;
-    int score;
+    char score;
 } Paddle;
 
 
@@ -54,8 +41,8 @@ typedef struct {
  * @brief Responsible for freezing the ball for an amount of updates.
  * 
  */
-int updateTimer;
-bool freeze;
+static int updateTimer;
+static bool freeze;
 
 /**
  * Written by: Alex Gunnarsson
@@ -64,8 +51,8 @@ bool freeze;
  * for the predicition used in IMPOSSIBLE.
  * 
  */
-int endPos;
-bool calculated;
+static int endPos;
+static bool calculated;
 
 /**
  * Written by: Alex Gunnarsson
@@ -149,25 +136,6 @@ void draw_ball(Ball *ball) {
             draw_pixel(ball->x_pos + i, ball->y_pos + j);
         }
     }
-}
-
-/**
- * Written by: Marcus Nilszén
- * Source: https://ourcodeworld.com/articles/read/884/how-to-get-the-square-root-of-a-number-without-using-the-sqrt-function-in-c
- * 
- * @brief Custom sqrt function.
- * 
- * @param number Number to sqrt.
- * @return float The sqrt of number.
- */
-float my_sqrt(float number) {
-    float sqrt = number / 2.0;
-    float temp = 0;
-    while(sqrt != temp){
-        temp = sqrt;
-        sqrt = (number/temp + temp) / 2.0;
-    }
-    return sqrt;
 }
 
 /**
@@ -329,37 +297,6 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
     // if (calculated) draw_pixel(p2->x_pos - 10, DISPLAY_HEIGHT - (char) endPos);
     ball_incr(ball);
     ball_miss(ball, p1, p2);
-}
-
-
-/**
- * Written by: Marcus Nilszén
- * 
- * @brief Int to string.
- * 
- * @param num The integer number to convert.
- * @param buffer The output location.
- */
-void itos(int num, char *buffer) {
-    int pos = 0;
-
-    // zeros won't display otherwise.
-    if (num == 0) {
-        buffer[pos++] = 48;
-    } else {
-        while (num != 0) {
-            buffer[pos++] = num % 10 + 48;
-            num /= 10;
-        }
-    }
-
-    char from = 0, to = pos - 1;
-    while (from < to) {
-        char temp = buffer[from];
-        buffer[from++] = buffer[to];
-        buffer[to--] = temp;
-    }
-    buffer[pos] = '\0';
 }
 
 /**
@@ -571,8 +508,8 @@ game_difficulty difficulty_selection() {
 
         draw_string_grid("DIFFICULTY", 0, CENTER);
         Text_info easy = draw_string_grid("EASY", 15, LEFT);
-        Text_info normal = draw_string_grid("NORMAL", 25, LEFT);
-        Text_info hard = draw_string_grid("HARD", 15, RIGHT);
+        Text_info normal = draw_string_grid("NORMAL", 15, RIGHT);
+        Text_info hard = draw_string_grid("HARD", 25, LEFT);
         Text_info impossible = draw_string_grid("IMPOSSIBLE", 25, RIGHT);
 
         Text_info options[] = {easy, normal, hard, impossible};
@@ -596,6 +533,12 @@ game_difficulty difficulty_selection() {
             return current_selection;
         }
 
+        // back
+        if (btn2_ispressed()) {
+            while (btn2_ispressed());
+            return -1;
+        }
+
         draw_canvas();
         delay(10);
     }
@@ -616,6 +559,8 @@ void game_screen(game_mode mode) {
 
     if (mode == SINGLEPLAYER) {
         difficulty = difficulty_selection();
+        if (difficulty == -1)
+            return;
     }
 
     Ball ball = {
@@ -688,7 +633,8 @@ void game_screen(game_mode mode) {
         draw_ball(&ball);
         draw_score(&p1, &p2);
 
-        if (p1.score > 5) {
+        // for testing purposes.
+        if (p1.score > 2) {
             break;
         }
 
@@ -701,5 +647,11 @@ void game_screen(game_mode mode) {
     draw_string_grid(p1.score > p2.score ? "PLAYER 1 WON!" : "PLAYER 2 WON!", 10, CENTER);
     draw_canvas();
     delay(2000);
-    input_name_screen(p1.score > p2.score ? p1.score : p2.score);
+
+    if (mode == SINGLEPLAYER) {
+        char lowest_score = eeprom_read(score_addrs[difficulty][3]);
+        if (p1.score > lowest_score)
+            input_name_screen(p1.score, difficulty);
+    }
+    
 }

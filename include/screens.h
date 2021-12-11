@@ -24,8 +24,22 @@ typedef enum {
     MULTIPLAYER
 } game_mode;
 
+/**
+ * Written by: Marcus Nilszén
+ * 
+ * @brief Enum containing the dirrerent
+ * game difficulties.
+ * 
+ */
+typedef enum {
+    EASY,
+    NORMAL,
+    HARD,
+    IMPOSSIBLE
+} game_difficulty;
+
 void game_screen(game_mode mode);
 void high_score_screen();
-void input_name_screen();
+void input_name_screen(char score, game_difficulty difficulty);
 
 #endif

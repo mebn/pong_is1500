@@ -47,6 +47,7 @@ void eeprom_start() {
 void eeprom_stop() {
     eeprom_wait();
     I2C1CONSET = PIC32_I2CCON_PEN;
+    while (I2C1CON & PIC32_I2CCON_PEN == 1);
 }
 
 /**
@@ -78,7 +79,7 @@ void eeprom_nack() {
 /**
  * Written by: Marcus Nilszén
  * 
- * @brief [PRIVATE] Writes a char to EEPROM memory.
+ * @brief Writes a char to EEPROM memory.
  * 
  * @param address Address in EEPROM memory to write to.
  * @param byte The char/data to write.
@@ -109,7 +110,7 @@ void eeprom_write(unsigned short address, unsigned char data) {
 /**
  * Written by: Marcus Nilszén
  * 
- * @brief [PRIVATE] Reads a char from EEPROM memory.
+ * @brief Reads a char from EEPROM memory.
  * 
  * @param address Address in EEPROM memory to read from.
  * @return char The char/data in given address location.
@@ -150,6 +151,9 @@ char eeprom_read(unsigned short address) {
     return data;
 }
 
+
+/***** EEPROM WRITE *****/
+
 /**
  * Written by: Marcus Nilszén
  * 
@@ -170,26 +174,6 @@ void eeprom_write_str(unsigned short address, char *s) {
 }
 
 /**
- * Written by: Marcus Nilszén
- * 
- * @brief Reads a string from EEPROM memory.
- * Example usage:
- * char buffer[20];
- * eeprom_read_str(0x100, buffer);
- * 
- * @param address Address in EEPROM memory to read from.
- * @param buffer The string/data in given address location.
- */
-void eeprom_read_str(unsigned short address, char *buffer) {
-    int i = 0;
-    while (1) {
-        buffer[i] = eeprom_read(address + i);
-        if (!buffer[i]) return;
-        i++;
-    }
-}
-
-/**
  * Written by: Alex Gunnarsson
  * 
  * @brief Writes the given value as seed on EEPROM.
@@ -201,6 +185,29 @@ void eeprom_write_seed(unsigned int value) {
     eeprom_write(ADDR_SEED + 1, value >> 16);
     eeprom_write(ADDR_SEED + 2, value >> 8);
     eeprom_write(ADDR_SEED + 3, value);
+}
+
+
+/***** EEPROM READ *****/
+
+/**
+ * Written by: Marcus Nilszén
+ * 
+ * @brief Reads a string from EEPROM memory.
+ * Example usage:
+ * char buffer[20];
+ * eeprom_read_str(0x100, buffer);
+ * 
+ * @param address Address in EEPROM memory to read from.
+ * @param buffer The string in given address location.
+ */
+void eeprom_read_str(unsigned short address, char *buffer) {
+    int i = 0;
+    while (1) {
+        buffer[i] = eeprom_read(address + i);
+        if (!buffer[i]) return;
+        i++;
+    }
 }
 
 /**
@@ -217,4 +224,24 @@ unsigned int eeprom_read_seed() {
     value |= eeprom_read(ADDR_SEED + 2) << 8;
     value |= eeprom_read(ADDR_SEED + 3);
     return value;
+}
+
+
+/***** EEPROM OTHER *****/
+
+/**
+ * Written by: Marcus Nilszén
+ * 
+ * @brief Used to reset EEPROM memory. Reset meaning
+ * setting name to "0" and score to 0.
+ * 
+ */
+void eeprom_reset() {
+    char i, j;
+    for (i = 0; i < DIFFICULTYLEVELS; i++) {
+        for (j = 0; j < TOPNPLAYERS; j++) {
+            eeprom_write_str(name_addrs[i][j], "0");
+            eeprom_write(score_addrs[i][j], 0);
+        }
+    }
 }
