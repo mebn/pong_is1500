@@ -648,9 +648,10 @@ void game_screen(game_mode mode) {
     draw_canvas();
     delay(2000);
 
-    if (difficulty != IMPOSSIBLE) {
-        int score = p1.score > p2.score ? p1.score : p2.score;
-        input_name_screen(score, difficulty);
+    if (mode == SINGLEPLAYER) {
+        char lowest_score = eeprom_read(score_addrs[difficulty][3]);
+        if (p1.score > lowest_score)
+            input_name_screen(p1.score, difficulty);
     }
     
 }

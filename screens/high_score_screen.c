@@ -16,26 +16,16 @@ void high_score_screen() {
     char *screens[DIFFICULTYLEVELS] = {
         "HIGHSCORE: EASY",
         "HIGHSCORE: NORMAL",
-        "HIGHSCORE: HARD"
+        "HIGHSCORE: HARD",
+        "HIGHSCORE: IMPOSSIBLE"
     };
 
     char current_screen = 0;
 
-    short name_addrs[DIFFICULTYLEVELS][TOPNPLAYERS] = {
-        {ADDR_EASY1_NAME, ADDR_EASY2_NAME, ADDR_EASY3_NAME, ADDR_EASY4_NAME},
-        {ADDR_NORMAL1_NAME, ADDR_NORMAL2_NAME, ADDR_NORMAL3_NAME, ADDR_NORMAL4_NAME},
-        {ADDR_HARD1_NAME, ADDR_HARD2_NAME, ADDR_HARD3_NAME, ADDR_HARD4_NAME}
-    };
-    short score_addrs[DIFFICULTYLEVELS][TOPNPLAYERS] = {
-        {ADDR_EASY1_SCORE, ADDR_EASY2_SCORE, ADDR_EASY3_SCORE, ADDR_EASY4_SCORE},
-        {ADDR_NORMAL1_SCORE, ADDR_NORMAL2_SCORE, ADDR_NORMAL3_SCORE, ADDR_NORMAL4_SCORE},
-        {ADDR_HARD1_SCORE, ADDR_HARD2_SCORE, ADDR_HARD3_SCORE, ADDR_HARD4_SCORE}
-    };
-
     // [mode (normal/easy)][position (1-4)][len of string]
     char names[DIFFICULTYLEVELS][TOPNPLAYERS][7];
     char scores[DIFFICULTYLEVELS][TOPNPLAYERS][4];
-    char name_scores[DIFFICULTYLEVELS][TOPNPLAYERS][13];
+    char name_scores[DIFFICULTYLEVELS][TOPNPLAYERS][15];
     
     char mode, place;
     for (mode = 0; mode < DIFFICULTYLEVELS; mode++) {
@@ -43,7 +33,8 @@ void high_score_screen() {
             eeprom_read_str(name_addrs[mode][place], names[mode][place]);
             
             if (names[mode][place][0] == '0') {
-                name_scores[mode][place][0] = '\0';
+                name_scores[mode][place][0] = '-';
+                name_scores[mode][place][1] = '\0';
                 continue;
             }
 
@@ -57,7 +48,9 @@ void high_score_screen() {
             while (names[mode][place][name_score_pos])
                 name_scores[mode][place][entry_pos++] = names[mode][place][name_score_pos++];
             
+            name_scores[mode][place][entry_pos++] = ' ';
             name_scores[mode][place][entry_pos++] = ':';
+            name_scores[mode][place][entry_pos++] = ' ';
             name_score_pos = 0;
             
             // score
@@ -94,6 +87,12 @@ void high_score_screen() {
         if (btn2_ispressed()) {
             while (btn2_ispressed());
             return;
+        }
+
+        // reset leaderboard
+        if (btn1_ispressed()) {
+            while (btn1_ispressed());
+            eeprom_reset();
         }
 
         draw_canvas();

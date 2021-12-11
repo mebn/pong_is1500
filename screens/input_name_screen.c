@@ -15,17 +15,6 @@
  * @param difficulty The difficulty used to achieve this score.
  */
 void add_to_eeprom(char *name, int score, game_difficulty difficulty) {
-    short name_addrs[DIFFICULTYLEVELS][TOPNPLAYERS] = {
-        {ADDR_EASY1_NAME, ADDR_EASY2_NAME, ADDR_EASY3_NAME, ADDR_EASY4_NAME},
-        {ADDR_NORMAL1_NAME, ADDR_NORMAL2_NAME, ADDR_NORMAL3_NAME, ADDR_NORMAL4_NAME},
-        {ADDR_HARD1_NAME, ADDR_HARD2_NAME, ADDR_HARD3_NAME, ADDR_HARD4_NAME}
-    };
-    short score_addrs[DIFFICULTYLEVELS][TOPNPLAYERS] = {
-        {ADDR_EASY1_SCORE, ADDR_EASY2_SCORE, ADDR_EASY3_SCORE, ADDR_EASY4_SCORE},
-        {ADDR_NORMAL1_SCORE, ADDR_NORMAL2_SCORE, ADDR_NORMAL3_SCORE, ADDR_NORMAL4_SCORE},
-        {ADDR_HARD1_SCORE, ADDR_HARD2_SCORE, ADDR_HARD3_SCORE, ADDR_HARD4_SCORE}
-    };
-
     char temp_names[DIFFICULTYLEVELS][TOPNPLAYERS][7];
     int temp_scores[DIFFICULTYLEVELS][TOPNPLAYERS];
 
@@ -47,6 +36,14 @@ void add_to_eeprom(char *name, int score, game_difficulty difficulty) {
         for (i = pos; i < TOPNPLAYERS - 1; i++) {
             eeprom_write_str(name_addrs[difficulty][i + 1], temp_names[difficulty][i]);
             eeprom_write(score_addrs[difficulty][i + 1], temp_scores[difficulty][i]);
+        }
+
+        // strip name
+        for (i = 5; i >= 0; i--) {
+            if (name[i] != 'A'-1)
+                break;
+            else
+                name[i] = '\0';
         }
 
         // add new score to leaderboard
@@ -104,6 +101,10 @@ void input_name_screen(char score, game_difficulty difficulty) {
         if (btn1_ispressed() && name[current_selection] != 'A' - 1) {
             while (btn1_ispressed());
             name[current_selection]--;
+        }
+
+        if (current_selection == -1) {
+            break;
         }
 
         if (current_selection == 6) {
