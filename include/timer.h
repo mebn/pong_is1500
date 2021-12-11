@@ -7,4 +7,10 @@ void delay(unsigned int ms);
 
 void timer2_init();
 
+void timer3_handler();
+
+void timer3_init();
+
+void timer3_uninit();
+
 #endif

@@ -5,6 +5,7 @@
 #include "../include/display.h"
 #include "../include/tools.h"
 #include "../include/eeprom.h"
+#include "../include/graphics.h"
 
 /**
  * Written by: Alex Gunnarsson & Marcus Nilszén
@@ -53,6 +54,42 @@ static bool freeze;
  */
 static int endPos;
 static bool calculated;
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Keeps track of the in-game time. 5 units is 1 second.
+ * 
+ */
+static short timer;
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Decrements the in-game time.
+ * 
+ */
+void decrement_timer() {
+    timer--;
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Draws the in-game time.
+ * 
+ */
+void draw_timer() {
+    char time = timer / 5;
+    char string[6];
+    string[0] = (time / 60) / 10;
+    string[1] = time / 60;
+    string[2] = ':';
+    string[3] = (time % 60) / 10;
+    string[4] = time % 60;
+    string[5] = '\0';
+    draw_string_grid(time, DISPLAY_HEIGHT - FONT_SIZE, CENTER);
+}
 
 /**
  * Written by: Alex Gunnarsson
@@ -601,11 +638,13 @@ void game_screen(game_mode mode) {
     draw_canvas();
     
     init_seed();
+    timer3_init();
 
     // init global vars
     calculated = false;         // used for reducing amount of calculations for HARD difficulty, not yet calculated
     freeze = true;              // used to freeze the ball on respawn, inactive
     updateTimer = FREEZETIME;   // different freezetime for first spawn
+    timer = 5 * GAMETIME;       // amount of seconds for each game
 
     while (1) {
         draw_clear();
@@ -628,6 +667,8 @@ void game_screen(game_mode mode) {
 
         ball_update(&ball, &p1, &p2);
 
+        if (timer <= -1) break;
+        draw_timer();
         draw_paddle(&p1);
         draw_paddle(&p2);
         draw_ball(&ball);
@@ -641,6 +682,8 @@ void game_screen(game_mode mode) {
         draw_canvas();
         delay(20);
     }
+
+    timer3_uninit();
 
     draw_clear();
     draw_string_grid("GAME OVER!", 0, CENTER);
