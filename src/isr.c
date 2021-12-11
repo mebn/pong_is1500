@@ -37,7 +37,7 @@ void isr_init() {
 
     // handle interrupt for timer3
     IEC(0) |= 1 << 12; // T3IE
-    IPC(3) = IPC(3) & ~0x1C | 5 << 2 // T3IP
+    IPC(3) = IPC(3) & ~0x1C | 5 << 2; // T3IP
 
     enable_interrupt(); // has to be last
 }
