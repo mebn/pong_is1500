@@ -491,7 +491,7 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
             break;
 
         // simulate where the ball is going to end up and move there
-        case HARD || IMPOSSIBLE:
+        default:        // HARD or IMPOSSIBLE only
             if (b->x_speed > 0) {
                 if (!calculated) {
                     float yp = b->y_pos;
