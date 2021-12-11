@@ -25,7 +25,7 @@ Written by [Marcus Nilszén](https://github.com/mebn) and [Alex Gunnarsson](http
   * BTN2 returns to previous screen.
   * BTN1 resest all leaderboards.
 
-## Install on ChipKit
+## How to install on ChipKit
 
 Before you can run this program some preparations needs to be made.
 
@@ -33,7 +33,7 @@ Before you can run this program some preparations needs to be made.
 
 Follow the steps for your OS specified [here](https://github.com/is1200-example-projects/mcb32tools/releases/).
 
-### Install on chipkit (uno32/uc32)
+### Flash to chipkit (uno32/uc32)
 
 #### Windows
 
@@ -52,16 +52,16 @@ Follow the steps for your OS specified [here](https://github.com/is1200-example-
 
 ## Resources
 
-### Canvas links:
+### Canvas links
 https://canvas.kth.se/courses/32617/pages/literature-and-resources
 
-### Interupts:
+### Interupts
 http://ww1.microchip.com/downloads/en/DeviceDoc/61143H.pdf (p.53, table 4.4)
 
-### Display commands:
+### Display commands
 https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf (p.34 for commands)
 
-### IO Shield:
+### IO Shield
 https://digilent.com/reference/_media/chipkit_shield_basic_io_shield:chipkit_basic_io_shield_rm.pdf (incl. display startup procedure)
 
 ### I2C and EEPROM
