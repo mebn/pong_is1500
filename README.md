@@ -6,7 +6,26 @@ Classic pong game on uno32/uc32 chipkit with IO Shield.
 
 Written by [Marcus Nilszén](https://github.com/mebn) and [Alex Gunnarsson](https://github.com/alexarne).
 
-## How To
+## Controls
+
+* Home screen and Difficulty selection menu:
+  * BTN 4 and BTN 3 navigates the menu.
+  * BTN1 selects the current selection.
+  * BTN2 returns to previous screen.
+* Game screen (singleplayer and mulitplayer)
+  * BTN4 and BTN3 moves paddle 1 up and down.
+  * BTN1 and BTN2 moves paddle 2 up and down.
+* Enter-your-name screen
+  * BTN 4 and BTN3 moves between character location.
+  * BTN2 and BTN1 changes letter [ A-Z].
+  * BTN4 when current selection is at start, exits and returns to the main menu.
+  * BTN3 when current selection is at end, saves name and score to leaderboard.
+* Highscore screen
+  * BTN4 and BTN3 moves between difficulties leaderboard.
+  * BTN2 returns to previous screen.
+  * BTN1 resest all leaderboards.
+
+## Install on ChipKit
 
 Before you can run this program some preparations needs to be made.
 
@@ -54,7 +73,7 @@ https://digilent.com/reference/_media/chipkit_shield_basic_io_shield:chipkit_bas
 
 ## Contributions
 
-* New font and draw_string function: [alevarn/pic32-pong-game](https://github.com/alevarn/pic32-pong-game).
+* [alevarn/pic32-pong-game](https://github.com/alevarn/pic32-pong-game).
 
-* Display, `vector.S` and `stubs.c`: [example projects](https://github.com/is1200-example-projects/hello-display).
+* [is1200/example-projects](https://github.com/is1200-example-projects/hello-display).
 
