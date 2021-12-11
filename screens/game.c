@@ -82,11 +82,14 @@ void decrement_timer() {
 void draw_timer() {
     char time = timer / 5;
     char string[6];
-    string[0] = (time / 60) / 10;
-    string[1] = time / 60;
+    char digit[3];
+    itos(time / 60, digit);
+    string[0] = digit[0];
+    string[1] = digit[1];
     string[2] = ':';
-    string[3] = (time % 60) / 10;
-    string[4] = time % 60;
+    itos(time % 60, digit);
+    string[3] = digit[0];
+    string[4] = digit[1];
     string[5] = '\0';
     draw_string_grid(string, DISPLAY_HEIGHT - FONT_SIZE, CENTER);
 }
@@ -667,12 +670,14 @@ void game_screen(game_mode mode) {
 
         ball_update(&ball, &p1, &p2);
 
-        if (timer <= -1) break;
+        if (timer <= -1) break;     // termination condition
         draw_timer();
         draw_paddle(&p1);
         draw_paddle(&p2);
         draw_ball(&ball);
         draw_score(&p1, &p2);
+
+
 
         // for testing purposes.
         if (p1.score > 2) {
