@@ -13,7 +13,7 @@
 #define FREEZETIME 40
 #define PASSTIME 20
 
-#define TOLERANCE 0.001
+#define TOLERANCE 0.0001
 
 #define GAMETIME 121
 
