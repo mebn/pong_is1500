@@ -10,7 +10,8 @@
 
 #define BALLSIZE 2
 #define BALLSPEED 1
-#define FREEZETIME 50
+#define FREEZETIME 40
+#define PASSTIME 20
 
 #define TOLERANCE 0.001
 

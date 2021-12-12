@@ -239,7 +239,7 @@ void ball_spawn(Ball *b) {
     float y = (float) random_max(2000001) / 1000000 - 1;    // range [-1, 1]
     ball_bounce(b, &y);
     freeze = true;
-    updateTimer = 2 * FREEZETIME;
+    updateTimer = FREEZETIME + PASSTIME;
 }
 
 /**
@@ -492,7 +492,7 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
 
         // simulate where the ball is going to end up and move there
         default:        // HARD or IMPOSSIBLE only
-            if (b->x_speed > 0) {
+            if ((b->x_speed > 0) && ((mode == HARD && b->x_pos > DISPLAY_WIDTH/2) || mode == IMPOSSIBLE)) {
                 if (!calculated) {
                     float yp = b->y_pos;
                     float xp = b->x_pos;
