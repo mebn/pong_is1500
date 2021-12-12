@@ -254,8 +254,8 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
     }
 
     // Check for bounce off Right paddle p2 iff it crosses border
-    if (ball->x_pos + ball->size - TOLERANCE < p2->x_pos &&
-        ball->x_pos + ball->x_speed > p2->x_pos) {
+    if (ball->x_pos < p2->x_pos &&
+        ball->x_pos + ball->size + ball->x_speed > p2->x_pos) {
         float xBef = ball->x_pos + ball->size; // right side of ball
         float yBef = ball->y_pos;
         float t = (p2->x_pos - xBef) / (ball->x_speed);
