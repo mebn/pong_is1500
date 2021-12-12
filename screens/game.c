@@ -518,7 +518,7 @@ game_difficulty difficulty_selection() {
         }
 
         // down
-        if (btn3_ispressed() && current_selection != IMPOSSIBLE) {
+        if (btn3_ispressed()) {
             while (btn3_ispressed());
             if (current_selection == IMPOSSIBLE) {
                 current_selection = EASY;

@@ -74,13 +74,21 @@ void high_score_screen() {
         // go left
         if (btn4_ispressed() && current_screen != 0) {
             while (btn4_ispressed());
-            current_screen--;
+            if (current_screen == 0) {
+                current_screen = DIFFICULTYLEVELS - 1;
+            } else {
+                current_screen--;
+            }
         }
 
         // go right
-        if (btn3_ispressed() && current_screen != DIFFICULTYLEVELS - 1) {
+        if (btn3_ispressed()) {
             while (btn3_ispressed());
-            current_screen++;
+            if (current_screen == DIFFICULTYLEVELS - 1) {
+                current_screen = 0;
+            } else {
+                current_screen++;
+            }
         }
 
         // go back

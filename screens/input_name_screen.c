@@ -76,10 +76,8 @@ void input_name_screen(char score, game_difficulty difficulty) {
             draw_line(x+i*(len+spacing), y, len, 1);
         }
 
-        display_invert(x + current_selection*(len + spacing) - 1, y - 7, x + current_selection*(len + spacing) + len + 1, y);
-
         // draw extra line under selected char.
-        // draw_line(x + current_selection*(len+spacing), y, len, 2);
+        draw_line(x + current_selection*(len+spacing), y, len, 2);
 
         // left
         if (btn4_ispressed()) {
