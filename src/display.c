@@ -294,7 +294,7 @@ void clear_pixel(char x, char y) {
  */
 bool pixel_ison(char x, char y) {
     if (!is_pixel(x, y)) return false;
-    return (canvas[(y / 8) * DISPLAY_WIDTH + x] & 1 << (y % 8)) == 1;
+    return ((canvas[(y / 8) * DISPLAY_WIDTH + x] & 1 << (y % 8)) >> (y % 8)) == 1;
 }
 
 void draw_line(char x, char y, char length, char thickness) {
