@@ -72,7 +72,7 @@ void input_name_screen(char score, game_difficulty difficulty) {
         draw_string_grid("ENTER YOUR NAME", 0, CENTER);
         for (i = 0; i < 6; i++) {
             char temp[] = {name[i], '\0'};
-            draw_string_spacing(&temp, x+i*(len+spacing), y - 6, spacing);
+            draw_string_spacing(&temp, x+i*(len+spacing) + (name[i] == 'I' ? 1 : 0), y - 6, spacing);
             draw_line(x+i*(len+spacing), y, len, 1);
         }
 

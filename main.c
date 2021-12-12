@@ -45,18 +45,26 @@ selection menu() {
         Text_info high = draw_string_grid("HIGHSCORE", 25, CENTER);
 
         Text_info options[] = {single, multi, high};
-        draw_underline(&options[current_selection]);
+        display_invert_ti(&options[current_selection]);
 
         // up
-        if (btn4_ispressed() && current_selection != SINGLE_PLAYER) {
+        if (btn4_ispressed()) {
             while (btn4_ispressed());
-            current_selection--;
+            if (current_selection == SINGLE_PLAYER) {
+                current_selection = HIGH_SCORE;  
+            } else {
+                current_selection--; 
+            }
         }
 
         // down
-        if (btn3_ispressed() && current_selection != HIGH_SCORE) {
+        if (btn3_ispressed()) {
             while (btn3_ispressed());
-            current_selection++;
+            if (current_selection == HIGH_SCORE) {
+                current_selection = SINGLE_PLAYER;
+            } else {
+                current_selection++;
+            }
         }
 
         // select

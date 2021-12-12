@@ -62,7 +62,8 @@ void high_score_screen() {
     while (1) {
         draw_clear();
 
-        draw_string_grid(screens[current_screen], 0, CENTER);
+        Text_info ti = draw_string_grid(screens[current_screen], 1, CENTER);
+        display_invert_ti(&ti);
 
         // displays top 4 players
         draw_string_grid(name_scores[current_screen][0], 15, LEFT);
@@ -73,13 +74,21 @@ void high_score_screen() {
         // go left
         if (btn4_ispressed() && current_screen != 0) {
             while (btn4_ispressed());
-            current_screen--;
+            if (current_screen == 0) {
+                current_screen = DIFFICULTYLEVELS - 1;
+            } else {
+                current_screen--;
+            }
         }
 
         // go right
-        if (btn3_ispressed() && current_screen != DIFFICULTYLEVELS - 1) {
+        if (btn3_ispressed()) {
             while (btn3_ispressed());
-            current_screen++;
+            if (current_screen == DIFFICULTYLEVELS - 1) {
+                current_screen = 0;
+            } else {
+                current_screen++;
+            }
         }
 
         // go back

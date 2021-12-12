@@ -144,6 +144,7 @@ bool is_pixel(char x, char y) {
  * @param str The string to draw.
  * @param x X posistion of upper left corner.
  * @param y Y posotion of upper left corner.
+ * @param spacing Width between chars.
  */
 void ds(char *str, unsigned int x, unsigned int y, int spacing) {
     int x_pos, y_pos;
@@ -200,6 +201,23 @@ void draw_string_spacing(char *str, unsigned int x, unsigned int y, int spacing)
 }
 
 /**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Calculates the length (width) in pixels of a string.
+ * 
+ * @param str2 The string.
+ * @return int Amount of pixels in width.
+ */
+int str_len(char *str2) {
+    int len = 0;
+    while (*str2) {
+        len += font_width[*str2-0x20] + FONT_SPACING;
+        str2++;
+    }
+    return len - FONT_SPACING;
+}
+
+/**
  * Written by: Marcus Nilszén
  * 
  * @brief Draw a string on a specified y cordinate
@@ -215,15 +233,7 @@ void draw_string_spacing(char *str, unsigned int x, unsigned int y, int spacing)
  */
 Text_info draw_string_grid(char *str, unsigned int y, grid_pos pos) {
     unsigned int x;
-    int len = 0;
-    char *str2 = str;
-
-    while (*str2) {
-        len += font_width[*str2-0x20] + FONT_SPACING;
-        str2++;
-    }
-
-    len -= FONT_SPACING;
+    int len = str_len(str);
 
     if (pos == LEFT)
         x = DISPLAY_WIDTH/2 - DISPLAY_WIDTH/4 - len/2;
@@ -294,7 +304,7 @@ void clear_pixel(char x, char y) {
  */
 bool pixel_ison(char x, char y) {
     if (!is_pixel(x, y)) return false;
-    return (canvas[(y / 8) * DISPLAY_WIDTH + x] & 1 << (y % 8)) == 1;
+    return ((canvas[(y / 8) * DISPLAY_WIDTH + x] & 1 << (y % 8)) >> (y % 8)) == 1;
 }
 
 void draw_line(char x, char y, char length, char thickness) {
@@ -326,6 +336,17 @@ void display_invert(char xStart, char yStart, char xEnd, char yEnd) {
             }
         }
     }
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Inverts all current pixels surrounding a Text_info struct.
+ * 
+ * @param ti The Text_info struct.
+ */
+void display_invert_ti(Text_info *ti) {
+    display_invert(ti->x - 1, ti->y - 1, ti->x + ti->len + 1, ti->y + FONT_SIZE + 1);
 }
 
 /**

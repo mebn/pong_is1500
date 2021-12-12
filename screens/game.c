@@ -505,18 +505,26 @@ game_difficulty difficulty_selection() {
         Text_info impossible = draw_string_grid("IMPOSSIBLE", 25, RIGHT);
 
         Text_info options[] = {easy, normal, hard, impossible};
-        draw_underline(&options[current_selection]);
+        display_invert_ti(&options[current_selection]);
 
         // up
-        if (btn4_ispressed() && current_selection != EASY) {
+        if (btn4_ispressed()) {
             while (btn4_ispressed());
-            current_selection--;
+            if (current_selection == EASY) {
+                current_selection = IMPOSSIBLE;
+            } else {
+                current_selection--;
+            }
         }
 
         // down
-        if (btn3_ispressed() && current_selection != IMPOSSIBLE) {
+        if (btn3_ispressed()) {
             while (btn3_ispressed());
-            current_selection++;
+            if (current_selection == IMPOSSIBLE) {
+                current_selection = EASY;
+            } else {
+                current_selection++;
+            }
         }
 
         // select
@@ -648,7 +656,7 @@ void game_screen(game_mode mode) {
 
     if (mode == SINGLEPLAYER) {
         char lowest_score = eeprom_read(score_addrs[difficulty][3]);
-        if (p1.score > lowest_score)
+        if (p1.score >= lowest_score)
             input_name_screen(p1.score, difficulty);
     }
     
