@@ -10,7 +10,9 @@
 void display_init();
 
 /**
- * @brief The display is divided in
+ * Written by: Marcus Nilszén
+ * 
+ *  @brief The display is divided in
  * 4 quadrants and text in these
  * quadrants are centered. Not to be confused with 
  * grid_pos.CENTER which centers text
@@ -24,6 +26,8 @@ typedef enum {
 } grid_pos;
 
 /**
+ * Written by: Marcus Nilszén
+ * 
  * @brief Used when building menus
  * to make it easy to draw a selection
  * underline.
@@ -38,7 +42,6 @@ typedef struct {
 void draw_underline(const Text_info *ti);
 void draw_string(char *str, unsigned int x, unsigned int y);
 void draw_string_spacing(char *str, unsigned int x, unsigned int y, int spacing);
-int str_len(char *str2);
 Text_info draw_string_grid(char *str, unsigned int y, grid_pos pos);
 
 void draw_pixel(char x, char y);

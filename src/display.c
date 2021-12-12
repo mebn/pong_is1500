@@ -3,6 +3,7 @@
 #include "../include/display.h"
 #include "../include/graphics.h"
 #include "../include/timer.h"
+#include "../include/tools.h"
 #include <stdbool.h>
 
 // (low to turn on)
@@ -201,23 +202,6 @@ void draw_string_spacing(char *str, unsigned int x, unsigned int y, int spacing)
 }
 
 /**
- * Written by: Alex Gunnarsson
- * 
- * @brief Calculates the length (width) in pixels of a string.
- * 
- * @param str2 The string.
- * @return int Amount of pixels in width.
- */
-int str_len(char *str2) {
-    int len = 0;
-    while (*str2) {
-        len += font_width[*str2-0x20] + FONT_SPACING;
-        str2++;
-    }
-    return len - FONT_SPACING;
-}
-
-/**
  * Written by: Marcus Nilszén
  * 
  * @brief Draw a string on a specified y cordinate
@@ -307,8 +291,18 @@ bool pixel_ison(char x, char y) {
     return ((canvas[(y / 8) * DISPLAY_WIDTH + x] & 1 << (y % 8)) >> (y % 8)) == 1;
 }
 
+/**
+ * Written by: Marcus Nilszén
+ * 
+ *  @brief Draws a line.
+ * 
+ * @param x X coordinate to start from.
+ * @param y Y coordinate to start from.
+ * @param length Length of line.
+ * @param thickness Thickness of line.
+ */
 void draw_line(char x, char y, char length, char thickness) {
-    int i, j;
+    char i, j;
     for (j = 0; j < thickness; j++)
         for (i = 0; i <length; i++)
             draw_pixel(x+i, y+j);
@@ -327,15 +321,9 @@ void draw_line(char x, char y, char length, char thickness) {
  */
 void display_invert(char xStart, char yStart, char xEnd, char yEnd) {
     char x, y;
-    for (x = xStart; x <= xEnd; x++) {
-        for (y = yStart; y <= yEnd; y++) {
-            if (pixel_ison(x, y)) {
-                clear_pixel(x, y);
-            } else {
-                draw_pixel(x, y);
-            }
-        }
-    }
+    for (x = xStart; x <= xEnd; x++)
+        for (y = yStart; y <= yEnd; y++)
+            pixel_ison(x, y) ? clear_pixel(x, y) : draw_pixel(x, y);
 }
 
 /**

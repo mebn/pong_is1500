@@ -1,6 +1,9 @@
 #include "../include/eeprom.h"
+#include "../include/graphics.h"
 
 /**
+ * Written by: Marcus Nilszén
+ * 
  * @brief Int to string.
  * 
  * @param num The integer number to convert.
@@ -111,4 +114,21 @@ void init_seed(void) {
     }
 
     eeprom_write_seed(seed);
+}
+
+/**
+ * Written by: Alex Gunnarsson & Marcus Nilszén
+ * 
+ * @brief Calculates the length (width) in pixels of a string.
+ * 
+ * @param s The string.
+ * @return int Amount of pixels in width.
+ */
+char str_len(char *s) {
+    char len = 0;
+    while (*s) {
+        len += font_width[*s-0x20] + FONT_SPACING;
+        s++;
+    }
+    return len - FONT_SPACING;
 }

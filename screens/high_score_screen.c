@@ -21,41 +21,38 @@ void high_score_screen() {
     };
 
     char current_screen = 0;
-
-    // [mode (normal/easy)][position (1-4)][len of string]
-    char names[DIFFICULTYLEVELS][TOPNPLAYERS][7];
-    char scores[DIFFICULTYLEVELS][TOPNPLAYERS][4];
-    char name_scores[DIFFICULTYLEVELS][TOPNPLAYERS][15];
+    char entries[DIFFICULTYLEVELS][TOPNPLAYERS][15];
     
     char mode, place;
     for (mode = 0; mode < DIFFICULTYLEVELS; mode++) {
         for (place = 0; place < TOPNPLAYERS; place++) {
-            eeprom_read_str(name_addrs[mode][place], names[mode][place]);
+            char temp_name[7], temp_score[7];
+            eeprom_read_str(name_addrs[mode][place], temp_name);
             
-            if (names[mode][place][0] == '0') {
-                name_scores[mode][place][0] = '-';
-                name_scores[mode][place][1] = '\0';
+            if (temp_name[0] == '0') {
+                entries[mode][place][0] = '-';
+                entries[mode][place][1] = '\0';
                 continue;
             }
 
             char temp = eeprom_read(score_addrs[mode][place]);
-            itos(temp, scores[mode][place]);
+            itos(temp, temp_score);
 
-            // add name and score into name_scores
+            // add name and score into entries
             char entry_pos = 0, name_score_pos = 0;
             
             // name
-            while (names[mode][place][name_score_pos])
-                name_scores[mode][place][entry_pos++] = names[mode][place][name_score_pos++];
+            while (temp_name[name_score_pos])
+                entries[mode][place][entry_pos++] = temp_name[name_score_pos++];
             
-            name_scores[mode][place][entry_pos++] = ':';
-            name_scores[mode][place][entry_pos++] = ' ';
+            entries[mode][place][entry_pos++] = ':';
+            entries[mode][place][entry_pos++] = ' ';
             name_score_pos = 0;
             
             // score
-            while (scores[mode][place][name_score_pos])
-                name_scores[mode][place][entry_pos++] = scores[mode][place][name_score_pos++];
-            name_scores[mode][place][entry_pos] = '\0';
+            while (temp_score[name_score_pos])
+                entries[mode][place][entry_pos++] = temp_score[name_score_pos++];
+            entries[mode][place][entry_pos] = '\0';
         }
     }
 
@@ -66,29 +63,23 @@ void high_score_screen() {
         display_invert_ti(&ti);
 
         // displays top 4 players
-        draw_string_grid(name_scores[current_screen][0], 15, LEFT);
-        draw_string_grid(name_scores[current_screen][1], 15, RIGHT);
-        draw_string_grid(name_scores[current_screen][2], 25, LEFT);
-        draw_string_grid(name_scores[current_screen][3], 25, RIGHT);
+        draw_string_grid(entries[current_screen][0], 15, LEFT);
+        draw_string_grid(entries[current_screen][1], 15, RIGHT);
+        draw_string_grid(entries[current_screen][2], 25, LEFT);
+        draw_string_grid(entries[current_screen][3], 25, RIGHT);
 
         // go left
         if (btn4_ispressed() && current_screen != 0) {
             while (btn4_ispressed());
-            if (current_screen == 0) {
-                current_screen = DIFFICULTYLEVELS - 1;
-            } else {
-                current_screen--;
-            }
+            if (current_screen == 0) current_screen = DIFFICULTYLEVELS - 1;
+            else current_screen--;
         }
 
         // go right
         if (btn3_ispressed()) {
             while (btn3_ispressed());
-            if (current_screen == DIFFICULTYLEVELS - 1) {
-                current_screen = 0;
-            } else {
-                current_screen++;
-            }
+            if (current_screen == DIFFICULTYLEVELS - 1) current_screen = 0;
+            else current_screen++;
         }
 
         // go back

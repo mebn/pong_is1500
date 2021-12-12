@@ -17,7 +17,7 @@ static int counter_ms = 0;
  * 
  */
 void timer2_on() {
-    TMR2 = 0;           // reset timer
+    TMR2 = 0; // reset timer
     T2CON |= 0x8000;
 }
 
@@ -32,7 +32,7 @@ void timer2_off() {
 }
 
 /**
- * Written by: Alex Gunnarsson
+ * Written by: Alex Gunnarsson & Marcus Nilszén
  * 
  * @brief Initialization for timer2.
  * Sets prescale and period.
@@ -79,7 +79,7 @@ void delay(unsigned int ms) {
  * 
  */
 void timer3_on() {
-    TMR3 = 0;           // reset timer
+    TMR3 = 0; // reset timer
     T3CON |= 0x8000;
 }
 
