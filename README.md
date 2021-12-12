@@ -65,15 +65,14 @@ https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf (p.34 for commands)
 https://digilent.com/reference/_media/chipkit_shield_basic_io_shield:chipkit_basic_io_shield_rm.pdf (incl. display startup procedure)
 
 ### I2C and EEPROM
-* Documentation from microchip: [section 24](http://ww1.microchip.com/downloads/en/DeviceDoc/61116F.pdf) and [section 58](https://ww1.microchip.com/downloads/en/DeviceDoc/Section%2058.%20Data%20EEPROM_FRM_DS60001341E.pdf).
+* Documentation from microchip: [section 24](http://ww1.microchip.com/downloads/en/DeviceDoc/61116F.pdf) and [section 58](https://ww1.microchip.com/downloads/en/DeviceDoc/Section%2058.%20Data%20EEPROM_FRM_DS60001341E.pdf)
 
-* [Aidanmocke.com](https://www.aidanmocke.com/blog/2018/11/27/i2c/).
+* [Aidanmocke.com](https://www.aidanmocke.com/blog/2018/11/27/i2c/)
 
-* [Stackoverflow.com](https://stackoverflow.com/questions/54728534/i2c-communication-with-eeprom).
+* [Stackoverflow.com](https://stackoverflow.com/questions/54728534/i2c-communication-with-eeprom)
 
 ## Contributions
 
-* [alevarn/pic32-pong-game](https://github.com/alevarn/pic32-pong-game).
+* New font and draw_string function: [alevarn/pic32-pong-game](https://github.com/alevarn/pic32-pong-game)
 
-* [is1200/example-projects](https://github.com/is1200-example-projects/hello-display).
-
+* Display, `vector.S` and `stubs.c`: [is1200/example-projects](https://github.com/is1200-example-projects/hello-display)
