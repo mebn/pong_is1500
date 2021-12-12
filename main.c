@@ -49,7 +49,7 @@ selection menu() {
         display_invert_ti(&options[current_selection]);
 
         // up
-        if (btn4_ispressed() && current_selection != SINGLE_PLAYER) {
+        if (btn4_ispressed()) {
             while (btn4_ispressed());
             if (current_selection == SINGLE_PLAYER) current_selection++;
             if (current_selection == MULTI_PLAYER) current_selection--;
