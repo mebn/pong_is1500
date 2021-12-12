@@ -491,7 +491,8 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
             break;
 
         // simulate where the ball is going to end up and move there
-        default:        // HARD or IMPOSSIBLE only
+        case HARD:
+        case IMPOSSIBLE:
             if ((b->x_speed > 0) && ((difficulty == HARD && b->x_pos > DISPLAY_WIDTH/2) || difficulty == IMPOSSIBLE)) {
                 if (!calculated) {
                     float yp = b->y_pos;
@@ -504,7 +505,7 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
                     }
 
                     endPos = (int) b->y_pos;
-                    if (difficulty == HARD) {   // introduce random offset
+                    if (difficulty == HARD) {   // introduce random offset for chance to miss
                         endPos += random_max(2*PADDLESIZE_Y) - PADDLESIZE_Y;
                     }
 
