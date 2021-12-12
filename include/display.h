@@ -44,6 +44,7 @@ void draw_pixel(char x, char y);
 void draw_line(char x, char y, char length, char thickness);
 
 void display_invert(char xStart, char yStart, char xEnd, char yEnd);
+void display_invert_ti(Text_info *ti);
 
 void draw_clear();
 void draw_canvas();

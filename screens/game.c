@@ -505,7 +505,7 @@ game_difficulty difficulty_selection() {
         Text_info impossible = draw_string_grid("IMPOSSIBLE", 25, RIGHT);
 
         Text_info options[] = {easy, normal, hard, impossible};
-        draw_underline(&options[current_selection]);
+        display_invert_ti(&options[current_selection]);
 
         // up
         if (btn4_ispressed() && current_selection != EASY) {
