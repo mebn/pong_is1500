@@ -69,7 +69,7 @@ void high_score_screen() {
         draw_string_grid(entries[current_screen][3], 25, RIGHT);
 
         // go left
-        if (btn4_ispressed() && current_screen != 0) {
+        if (btn4_ispressed()) {
             while (btn4_ispressed());
             if (current_screen == 0) current_screen = DIFFICULTYLEVELS - 1;
             else current_screen--;
