@@ -329,6 +329,17 @@ void display_invert(char xStart, char yStart, char xEnd, char yEnd) {
 }
 
 /**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Inverts all current pixels surrounding a Text_info struct.
+ * 
+ * @param ti The Text_info struct.
+ */
+void display_invert_ti(Text_info *ti) {
+    display_invert(ti->x - 1, ti->y - 1, ti->x + ti->len + 1, ti->y + FONT_SIZE + 1);
+}
+
+/**
  * Written by: Marcus Nilszén
  * 
  * @brief Clears the screen by setting
