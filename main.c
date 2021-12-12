@@ -45,7 +45,8 @@ selection menu() {
         Text_info high = draw_string_grid("HIGHSCORE", 25, CENTER);
 
         Text_info options[] = {single, multi, high};
-        draw_underline(&options[current_selection]);
+        // draw_underline(&options[current_selection]);
+        display_invert(options[current_selection].x - 2, options[current_selection].y - 2, options[current_selection].x + len + 2, options[current_selection].y + FONT_SIZE + 2);
 
         // up
         if (btn4_ispressed() && current_selection != SINGLE_PLAYER) {
