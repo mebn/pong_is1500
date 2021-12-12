@@ -62,7 +62,7 @@ void high_score_screen() {
     while (1) {
         draw_clear();
 
-        Text_info ti = draw_string_grid(screens[current_screen], 0, CENTER);
+        Text_info ti = draw_string_grid(screens[current_screen], 1, CENTER);
         display_invert_ti(&ti);
 
         // displays top 4 players
