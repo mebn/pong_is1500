@@ -3,8 +3,8 @@
 
 #include <stdbool.h>
 
-#define PADDLESIZE_X 2
-#define PADDLESIZE_Y 10
+#define PADDLESIZE_X 10
+#define PADDLESIZE_Y 2
 #define PADDLEGAP 0
 #define PADDLESPEED 1
 

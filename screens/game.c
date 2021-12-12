@@ -240,8 +240,8 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
         // check valid t
         if (t > 0 && t < 1) {
             // if overlap
-            if ((yInt >= p1->y_pos && yInt < p1->y_pos + p1->y_size) || // upper corner
-                (yInt + ball->size >= p1->y_pos && yInt + ball->size < p1->y_pos + p1->y_size)) { // lower corner
+            if ((yInt >= p1->y_pos && yInt <= p1->y_pos + p1->y_size) || // upper corner
+                (yInt + ball->size >= p1->y_pos && yInt + ball->size <= p1->y_pos + p1->y_size)) { // lower corner
                 // travel to intersection
                 ball->x_pos += t*ball->x_speed;
                 ball->y_pos += t*ball->y_speed;
@@ -266,8 +266,8 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
         // check valid t
         if (t > 0 && t < 1) {
             // and if overlap
-            if ((yInt >= p2->y_pos && yInt < p2->y_pos + p2->y_size) || // upper corner
-                (yInt + ball->size >= p2->y_pos && yInt + ball->size < p2->y_pos + p2->y_size)) { // lower corner
+            if ((yInt >= p2->y_pos && yInt <= p2->y_pos + p2->y_size) || // upper corner
+                (yInt + ball->size >= p2->y_pos && yInt + ball->size <= p2->y_pos + p2->y_size)) { // lower corner
                 // travel to intersection
                 ball->x_pos += t*ball->x_speed;
                 ball->y_pos += t*ball->y_speed;
@@ -275,6 +275,90 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
                 float modify = (ball->y_pos - (p2->y_pos + (p2->y_size - ball->size)/2.0)) / ((p2->y_size + ball->size)/2.0);
                 ball_bounce(ball, &modify);
                 // travel remaining distance
+                ball->x_pos += (1-t)*ball->x_speed;
+                ball->y_pos += (1-t)*ball->y_speed;
+                return;
+            }
+        }
+    }
+
+    // check for y bounce p1 upper side
+    if (ball->y_pos + ball->size < p1->y_pos &&
+        ball->y_pos + ball->size + ball->y_speed > p1->y_pos) {
+        
+        float t = (p1->y_pos - (ball->y_pos + ball->size)) / ball->y_speed;
+        float xInt = t*ball->x_speed;
+        if (t > 0 && t < 1) {
+            if ((xInt >= p1->x_pos && xInt < p1->x_pos + p1->x_size) ||
+                (xInt + ball->size >= p1->x_pos && xInt + ball->size < p1->x_pos + p1->x_size)) {
+                
+                ball->x_pos += t*ball->x_speed;
+                ball->y_pos += t*ball->y_speed;
+                float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
+                ball_bounce(ball, &modify);
+                ball->x_pos += (1-t)*ball->x_speed;
+                ball->y_pos += (1-t)*ball->y_speed;
+                return; 
+            }
+        }
+    }
+
+    // check for y bounce p1 lower side
+    if (ball->y_pos > p1->y_pos + p1->y_size &&
+        ball->y_pos + ball->y_speed < p1->y_pos + p1->y_size) {
+
+        float t = (p1->y_pos + p1->y_size - ball->y_pos) / ball->y_speed;
+        float xInt = t*ball->x_speed;
+        if (t > 0 && t < 1) {
+            if ((xInt >= p1->x_pos && xInt < p1->x_pos + p1->x_size) ||
+                (xInt + ball->size >= p1->x_pos && xInt + ball->size < p1->x_pos + p1->x_size)) {
+                
+                ball->x_pos += t*ball->x_speed;
+                ball->y_pos += t*ball->y_speed;
+                float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
+                ball_bounce(ball, &modify);
+                ball->x_pos += (1-t)*ball->x_speed;
+                ball->y_pos += (1-t)*ball->y_speed;
+                return;
+            }
+        }
+    }
+
+    // check for y bounce p2 upper side
+    if (ball->y_pos + ball->size < p2->y_pos &&
+        ball->y_pos + ball->size + ball->y_speed > p2->y_pos) {
+
+        float t = (p2->y_pos - (ball->y_pos + ball->size)) / ball->y_speed;
+        float xInt = t*ball->x_speed;
+        if (t > 0 && t < 1) {
+            if ((xInt >= p2->x_pos && xInt < p2->x_pos + p2->x_size) ||
+                (xInt + ball->size >= p2->x_pos && xInt + ball->size < p2->x_pos + p2->x_size)) {
+                
+                ball->x_pos += t*ball->x_speed;
+                ball->y_pos += t*ball->y_speed;
+                float modify = (ball->x_pos - (p2->x_pos + (p2->x_size - ball->size)/2.0)) / ((p2->x_size + ball->size)/2.0);
+                ball_bounce(ball, &modify);
+                ball->x_pos += (1-t)*ball->x_speed;
+                ball->y_pos += (1-t)*ball->y_speed;
+                return;
+            }
+        }
+    }
+
+    // check for y bounce p2 lower side
+    if (ball->y_pos > p2->y_pos + p2->y_size &&
+        ball->y_pos + ball->y_speed < p2->y_pos + p2->y_size) {
+        
+        float t = (p2->y_pos + p2->y_size - ball->y_pos) / ball->y_speed;
+        float xInt = t*ball->x_speed;
+        if (t > 0 && t < 1) {
+            if ((xInt >= p2->x_pos && xInt < p2->x_pos + p2->x_size) ||
+                (xInt + ball->size >= p2->x_pos && xInt + ball->size < p2->x_pos + p2->x_size)) {
+                
+                ball->x_pos += t*ball->x_speed;
+                ball->y_pos += t*ball->y_speed;
+                float modify = (ball->x_pos - (p2->x_pos + (p2->x_size - ball->size)/2.0)) / ((p2->x_size + ball->size)/2.0);
+                ball_bounce(ball, &modify);
                 ball->x_pos += (1-t)*ball->x_speed;
                 ball->y_pos += (1-t)*ball->y_speed;
                 return;
