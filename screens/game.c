@@ -237,19 +237,22 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
         float yBef = ball->y_pos;
         float t = (p1->x_pos + p1->x_size - xBef) / (ball->x_speed);
         float yInt = yBef + t*ball->y_speed;  // intersection point
-        // if overlap
-        if ((yInt >= p1->y_pos && yInt < p1->y_pos + p1->y_size) || // upper corner
-            (yInt + ball->size >= p1->y_pos && yInt + ball->size < p1->y_pos + p1->y_size)) { // lower corner
-            // travel to intersection
-            ball->x_pos += t*ball->x_speed;
-            ball->y_pos += t*ball->y_speed;
-            // get new speeds
-            float modify = (ball->y_pos - (p1->y_pos + (p1->y_size - ball->size)/2.0)) / ((p1->y_size + ball->size)/2.0);
-            ball_bounce(ball, &modify);
-            // travel remaining distance
-            ball->x_pos += (1-t)*ball->x_speed;
-            ball->y_pos += (1-t)*ball->y_speed;
-            return;
+        // check valid t
+        if (t > 0 && t < 1) {
+            // if overlap
+            if ((yInt >= p1->y_pos && yInt < p1->y_pos + p1->y_size) || // upper corner
+                (yInt + ball->size >= p1->y_pos && yInt + ball->size < p1->y_pos + p1->y_size)) { // lower corner
+                // travel to intersection
+                ball->x_pos += t*ball->x_speed;
+                ball->y_pos += t*ball->y_speed;
+                // get new speeds
+                float modify = (ball->y_pos - (p1->y_pos + (p1->y_size - ball->size)/2.0)) / ((p1->y_size + ball->size)/2.0);
+                ball_bounce(ball, &modify);
+                // travel remaining distance
+                ball->x_pos += (1-t)*ball->x_speed;
+                ball->y_pos += (1-t)*ball->y_speed;
+                return;
+            }
         }
     }
 
