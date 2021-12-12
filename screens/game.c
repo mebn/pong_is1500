@@ -656,7 +656,7 @@ void game_screen(game_mode mode) {
 
     if (mode == SINGLEPLAYER) {
         char lowest_score = eeprom_read(score_addrs[difficulty][3]);
-        if (p1.score > lowest_score)
+        if (p1.score >= lowest_score)
             input_name_screen(p1.score, difficulty);
     }
     
