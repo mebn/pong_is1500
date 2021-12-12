@@ -18,7 +18,9 @@
 #define GAMETIME 121
 
 /**
- * @brief There's two different
+ * Written by: Marcus Nilszén
+ * 
+ *  @brief There's two different
  * game modes, singleplayer and multiplayer.
  * 
  */

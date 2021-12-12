@@ -3,10 +3,10 @@
 #include "../include/timer.h"
 
 /**
- * Written by: Alex Gunnarsson
+ * Written by: Alex Gunnarsson & Marcus Nilszén
  * 
  * @brief The Interrupt Service Routine. Gets called
- * from vector.S in assembly. Currently only handles timer2.
+ * from vector.S in assembly.
  * 
  */
 void isr_handler() {
@@ -24,10 +24,10 @@ void isr_handler() {
 }
 
 /**
- * Written by: Alex Gunnarsson
+ * Written by: Alex Gunnarsson & Marcus Nilszén
  * 
  * @brief Enables interups for all events
- * used in the program. Currently only handles timer2.
+ * used in the program.
  * 
  */
 void isr_init() {

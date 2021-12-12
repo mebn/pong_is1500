@@ -112,8 +112,7 @@ void draw_timer() {
  */
 void draw_ball(Ball *ball) {
     if (freeze && updateTimer >= FREEZETIME) return;
-    char size = ball->size;
-    int i, j;
+    char i, j, size = ball->size;
     for (i = 0; i < size; i++) {
         for (j = 0; j < size; j++) {
             draw_pixel(ball->x_pos + i, ball->y_pos + j);
@@ -499,12 +498,13 @@ game_difficulty difficulty_selection() {
         draw_clear();
 
         draw_string_grid("DIFFICULTY", 0, CENTER);
-        Text_info easy = draw_string_grid("EASY", 15, LEFT);
-        Text_info normal = draw_string_grid("NORMAL", 15, RIGHT);
-        Text_info hard = draw_string_grid("HARD", 25, LEFT);
-        Text_info impossible = draw_string_grid("IMPOSSIBLE", 25, RIGHT);
+        Text_info options[] = {
+            draw_string_grid("EASY", 15, LEFT),
+            draw_string_grid("NORMAL", 15, RIGHT),
+            draw_string_grid("HARD", 25, LEFT),
+            draw_string_grid("IMPOSSIBLE", 25, RIGHT)
+        };
 
-        Text_info options[] = {easy, normal, hard, impossible};
         display_invert_ti(&options[current_selection]);
 
         // up
@@ -545,6 +545,43 @@ game_difficulty difficulty_selection() {
 }
 
 /**
+ * Written by: marcus Nilszén & Alex Gunnarsson
+ * 
+ * @brief What to do after a game is over.
+ * 
+ * @param p1 Paddle1 struct.
+ * @param p2 Paddle2 struct.
+ * @param mode game_mode enum value.
+ * @param difficulty game_difficulty enum value.
+ */
+void game_over(Paddle *p1, Paddle *p2, game_mode mode, game_difficulty difficulty) {
+    timer3_uninit();
+
+    draw_clear();
+    draw_string_grid("GAME OVER!", 0, CENTER);
+    char *str;
+    if (p1->score == p2->score) {
+        str = "TIE";
+    } else {
+        if (mode == SINGLEPLAYER) {
+            str = p1->score > p2->score ? "YOU WON!" : "THE AI WON!";
+        } else {
+            str = p1->score > p2->score ? "PLAYER 1 WON!" : "PLAYER 2 WON!";
+        }
+    }
+
+    draw_string_grid(str, 10, CENTER);
+    draw_canvas();
+    delay(2000);
+
+    if (mode == SINGLEPLAYER) {
+        char lowest_score = eeprom_read(score_addrs[difficulty][3]);
+        if (p1->score >= lowest_score)
+            input_name_screen(p1->score, difficulty);
+    }
+}
+
+/**
  * Written by: Alex Gunnarsson & Marcus Nilszén
  * 
  * @brief Run game routine for singleplayer and multiplayer gamemode.
@@ -563,9 +600,7 @@ void game_screen(game_mode mode) {
             return;
     }
 
-    Ball ball = {
-        .size = BALLSIZE
-    };
+    Ball ball = { .size = BALLSIZE };
     ball_spawn(&ball);
     
     Paddle p1 = {
@@ -584,7 +619,6 @@ void game_screen(game_mode mode) {
         .score = 0
     };
 
-    // potentially different spawn conditions for singleplayer
     if (mode == SINGLEPLAYER) {
         if (difficulty == EASY) {
             p1.y_pos = 0;
@@ -594,7 +628,7 @@ void game_screen(game_mode mode) {
 
     // loading screen
     draw_clear();
-    draw_string_grid("GET READY...", 10, CENTER);
+    draw_string_grid("GET READY", 10, CENTER);
     draw_canvas();
     
     init_seed();
@@ -609,7 +643,7 @@ void game_screen(game_mode mode) {
     while (1) {
         draw_clear();
         
-        // player 1
+        // player1
         if (!(btn4_ispressed() && btn3_ispressed())) {
             if (btn4_ispressed()) move_paddle(&p1, UP);
             if (btn3_ispressed()) move_paddle(&p1, DOWN);
@@ -627,37 +661,17 @@ void game_screen(game_mode mode) {
 
         ball_update(&ball, &p1, &p2);
 
-        if (timer <= -1) break;     // termination condition
-        draw_timer();
         draw_paddle(&p1);
         draw_paddle(&p2);
         draw_ball(&ball);
         draw_score(&p1, &p2);
 
+        draw_timer();
+        if (timer < 0) break;
+        
         draw_canvas();
         delay(20);
     }
 
-    timer3_uninit();
-
-    draw_clear();
-    draw_string_grid("GAME OVER!", 0, CENTER);
-    if (p1.score == p2.score) {
-        draw_string_grid("TIE!", 10, CENTER);
-    } else {
-        if (mode == SINGLEPLAYER) {
-            draw_string_grid(p1.score > p2.score ? "YOU WON!" : "THE AI WON!", 10, CENTER);
-        } else {
-            draw_string_grid(p1.score > p2.score ? "PLAYER 1 WON!" : "PLAYER 2 WON!", 10, CENTER);
-        }
-    } 
-    draw_canvas();
-    delay(2000);
-
-    if (mode == SINGLEPLAYER) {
-        char lowest_score = eeprom_read(score_addrs[difficulty][3]);
-        if (p1.score >= lowest_score)
-            input_name_screen(p1.score, difficulty);
-    }
-    
+    game_over(&p1, &p2, mode, difficulty);
 }

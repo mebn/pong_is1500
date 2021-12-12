@@ -1,4 +1,3 @@
-#include <pic32mx.h>
 #include "include/display.h"
 #include "include/graphics.h"
 #include "include/isr.h"
@@ -6,7 +5,6 @@
 #include "include/buttons.h"
 #include "include/screens.h"
 #include "include/eeprom.h"
-#include <stdbool.h>
 
 /**
  * Written by: Marcus Nilszén
@@ -28,7 +26,6 @@ typedef enum {
  * @brief The main menu a user see after bootup.
  * Button 4 and 3 to navigate up respectively down in the menu.
  * Button 1 to select and navigate to the selected screen.
- * (NEEDS IMPROVMENT)
  * 
  * @return selection An enum value indicating what screen
  * to navigate to.
@@ -40,11 +37,12 @@ selection menu() {
         draw_clear();
 
         draw_string_grid("PONG!", 0, CENTER);
-        Text_info single = draw_string_grid("SINGLEPLAYER", 15, LEFT);
-        Text_info multi = draw_string_grid("MULTIPLAYER", 15, RIGHT);
-        Text_info high = draw_string_grid("HIGHSCORE", 25, CENTER);
+        Text_info options[] = {
+            draw_string_grid("SINGLEPLAYER", 15, LEFT),
+            draw_string_grid("MULTIPLAYER", 15, RIGHT),
+            draw_string_grid("HIGHSCORE", 25, CENTER)
+        };
 
-        Text_info options[] = {single, multi, high};
         display_invert_ti(&options[current_selection]);
 
         // up
@@ -91,6 +89,8 @@ void loading() {
 }
 
 /**
+ * Written by: Marcus Nilszén
+ * 
  * @brief Collection of all Initializations
  * from different files and hardware.
  * 
@@ -104,6 +104,8 @@ void inits() {
 }
 
 /**
+ * Written by: Marcus Nilszén
+ * 
  * @brief Entrypoint of our program.
  * Loads inits, loading screen and
  * displays the main menu.

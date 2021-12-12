@@ -1,6 +1,7 @@
 #include "../include/timer.h"
 #include "../include/screens.h"
 #include "../include/display.h"
+#include "../include/graphics.h"
 #include "../include/timer.h"
 #include "../include/eeprom.h"
 
@@ -24,7 +25,6 @@ void add_to_eeprom(char *name, int score, game_difficulty difficulty) {
         eeprom_read_str(name_addrs[difficulty][i], temp_names[difficulty][i]);
         temp_scores[difficulty][i] = eeprom_read(score_addrs[difficulty][i]);
 
-        // change >= to > to avoid duplicate scores.
         if (score >= temp_scores[difficulty][i] && !saved) {
             pos = i;
             saved = 1;
@@ -40,10 +40,8 @@ void add_to_eeprom(char *name, int score, game_difficulty difficulty) {
 
         // strip name
         for (i = 5; i >= 0; i--) {
-            if (name[i] != 'A'-1)
-                break;
-            else
-                name[i] = '\0';
+            if (name[i] != 'A'-1) break;
+            else name[i] = '\0';
         }
 
         // add new score to leaderboard
@@ -64,7 +62,7 @@ void add_to_eeprom(char *name, int score, game_difficulty difficulty) {
 void input_name_screen(char score, game_difficulty difficulty) {
     int current_selection = 0;
     char name[] = {'A'-1, 'A'-1, 'A'-1, 'A'-1, 'A'-1, 'A'-1, '\0'};
-    char i, spacing = 3, len = 5, x = 43, y = 20;
+    char i, spacing = 3, x = 43, y = 20;
     
     while (1) {
         draw_clear();
@@ -72,12 +70,12 @@ void input_name_screen(char score, game_difficulty difficulty) {
         draw_string_grid("ENTER YOUR NAME", 0, CENTER);
         for (i = 0; i < 6; i++) {
             char temp[] = {name[i], '\0'};
-            draw_string_spacing(&temp, x+i*(len+spacing) + (name[i] == 'I' ? 1 : 0), y - 6, spacing);
-            draw_line(x+i*(len+spacing), y, len, 1);
+            draw_string_spacing(&temp, x+i*(FONT_SIZE+spacing) + (name[i] == 'I' ? 1 : 0), y - FONT_SIZE - 1, spacing);
+            draw_line(x+i*(FONT_SIZE+spacing), y, FONT_SIZE, 1);
         }
 
         // draw extra line under selected char.
-        draw_line(x + current_selection*(len+spacing), y, len, 2);
+        draw_line(x + current_selection*(FONT_SIZE+spacing), y, FONT_SIZE, 2);
 
         // left
         if (btn4_ispressed()) {
@@ -108,7 +106,6 @@ void input_name_screen(char score, game_difficulty difficulty) {
         }
 
         if (current_selection == 6) {
-            // add name and score to highscore list
             add_to_eeprom(name, score, difficulty);
             break;
         }
