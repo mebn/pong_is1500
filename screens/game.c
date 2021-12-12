@@ -213,6 +213,28 @@ void ball_incr(Ball *ball) {
 
 }
 
+void ball_bounceY(Ball *b, float *modify) {
+    // float ys = b->y_speed;
+    // float xs = b->x_speed;
+    // ys *= -1;
+
+
+
+    float max_ys = my_sqrt(3)/2 * BALLSPEED;
+    // float diff = *modify > 0 ? max_ys - b->y_speed : -1*max_ys - b->y_speed;
+    float absmod = *modify > 0 ? *modify : -1 * (*modify);
+    b->y_speed = (1-absmod)*max_ys;
+
+    // if (b->y_speed > max_ys || b->y_speed < -1*max_ys) {
+    //     b->y_speed = b->y_speed > 0 ? max_ys : -1*max_ys;
+    // }
+
+    // correct x-speed
+    b->x_speed = (*modify > 0 ? (b->x_speed > 0 ? 1 : -1) : (b->x_speed > 0 ? -1 : 1)) * my_sqrt(BALLSPEED*BALLSPEED - b->y_speed*b->y_speed);
+    // new direction, prediciton calculation invalid
+    calculated = false;
+}
+
 /**
  * Written by: Alex Gunnarsson
  * 
@@ -295,7 +317,7 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
                 ball->x_pos += t*ball->x_speed;
                 ball->y_pos += t*ball->y_speed;
                 float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
-                ball_bounce(ball, &modify);
+                ball_bounceY(ball, &modify);
                 ball->x_pos += (1-t)*ball->x_speed;
                 ball->y_pos += (1-t)*ball->y_speed;
                 return; 
@@ -316,7 +338,7 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
                 ball->x_pos += t*ball->x_speed;
                 ball->y_pos += t*ball->y_speed;
                 float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
-                ball_bounce(ball, &modify);
+                ball_bounceY(ball, &modify);
                 ball->x_pos += (1-t)*ball->x_speed;
                 ball->y_pos += (1-t)*ball->y_speed;
                 return;
@@ -337,7 +359,7 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
                 ball->x_pos += t*ball->x_speed;
                 ball->y_pos += t*ball->y_speed;
                 float modify = (ball->x_pos - (p2->x_pos + (p2->x_size - ball->size)/2.0)) / ((p2->x_size + ball->size)/2.0);
-                ball_bounce(ball, &modify);
+                ball_bounceY(ball, &modify);
                 ball->x_pos += (1-t)*ball->x_speed;
                 ball->y_pos += (1-t)*ball->y_speed;
                 return;
@@ -358,7 +380,7 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
                 ball->x_pos += t*ball->x_speed;
                 ball->y_pos += t*ball->y_speed;
                 float modify = (ball->x_pos - (p2->x_pos + (p2->x_size - ball->size)/2.0)) / ((p2->x_size + ball->size)/2.0);
-                ball_bounce(ball, &modify);
+                ball_bounceY(ball, &modify);
                 ball->x_pos += (1-t)*ball->x_speed;
                 ball->y_pos += (1-t)*ball->y_speed;
                 return;
