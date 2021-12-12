@@ -38,6 +38,7 @@ typedef struct {
 void draw_underline(const Text_info *ti);
 void draw_string(char *str, unsigned int x, unsigned int y);
 void draw_string_spacing(char *str, unsigned int x, unsigned int y, int spacing);
+int str_len(char *str2);
 Text_info draw_string_grid(char *str, unsigned int y, grid_pos pos);
 
 void draw_pixel(char x, char y);

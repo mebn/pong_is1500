@@ -23,7 +23,7 @@ typedef enum {
 } selection;
 
 /**
- * Written by: Marcus Nilszén & Alex Gunnarsson
+ * Written by: Marcus Nilszén
  * 
  * @brief The main menu a user see after bootup.
  * Button 4 and 3 to navigate up respectively down in the menu.
@@ -35,7 +35,6 @@ typedef enum {
  */
 selection menu() {
     selection current_selection = SINGLE_PLAYER;
-    selection prev;
 
     while (1) {
         draw_clear();
@@ -51,20 +50,20 @@ selection menu() {
         // up
         if (btn4_ispressed()) {
             while (btn4_ispressed());
-            if (current_selection == SINGLE_PLAYER) current_selection++;
-            if (current_selection == MULTI_PLAYER) current_selection--;
+            if (current_selection == SINGLE_PLAYER) {
+                current_selection = HIGH_SCORE;  
+            } else {
+                current_selection--; 
+            }
         }
 
         // down
         if (btn3_ispressed()) {
             while (btn3_ispressed());
             if (current_selection == HIGH_SCORE) {
-                selection temp = current_selection;
-                current_selection = prev;
-                prev = temp;
+                current_selection = SINGLE_PLAYER;
             } else {
-                prev = current_selection;
-                current_selection = HIGH_SCORE;
+                current_selection++;
             }
         }
 

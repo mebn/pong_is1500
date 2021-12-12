@@ -15,7 +15,7 @@
 
 #define TOLERANCE 0.001
 
-#define GAMETIME 121
+#define GAMETIME 2
 
 /**
  * @brief There's two different

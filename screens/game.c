@@ -508,15 +508,23 @@ game_difficulty difficulty_selection() {
         display_invert_ti(&options[current_selection]);
 
         // up
-        if (btn4_ispressed() && current_selection != EASY) {
+        if (btn4_ispressed()) {
             while (btn4_ispressed());
-            current_selection--;
+            if (current_selection == EASY) {
+                current_selection = IMPOSSIBLE;
+            } else {
+                current_selection--;
+            }
         }
 
         // down
         if (btn3_ispressed() && current_selection != IMPOSSIBLE) {
             while (btn3_ispressed());
-            current_selection++;
+            if (current_selection == IMPOSSIBLE) {
+                current_selection = EASY;
+            } else {
+                current_selection++;
+            }
         }
 
         // select
