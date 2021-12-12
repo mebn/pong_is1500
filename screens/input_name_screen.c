@@ -73,13 +73,13 @@ void input_name_screen(char score, game_difficulty difficulty) {
         for (i = 0; i < 6; i++) {
             char temp[] = {name[i], '\0'};
             draw_string_spacing(&temp, x+i*(len+spacing) + (name[i] == 'I' ? 1 : 0), y - 6, spacing);
-            draw_line(x+i*(len+spacing), y, len, 1);
+            // draw_line(x+i*(len+spacing), y, len, 1);
         }
 
-        display_invert(x + current_selection*(len + spacing) - 1, y - 1, x + current_selection*(len + spacing) + len + 1, y + 6);
+        display_invert(x + current_selection*(len + spacing) - 1, y - 7, x + current_selection*(len + spacing) + len + 1, y);
 
         // draw extra line under selected char.
-        draw_line(x + current_selection*(len+spacing), y, len, 2);
+        // draw_line(x + current_selection*(len+spacing), y, len, 2);
 
         // left
         if (btn4_ispressed()) {
