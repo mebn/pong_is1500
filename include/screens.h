@@ -10,9 +10,12 @@
 
 #define BALLSIZE 2
 #define BALLSPEED 1
-#define FREEZETIME 50
+#define FREEZETIME 40
+#define PASSTIME 20
 
 #define TOLERANCE 0.001
+
+#define GAMETIME 121
 
 /**
  * @brief There's two different
@@ -41,5 +44,6 @@ typedef enum {
 void game_screen(game_mode mode);
 void high_score_screen();
 void input_name_screen(char score, game_difficulty difficulty);
+void decrement_timer();
 
 #endif

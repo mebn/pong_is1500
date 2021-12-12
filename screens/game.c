@@ -5,6 +5,7 @@
 #include "../include/display.h"
 #include "../include/tools.h"
 #include "../include/eeprom.h"
+#include "../include/graphics.h"
 
 /**
  * Written by: Alex Gunnarsson & Marcus Nilszén
@@ -53,6 +54,54 @@ static bool freeze;
  */
 static int endPos;
 static bool calculated;
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Keeps track of the in-game time. 5 units is 1 second.
+ * 
+ */
+static short timer;
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Decrements the in-game time.
+ * 
+ */
+void decrement_timer() {
+    timer--;
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Draws the in-game time.
+ * 
+ */
+void draw_timer() {
+    unsigned char time = timer / 5;
+    char string[6];
+    char digit[2];
+    
+    itos((time / 60) / 10, digit);
+    string[0] = digit[0];
+
+    itos((time / 60) % 10, digit);
+    string[1] = digit[0];
+    
+    string[2] = ':';
+    
+    itos((time % 60) / 10, digit);
+    string[3] = digit[0];
+
+    itos((time % 60) % 10, digit);
+    string[4] = digit[0];
+    
+    string[5] = '\0';
+
+    draw_string_grid(string, DISPLAY_HEIGHT - FONT_SIZE, CENTER);
+}
 
 /**
  * Written by: Alex Gunnarsson
@@ -190,7 +239,7 @@ void ball_spawn(Ball *b) {
     float y = (float) random_max(2000001) / 1000000 - 1;    // range [-1, 1]
     ball_bounce(b, &y);
     freeze = true;
-    updateTimer = 2 * FREEZETIME;
+    updateTimer = FREEZETIME + PASSTIME;
 }
 
 /**
@@ -443,7 +492,8 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
 
         // simulate where the ball is going to end up and move there
         case HARD:
-            if (b->x_speed > 0) {
+        case IMPOSSIBLE:
+            if ((b->x_speed > 0) && ((difficulty == HARD && b->x_pos > DISPLAY_WIDTH/2) || difficulty == IMPOSSIBLE)) {
                 if (!calculated) {
                     float yp = b->y_pos;
                     float xp = b->x_pos;
@@ -453,7 +503,11 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
                     while (b->x_pos < DISPLAY_WIDTH - PADDLEGAP - PADDLESIZE_X - b->size) {
                         ball_incr(b);
                     }
+
                     endPos = (int) b->y_pos;
+                    if (difficulty == HARD) {   // introduce random offset for chance to miss
+                        endPos += random_max(2*PADDLESIZE_Y) - PADDLESIZE_Y;
+                    }
 
                     b->y_pos = yp;
                     b->x_pos = xp;
@@ -589,9 +643,6 @@ void game_screen(game_mode mode) {
         if (difficulty == EASY) {
             p1.y_pos = 0;
             p1.y_size = 32;
-        } else if (difficulty == IMPOSSIBLE) {
-            p2.y_pos = 0;
-            p2.y_size = 32;
         }
     }
 
@@ -601,11 +652,13 @@ void game_screen(game_mode mode) {
     draw_canvas();
     
     init_seed();
+    timer3_init();
 
     // init global vars
     calculated = false;         // used for reducing amount of calculations for HARD difficulty, not yet calculated
     freeze = true;              // used to freeze the ball on respawn, inactive
     updateTimer = FREEZETIME;   // different freezetime for first spawn
+    timer = 5 * GAMETIME - 1;   // amount of seconds for each game
 
     while (1) {
         draw_clear();
@@ -622,29 +675,36 @@ void game_screen(game_mode mode) {
                 if (btn1_ispressed()) move_paddle(&p2, UP);
                 if (btn2_ispressed()) move_paddle(&p2, DOWN);
             }
-        } else if (difficulty != IMPOSSIBLE) {
+        } else {
             move_ai(&p2, &ball, difficulty);
         }
 
         ball_update(&ball, &p1, &p2);
 
+        if (timer <= -1) break;     // termination condition
+        draw_timer();
         draw_paddle(&p1);
         draw_paddle(&p2);
         draw_ball(&ball);
         draw_score(&p1, &p2);
 
-        // for testing purposes.
-        if (p1.score > 2) {
-            break;
-        }
-
         draw_canvas();
         delay(20);
     }
 
+    timer3_uninit();
+
     draw_clear();
     draw_string_grid("GAME OVER!", 0, CENTER);
-    draw_string_grid(p1.score > p2.score ? "PLAYER 1 WON!" : "PLAYER 2 WON!", 10, CENTER);
+    if (p1.score == p2.score) {
+        draw_string_grid("TIE!", 10, CENTER);
+    } else {
+        if (mode == SINGLEPLAYER) {
+            draw_string_grid(p1.score > p2.score ? "YOU WON!" : "THE AI WON!", 10, CENTER);
+        } else {
+            draw_string_grid(p1.score > p2.score ? "PLAYER 1 WON!" : "PLAYER 2 WON!", 10, CENTER);
+        }
+    } 
     draw_canvas();
     delay(2000);
 
