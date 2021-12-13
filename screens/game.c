@@ -177,10 +177,10 @@ void ball_bounce(Ball *b, float *modify) {
  * @param b The ball struct.
  */
 void ball_spawn(Ball *b) {
-    b->old_x_pos = DISPLAY_WIDTH/2 - b->size/2;
-    b->old_y_pos = DISPLAY_HEIGHT/2 - b->size/2;
     b->x_pos = DISPLAY_WIDTH/2 - b->size/2;
     b->y_pos = DISPLAY_HEIGHT/2 - b->size/2;
+    b->old_x_pos = b->y_pos;
+    b->old_y_pos = b->x_pos;
     b->x_speed = (random_binary() == 1 ? 1 : -1);
     b->y_speed = 0;
     float y = (float) random_max(2000001) / 1000000 - 1;    // range [-1, 1]
@@ -326,8 +326,19 @@ int ball_collision(Ball *ball, Paddle *p1) {
             // ball->x_pos += (1-per_y)*ball->x_speed;
             // ball->y_pos += (1-per_y)*ball->y_speed;
 
-            ball->y_pos = DISPLAY_HEIGHT/2;
-            ball->x_pos = DISPLAY_WIDTH/2;
+            // ball->x_pos = ball->old_x_pos + per_y*ball->x_speed;
+            // ball->y_pos = ball->old_y_pos + per_y*ball->y_speed;
+            float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
+            ball_bounceY(ball, &modify);
+            ball->y_pos = (p1->y_pos - ball->size) + ball->y_speed * (1-per_y);
+            ball->x_pos = cross_x + ball->x_speed * (1-per_y);
+
+
+
+            // ball->y_pos = DISPLAY_HEIGHT/2;
+            // ball->x_pos = DISPLAY_WIDTH/2;
+
+
 
             // // modify = -1;
             // // ball_bounce(ball, &modify);
@@ -358,13 +369,24 @@ int ball_collision(Ball *ball, Paddle *p1) {
 
             // ball->x_pos = ball->old_x_pos + per_y*ball->x_speed;
             // ball->y_pos = ball->old_y_pos + per_y*ball->y_speed;
-            // float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
+            // // float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
             // // ball_bounceY(ball, &modify);
             // ball->x_pos += (1-per_y)*ball->x_speed;
             // ball->y_pos += (1-per_y)*ball->y_speed;
 
-            ball->y_pos = DISPLAY_HEIGHT/2;
-            ball->x_pos = DISPLAY_WIDTH/2;
+            // ball->x_pos = ball->old_x_pos + per_y*ball->x_speed;
+            // ball->y_pos = ball->old_y_pos + per_y*ball->y_speed;
+            float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
+            ball_bounceY(ball, &modify);
+            ball->y_pos = (p1->y_pos + p1->y_size) + ball->y_speed * (1-per_y);
+            ball->x_pos = cross_x + ball->x_speed * (1-per_y);
+
+
+
+            // ball->y_pos = DISPLAY_HEIGHT/2;
+            // ball->x_pos = DISPLAY_WIDTH/2;
+
+
 
             // ball->y_speed *= -1;
             // if (p1->x_pos > DISPLAY_WIDTH/2) {
