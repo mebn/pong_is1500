@@ -638,17 +638,17 @@ void move_conditional(Paddle *p1, Ball *ball, move_dir md) {
             if (ball->y_pos < p1->y_pos && ball->x_pos + ball->size > p1->x_pos && ball->x_pos < p1->x_pos + p1->x_size) {
                 if (ball->y_pos > p1->y_pos - PADDLESPEED) {
                     if (p1->y_pos - PADDLESPEED >= ball->size) {
-                        move_paddle(&p1, UP);
+                        move_paddle(p1, UP);
                         ball->y_pos = p1->y_pos - ball->size;
                     } else {
                         p1->y_pos = ball->size;
                         ball->y_pos = 0;
                     }
                 } else {
-                    move_paddle(&p1, UP);
+                    move_paddle(p1, UP);
                 }
             } else {
-                move_paddle(&p1, UP);
+                move_paddle(p1, UP);
             }
             break;
         
