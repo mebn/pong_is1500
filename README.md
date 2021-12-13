@@ -18,7 +18,7 @@ Written by [Marcus Nilszén](https://github.com/mebn) and [Alex Gunnarsson](http
  <img src="images/highscore.png" width="200">
 </p>
 
-Video can be found [here](https://github.com/mebn/pong_is1500/blob/main/images/video.MOV).
+Video can be found [here](https://youtu.be/LYdWxMv3mJM).
 
 ## Controls
 
