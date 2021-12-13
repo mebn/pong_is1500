@@ -1,4 +1,3 @@
-#include <pic32mx.h>
 #include "include/display.h"
 #include "include/graphics.h"
 #include "include/isr.h"
@@ -37,9 +36,6 @@ selection menu() {
     selection current_selection = SINGLE_PLAYER;
 
     while (1) {
-        TRISECLR = 0xff;
-        PORTE = current_selection;
-
         draw_clear();
 
         draw_string_grid("PONG!", 0, CENTER);
@@ -121,9 +117,6 @@ int main() {
     draw_canvas();
 
     while (1) {
-        TRISECLR = 0xff;
-        PORTE = 12;
-
         selection screen = menu();
         if (screen == SINGLE_PLAYER) game_screen(SINGLE_PLAYER);
         if (screen == MULTI_PLAYER) game_screen(MULTI_PLAYER);

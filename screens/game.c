@@ -6,7 +6,6 @@
 #include "../include/tools.h"
 #include "../include/eeprom.h"
 #include "../include/graphics.h"
-#include <pic32mx.h>
 
 /**
  * Written by: Alex Gunnarsson & Marcus Nilszén
@@ -37,7 +36,6 @@ typedef struct {
     char y_size;
     char score;
 } Paddle;
-
 
 /**
  * Written by: Alex Gunnarsson
@@ -452,11 +450,7 @@ int ball_collision(Ball *ball, Paddle *p1) {
 }
 
 void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
-    
-    TRISECLR = 0xff;
-    PORTE = p1->y_pos;
-
-     if (freeze) {
+    if (freeze) {
         updateTimer--;
         if (updateTimer < 0) freeze = false;
         return;
@@ -467,7 +461,6 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
     } else {
         if (ball_collision(ball, p1)) return;
     }
-    
 
     ball_incr(ball);
     ball_miss(ball, p1, p2);
