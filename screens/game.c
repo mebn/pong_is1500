@@ -330,8 +330,8 @@ int ball_collision(Ball *ball, Paddle *p1) {
             // ball->y_pos = ball->old_y_pos + per_y*ball->y_speed;
             float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
             ball_bounceY(ball, &modify);
-            ball->y_pos = (p1->y_pos - ball->size) + ball->y_speed * (1-per_y);
-            ball->x_pos = cross_x + ball->x_speed * (1-per_y);
+            // ball->y_pos = (p1->y_pos - ball->size) + ball->y_speed * (1-per_y);
+            // ball->x_pos = cross_x + ball->x_speed * (1-per_y);
 
 
 
@@ -378,8 +378,8 @@ int ball_collision(Ball *ball, Paddle *p1) {
             // ball->y_pos = ball->old_y_pos + per_y*ball->y_speed;
             float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
             ball_bounceY(ball, &modify);
-            ball->y_pos = (p1->y_pos + p1->y_size) + ball->y_speed * (1-per_y);
-            ball->x_pos = cross_x + ball->x_speed * (1-per_y);
+            // ball->y_pos = (p1->y_pos + p1->y_size) + ball->y_speed * (1-per_y);
+            // ball->x_pos = cross_x + ball->x_speed * (1-per_y);
 
 
 
