@@ -312,7 +312,7 @@ int ball_collision(Ball *ball, Paddle *p1) {
             // modify = -1;
             // ball_bounce(ball, &modify);
             ball->y_speed *= -1;
-            if (p1->x_size > DISPLAY_WIDTH/2) {
+            if (p1->x_pos > DISPLAY_WIDTH/2) {
                 ball->x_speed = ball->x_speed < 0 ? ball->x_speed : -1*ball->x_speed;
             } else {
                 ball->x_speed = ball->x_speed > 0 ? ball->x_speed : -1*ball->x_speed;
