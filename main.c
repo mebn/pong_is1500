@@ -110,13 +110,12 @@ void inits() {
  * 
  */
 int main() {
-    int a = 0;
-    while(1) {
-        PORTE = a;
-        if (a == 1) a = -1;
-        a++;
-        delay(1000);
-    }
+    // while(1) {
+    //     PORTE |= 0x1;
+    //     delay(1000);
+    //     PORTE &= ~(0x1);
+    //     delay(1000);
+    // }
 
     inits();
     loading();
