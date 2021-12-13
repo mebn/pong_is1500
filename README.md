@@ -8,13 +8,15 @@ Written by [Marcus Nilszén](https://github.com/mebn) and [Alex Gunnarsson](http
 
 ## Images
 
-![Loading](/images/loading.png)
-![Main menu](/images/menu.png)
-![Difficulty](/images/difficulty.png)
-![Easy](/images/easy.png)
-![Normal](/images/normal.png)
-![Name input](/images/name_input.png)
-![Highscore](/images/highscore.png)
+<p float="left">
+ <img src="images/loading.png" width="200">
+ <img src="images/menu.png" width="200">
+ <img src="images/difficulty.png" width="200">
+ <img src="images/easy.png" width="200">
+ <img src="images/normal.png" width="200">
+ <img src="images/name_input.png" width="200">
+ <img src="images/highscore.png" width="200">
+</p>
 
 Video can be found [here](https://github.com/mebn/pong_is1500/blob/main/images/video.MOV).
 
@@ -31,7 +33,8 @@ Video can be found [here](https://github.com/mebn/pong_is1500/blob/main/images/v
   * BTN 4 and BTN3 moves between character location.
   * BTN2 and BTN1 changes letter [ A-Z].
   * BTN4 when current selection is at start, exits and returns to the main menu.
-  * BTN3 when current selection is at end, saves name and score to leaderboard.
+  * BTN3 when current selection is at end, saves name and score to leaderboard.<img width="387" alt="menu" src="https://user-images.githubusercontent.com/39590503/145865160-1dd6d043-0265-4233-aeba-2dcce71ee9cb.png">
+
 * Highscore screen
   * BTN4 and BTN3 moves between difficulties leaderboard.
   * BTN2 returns to previous screen.
