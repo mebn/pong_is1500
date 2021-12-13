@@ -236,12 +236,10 @@ unsigned int eeprom_read_seed() {
  * setting name to "0" and score to 0.
  * 
  */
-void eeprom_reset() {
-    char i, j;
-    for (i = 0; i < DIFFICULTYLEVELS; i++) {
-        for (j = 0; j < TOPNPLAYERS; j++) {
-            eeprom_write_str(name_addrs[i][j], "0");
-            eeprom_write(score_addrs[i][j], 0);
-        }
+void eeprom_reset(char screen) {
+    char i;
+    for (i = 0; i < TOPNPLAYERS; i++) {
+        eeprom_write_str(name_addrs[screen][i], "0");
+        eeprom_write(score_addrs[screen][i], 0);
     }
 }

@@ -1,6 +1,8 @@
 #ifndef EEPROM_H
 #define EEPROM_H
 
+#include "screens.h"
+
 #define TOPNPLAYERS 4
 #define DIFFICULTYLEVELS 4
 
@@ -79,6 +81,6 @@ unsigned int eeprom_read_seed();
 
 /***** EEPROM OTHER *****/
 
-void eeprom_reset();
+void eeprom_reset(char screen);
 
 #endif

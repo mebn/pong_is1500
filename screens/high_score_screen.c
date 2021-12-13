@@ -91,7 +91,7 @@ void high_score_screen() {
         // reset leaderboard
         if (btn1_ispressed()) {
             while (btn1_ispressed());
-            eeprom_reset();
+            eeprom_reset(current_screen);
         }
 
         draw_canvas();
