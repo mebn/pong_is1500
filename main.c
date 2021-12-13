@@ -110,6 +110,13 @@ void inits() {
  * 
  */
 int main() {
+    int a = 0;
+    while(1) {
+        PORTE = a;
+        if (a == 1) a = -1;
+        a++;
+    }
+
     inits();
     loading();
     
