@@ -117,8 +117,8 @@ int main() {
     //     delay(1000);
     // }
 
-    TRISECLR = 0x1;
-    PORTE |= 0x1;
+    TRISECLR = 0xFF;
+    PORTE |= 0xFF;
 
     inits();
     loading();
