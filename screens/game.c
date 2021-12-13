@@ -309,8 +309,6 @@ int ball_collision(Ball *ball, Paddle *p1) {
             (cross_x + ball->size < (float) p1->x_pos + p1->x_size && cross_x + ball->size > (float) p1->x_pos) ||
             (cross_x < (float) p1->x_pos && cross_x + ball->size > (float) p1->x_pos + p1->x_size))) {
 
-                draw_pixel(cross_x, 10);
-
             // modify = -1;
             // ball_bounce(ball, &modify);
             ball->y_speed *= -1;
@@ -338,10 +336,9 @@ int ball_collision(Ball *ball, Paddle *p1) {
             (cross_x + ball->size < (float) p1->x_pos + p1->x_size && cross_x + ball->size > (float) p1->x_pos) ||
             (cross_x < (float) p1->x_pos && cross_x + ball->size > (float) p1->x_pos + p1->x_size))) {
 
-                draw_pixel(cross_x, 10);
-
             ball->y_speed *= -1;
             if (p1->x_pos > DISPLAY_WIDTH/2) {
+                draw_pixel(DISPLAY_WIDTH/2, 10);
                 ball->x_speed = ball->x_speed < 0 ? ball->x_speed : -1*ball->x_speed;
             } else {
                 ball->x_speed = ball->x_speed > 0 ? ball->x_speed : -1*ball->x_speed;
@@ -713,8 +710,8 @@ void game_screen(game_mode mode) {
         // player2 movement
         if (mode == MULTIPLAYER) {
             if (!(btn1_ispressed() && btn2_ispressed())) {
-                if (btn1_ispressed()) move_paddle(&p2, UP);
-                if (btn2_ispressed()) move_paddle(&p2, DOWN);
+                if (btn1_ispressed() && !(p2.y_pos - PADDLESPEED < ball.size + ball.y_pos && ball.x_pos >= p2.x_pos - ball.size && ball.x_pos <= p2.x_pos + p2.x_size)) move_paddle(&p2, UP);
+                if (btn2_ispressed() && !(p2.y_pos + p2.y_size + PADDLESPEED > ball.y_pos && ball.x_pos >= p2.x_pos - ball.size && ball.x_pos <= p2.x_pos + p2.x_size)) move_paddle(&p2, DOWN);
             }
         } else {
             move_ai(&p2, &ball, difficulty);
