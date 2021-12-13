@@ -632,6 +632,46 @@ game_difficulty difficulty_selection() {
     }
 }
 
+void move_conditional(Paddle *p1, Ball *ball, move_dir md) {
+    switch (md) {
+        case UP:
+            if (ball->y_pos < p1->y_pos && ball->x_pos + ball->size > p1->x_pos && ball->x_pos < p1->x_pos + p1->x_size) {
+                if (ball->y_pos > p1->y_pos - PADDLESPEED) {
+                    if (p1->y_pos - PADDLESPEED >= ball->size) {
+                        move_paddle(&p1, UP);
+                        ball->y_pos = p1->y_pos - ball->size;
+                    } else {
+                        p1->y_pos = ball->size;
+                        ball->y_pos = 0;
+                    }
+                } else {
+                    move_paddle(&p1, UP);
+                }
+            } else {
+                move_paddle(&p1, UP);
+            }
+            break;
+        
+        case DOWN: 
+            if (ball->y_pos > p1->y_pos && ball->x_pos + ball->size > p1->x_pos && ball->x_pos < p1->x_pos + p1->x_size) {
+                if (ball->y_pos < p1->y_pos + PADDLESPEED) {
+                    if (p1->y_pos + PADDLESPEED <= DISPLAY_HEIGHT - ball->size) {
+                        move_paddle(p1, DOWN);
+                        ball->y_pos = p1->y_pos + p1->y_size;
+                    } else {
+                        p1->y_pos = DISPLAY_HEIGHT - (p1->y_size + ball->size);
+                        ball->y_pos = DISPLAY_HEIGHT - ball->size;
+                    }
+                } else {
+                    move_paddle(p1, DOWN);
+                }
+            } else {
+                move_paddle(p1, DOWN);
+            }
+            break;
+    }
+}
+
 /**
  * Written by: Alex Gunnarsson & Marcus Nilszén
  * 
@@ -701,17 +741,22 @@ void game_screen(game_mode mode) {
         
         // player 1
         if (!(btn4_ispressed() && btn3_ispressed())) {
-            // if (btn4_ispressed() && !(ball.y_pos + 1 + ball.size < p1.x_pos && ball.y_pos + 1 + ball.size > p1.x_pos - PADDLESPEED)) move_paddle(&p1, UP);
-            if (btn4_ispressed() && !(p1.y_pos - PADDLESPEED < ball.size + ball.y_pos && ball.x_pos >= p1.x_pos - ball.size && ball.x_pos <= p1.x_pos + p1.x_size)) move_paddle(&p1, UP);
-            // if (btn3_ispressed() && !(ball.y_pos + 1 < p1.x_pos + p1.x_size && ball.y_pos + 1 > p1.x_pos + p1.x_size + PADDLESPEED)) move_paddle(&p1, DOWN);
-            if (btn3_ispressed() && !(p1.y_pos + p1.y_size + PADDLESPEED > ball.y_pos && ball.x_pos >= p1.x_pos - ball.size && ball.x_pos <= p1.x_pos + p1.x_size)) move_paddle(&p1, DOWN);
+            // if (btn4_ispressed() && !(p1.y_pos - PADDLESPEED < ball.size + ball.y_pos && ball.x_pos >= p1.x_pos - ball.size && ball.x_pos <= p1.x_pos + p1.x_size)) move_paddle(&p1, UP);
+            if (btn4_ispressed()) {
+                move_conditional(&p1, &ball, UP);
+            }
+
+            // if (btn3_ispressed() && !(p1.y_pos + p1.y_size + PADDLESPEED > ball.y_pos && ball.x_pos >= p1.x_pos - ball.size && ball.x_pos <= p1.x_pos + p1.x_size)) move_paddle(&p1, DOWN);
+            if (btn3_ispressed()) {
+                move_conditional(&p1, &ball, DOWN);
+            }
         }
         
         // player2 movement
         if (mode == MULTIPLAYER) {
             if (!(btn1_ispressed() && btn2_ispressed())) {
-                if (btn1_ispressed() && !(p2.y_pos - PADDLESPEED < ball.size + ball.y_pos && ball.x_pos >= p2.x_pos - ball.size && ball.x_pos <= p2.x_pos + p2.x_size)) move_paddle(&p2, UP);
-                if (btn2_ispressed() && !(p2.y_pos + p2.y_size + PADDLESPEED > ball.y_pos && ball.x_pos >= p2.x_pos - ball.size && ball.x_pos <= p2.x_pos + p2.x_size)) move_paddle(&p2, DOWN);
+                if (btn1_ispressed()) move_conditional(&p2, &ball, UP);
+                if (btn2_ispressed()) move_conditional(&p2, &ball, DOWN);
             }
         } else {
             move_ai(&p2, &ball, difficulty);
