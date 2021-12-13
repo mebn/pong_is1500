@@ -117,6 +117,7 @@ int main() {
     //     delay(1000);
     // }
 
+    TRISE |= 0x1;
     PORTE |= 0x1;
 
     inits();
