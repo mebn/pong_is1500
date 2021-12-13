@@ -115,6 +115,7 @@ int main() {
         PORTE = a;
         if (a == 1) a = -1;
         a++;
+        delay(1000);
     }
 
     inits();
