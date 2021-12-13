@@ -457,11 +457,11 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
         return;
     }
   
-    if (ball->x_pos + ball->size > DISPLAY_WIDTH) {
-        if (ball_collision(ball, p2)) return;
-    } else {
-        if (ball_collision(ball, p1)) return;
-    }
+    // if (ball->x_pos + ball->size > DISPLAY_WIDTH) {
+    //     if (ball_collision(ball, p2)) return;
+    // } else {
+    //     if (ball_collision(ball, p1)) return;
+    // }
     
 
     ball_incr(ball);
