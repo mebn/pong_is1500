@@ -6,6 +6,18 @@ Classic pong game on uno32/uc32 chipkit with IO Shield.
 
 Written by [Marcus Nilszén](https://github.com/mebn) and [Alex Gunnarsson](https://github.com/alexarne).
 
+## Images
+
+![Loading](/images/loading.png)
+![Main menu](/images/menu.png)
+![Difficulty](/images/difficulty.png)
+![Easy](/images/easy.png)
+![Normal](/images/normal.png)
+![Name input](/images/name_input.png)
+![Highscore](/images/highscore.png)
+
+Video can be found [here](https://github.com/mebn/pong_is1500/blob/main/images/video.MOV).
+
 ## Controls
 
 * Home screen and Difficulty selection menu:
