@@ -37,6 +37,9 @@ selection menu() {
     selection current_selection = SINGLE_PLAYER;
 
     while (1) {
+        TRISECLR = 0xff;
+        PORTE = current_selection;
+
         draw_clear();
 
         draw_string_grid("PONG!", 0, CENTER);
@@ -111,27 +114,16 @@ void inits() {
  */
 int main() {
 
-    // TRISECLR = 0xFF;
-    // PORTE |= 0xFF;
-
     inits();
-    TRISECLR = 0xff;
-    
-    while(1) {
-        draw_clear();
-        draw_pixel(10, 10);
-        PORTE |= 0x1;
-        delay(1000);
-        PORTE &= ~(0x1);
-        delay(1000);
-        draw_canvas();
-    }
     loading();
     
     draw_clear();
     draw_canvas();
 
     while (1) {
+        TRISECLR = 0xff;
+        PORTE = 12;
+
         selection screen = menu();
         if (screen == SINGLE_PLAYER) game_screen(SINGLE_PLAYER);
         if (screen == MULTI_PLAYER) game_screen(MULTI_PLAYER);
