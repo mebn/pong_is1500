@@ -126,24 +126,34 @@ void draw_ball(Ball *ball) {
 /**
  * Written by: Alex Gunnarsson
  * 
+ * @brief Corrects the ball's x-speed so the overall speed remains constant. 
+ * 
+ * @param b The ball struct.
+ */
+void correct_x(Ball *b) {
+    b->x_speed = (b->x_speed > 0 ? 1 : -1) * my_sqrt(BALLSPEED*BALLSPEED - b->y_speed*b->y_speed);
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Corrects the ball's y-speed so the overall speed remains constant. 
+ * 
+ * @param b The ball struct.
+ */
+void correct_y(Ball *b) {
+    b->y_speed = (b->y_speed > 0 ? 1 : -1) * my_sqrt(BALLSPEED*BALLSPEED - b->x_speed*b->x_speed);
+}
+
+/**
+ * Written by: Alex Gunnarsson
+ * 
  * @brief Gives the ball new speed vectors on paddle bounce.
  * 
  * @param b Ball struct.
  * @param modify Modification factor [-1, 1].
  */
 void ball_bounce(Ball *b, float *modify) {
-    // char buffer[10];
-    // itos((int) 100*(*modify), buffer);
-    // draw_string(buffer, 10, 10);
-    // draw_canvas();
-    // delay(1000);
-
-    // max bounce angle +/- 60 degrees
-    // tan(60deg) = sqrt(3)
-    float ys = b->y_speed;
-    float xs = b->x_speed;
-    xs *= -1;
-
     // modify y-speed, modify = 0 -> no modification, modify = +/- 1 -> max modification
     float max_ys = my_sqrt(3)/2 * BALLSPEED;
     float diff = *modify > 0 ? max_ys - b->y_speed : -1*max_ys - b->y_speed;
@@ -154,8 +164,7 @@ void ball_bounce(Ball *b, float *modify) {
         b->y_speed = b->y_speed > 0 ? max_ys : -1*max_ys;
     }
 
-    // correct x-speed
-    b->x_speed = (xs > 0 ? 1 : -1) * my_sqrt(BALLSPEED*BALLSPEED - b->y_speed*b->y_speed);
+    correct_x(b);
     // new direction, prediciton calculation invalid
     calculated = false;
 }
@@ -219,24 +228,25 @@ void ball_incr(Ball *ball) {
 
 }
 
+/**
+ * Written by: Alex Gunnarsson
+ * 
+ * @brief Gives the ball new speed vectors on paddle bounce in Y-direction.
+ * 
+ * @param b The ball struct.
+ * @param modify The modification factor.
+ */
 void ball_bounceY(Ball *b, float *modify) {
-    // float ys = b->y_speed;
-    // float xs = b->x_speed;
-    // ys *= -1;
-
-
-
-    float max_ys = my_sqrt(3)/2 * BALLSPEED;
-    // float diff = *modify > 0 ? max_ys - b->y_speed : -1*max_ys - b->y_speed;
+    float max_xs = my_sqrt(3)/2 * BALLSPEED;
+    float diff = *modify > 0 ? max_xs - b->x_speed : -1*max_xs - b->x_speed;
     float absmod = *modify > 0 ? *modify : -1 * (*modify);
-    b->y_speed = (1-absmod)*max_ys;
+    b->x_speed = (1-absmod)*max_xs;
 
-    // if (b->y_speed > max_ys || b->y_speed < -1*max_ys) {
-    //     b->y_speed = b->y_speed > 0 ? max_ys : -1*max_ys;
-    // }
+    if (b->x_speed > max_xs || b->x_speed < -1*max_xs) {
+        b->x_speed = b->x_speed > 0 ? max_xs : -1*max_xs;
+    }
 
-    // correct x-speed
-    b->x_speed = (*modify > 0 ? (b->x_speed > 0 ? 1 : -1) : (b->x_speed > 0 ? -1 : 1)) * my_sqrt(BALLSPEED*BALLSPEED - b->y_speed*b->y_speed);
+    correct_y(b);
     // new direction, prediciton calculation invalid
     calculated = false;
 }
@@ -309,18 +319,25 @@ int ball_collision(Ball *ball, Paddle *p1) {
             (cross_x + ball->size < (float) p1->x_pos + p1->x_size && cross_x + ball->size > (float) p1->x_pos) ||
             (cross_x < (float) p1->x_pos && cross_x + ball->size > (float) p1->x_pos + p1->x_size))) {
 
-            // modify = -1;
-            // ball_bounce(ball, &modify);
-            ball->y_speed *= -1;
-            if (p1->x_pos > DISPLAY_WIDTH/2) {
-                ball->x_speed = ball->x_speed < 0 ? ball->x_speed : -1*ball->x_speed;
-            } else {
-                ball->x_speed = ball->x_speed > 0 ? ball->x_speed : -1*ball->x_speed;
-            }
-            ball->y_pos = (p1->y_pos) - ball->size + ball->y_speed * (1-per_y);
-            ball->x_pos = cross_x + ball->x_speed * (1-per_y);
+            ball->x_pos += per_y*ball->x_speed;
+            ball->y_pos += per_y*ball->y_speed;
+            float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
+            ball_bounceY(ball, &modify);
+            ball->x_pos += (1-per_y)*ball->x_speed;
+            ball->y_pos += (1-per_y)*ball->y_speed;
+
+            // // modify = -1;
+            // // ball_bounce(ball, &modify);
+            // ball->y_speed *= -1;
+            // if (p1->x_pos > DISPLAY_WIDTH/2) {
+            //     ball->x_speed = ball->x_speed < 0 ? ball->x_speed : -1*ball->x_speed;
+            // } else {
+            //     ball->x_speed = ball->x_speed > 0 ? ball->x_speed : -1*ball->x_speed;
+            // }
             // ball->y_pos = (p1->y_pos) - ball->size + ball->y_speed * (1-per_y);
-            // ball->x_pos = cross_x - ball->size + ball->x_speed * (1-per_y);
+            // ball->x_pos = cross_x + ball->x_speed * (1-per_y);
+            // // ball->y_pos = (p1->y_pos) - ball->size + ball->y_speed * (1-per_y);
+            // // ball->x_pos = cross_x - ball->size + ball->x_speed * (1-per_y);
             return 1;
         }
     }
@@ -336,24 +353,30 @@ int ball_collision(Ball *ball, Paddle *p1) {
             (cross_x + ball->size < (float) p1->x_pos + p1->x_size && cross_x + ball->size > (float) p1->x_pos) ||
             (cross_x < (float) p1->x_pos && cross_x + ball->size > (float) p1->x_pos + p1->x_size))) {
 
-            ball->y_speed *= -1;
-            if (p1->x_pos > DISPLAY_WIDTH/2) {
-                draw_pixel(DISPLAY_WIDTH/2, 10);
-                ball->x_speed = ball->x_speed < 0 ? ball->x_speed : -1*ball->x_speed;
-            } else {
-                ball->x_speed = ball->x_speed > 0 ? ball->x_speed : -1*ball->x_speed;
-            }
-            ball->y_pos = (p1->y_pos + p1->y_size) + ball->y_speed * (1-per_y);
-            ball->x_pos = cross_x + ball->x_speed * (1-per_y);
-            // ball->y_pos = (p1->y_pos + p1->y_size) - ball->size + ball->y_speed * (1-per_y);
+            ball->x_pos += per_y*ball->x_speed;
+            ball->y_pos += per_y*ball->y_speed;
+            float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
+            ball_bounceY(ball, &modify);
+            ball->x_pos += (1-per_y)*ball->x_speed;
+            ball->y_pos += (1-per_y)*ball->y_speed;
+
+            // ball->y_speed *= -1;
+            // if (p1->x_pos > DISPLAY_WIDTH/2) {
+            //     ball->x_speed = ball->x_speed < 0 ? ball->x_speed : -1*ball->x_speed;
+            // } else {
+            //     ball->x_speed = ball->x_speed > 0 ? ball->x_speed : -1*ball->x_speed;
+            // }
+            // ball->y_pos = (p1->y_pos + p1->y_size) + ball->y_speed * (1-per_y);
             // ball->x_pos = cross_x + ball->x_speed * (1-per_y);
+            // // ball->y_pos = (p1->y_pos + p1->y_size) - ball->size + ball->y_speed * (1-per_y);
+            // // ball->x_pos = cross_x + ball->x_speed * (1-per_y);
 
-            // ball->y_pos = (p1->y_pos) - ball->size + ball->y_speed * (1-per_y);
+            // // ball->y_pos = (p1->y_pos) - ball->size + ball->y_speed * (1-per_y);
 
-            // ball->y_pos = (p1->y_pos + p1->y_size) + ball->size + ball->y_speed * (1-per_y);
+            // // ball->y_pos = (p1->y_pos + p1->y_size) + ball->size + ball->y_speed * (1-per_y);
 
-            // modify = 1;
-            // ball_bounce(ball, &modify);
+            // // modify = 1;
+            // // ball_bounce(ball, &modify);
             return 1;
         }
     }
@@ -741,15 +764,15 @@ void game_screen(game_mode mode) {
         
         // player 1
         if (!(btn4_ispressed() && btn3_ispressed())) {
-            // if (btn4_ispressed() && !(p1.y_pos - PADDLESPEED < ball.size + ball.y_pos && ball.x_pos >= p1.x_pos - ball.size && ball.x_pos <= p1.x_pos + p1.x_size)) move_paddle(&p1, UP);
-            if (btn4_ispressed()) {
-                move_conditional(&p1, &ball, UP);
-            }
+            if (btn4_ispressed() && !(p1.y_pos - PADDLESPEED < ball.size + ball.y_pos && ball.x_pos >= p1.x_pos - ball.size && ball.x_pos <= p1.x_pos + p1.x_size)) move_paddle(&p1, UP);
+            // if (btn4_ispressed()) {
+            //     move_conditional(&p1, &ball, UP);
+            // }
 
-            // if (btn3_ispressed() && !(p1.y_pos + p1.y_size + PADDLESPEED > ball.y_pos && ball.x_pos >= p1.x_pos - ball.size && ball.x_pos <= p1.x_pos + p1.x_size)) move_paddle(&p1, DOWN);
-            if (btn3_ispressed()) {
-                move_conditional(&p1, &ball, DOWN);
-            }
+            if (btn3_ispressed() && !(p1.y_pos + p1.y_size + PADDLESPEED > ball.y_pos && ball.x_pos >= p1.x_pos - ball.size && ball.x_pos <= p1.x_pos + p1.x_size)) move_paddle(&p1, DOWN);
+            // if (btn3_ispressed()) {
+            //     move_conditional(&p1, &ball, DOWN);
+            // }
         }
         
         // player2 movement
