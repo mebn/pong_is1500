@@ -117,6 +117,8 @@ int main() {
     //     delay(1000);
     // }
 
+    PORTE |= 0x1;
+
     inits();
     loading();
     
