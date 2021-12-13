@@ -261,12 +261,25 @@ void ball_update(Ball *b, Paddle *p1, Paddle *p2) {
     }
 
     // left top
-    if (b->old_y_pos + b->size < p1->y_pos + p1->y_size && b->y_pos >= p1->y_pos + p1->y_size) {
+    if (b->old_y_pos + b->size < p1->y_pos + p1->y_size && b->y_pos + b->size >= p1->y_pos + p1->y_size) {
         per_y = (b->old_y_pos - (p1->y_pos + p1->y_size)) / (b->old_y_pos - b->y_pos);
         cross_x = b->old_x_pos + b->size + b->x_speed*per_y;
 
         if (cross_x < p1->x_pos + p1->x_size && cross_x > p1->x_pos) {
             b->y_pos = (p1->y_pos + p1->y_size) - b->size + b->y_speed * (1-per_y);
+
+            modify = -1;
+            ball_bounce(b, &modify);
+        }
+    }
+
+    // left bottom
+    if (b->old_y_pos < p1->y_pos + p1->y_size && b->y_pos >= p1->y_pos + p1->y_size) {
+        per_y = (b->old_y_pos - (p1->y_pos + p1->y_size)) / (b->old_y_pos - b->y_pos);
+        cross_x = b->old_x_pos + b->x_speed*per_y;
+
+        if (cross_x < p1->x_pos + p1->x_size && cross_x > p1->x_pos) {
+            b->y_pos = (p1->y_pos + p1->y_size) + b->size + b->y_speed * (1-per_y);
 
             modify = 1;
             ball_bounce(b, &modify);
