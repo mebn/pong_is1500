@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #define PADDLESIZE_X 20
-#define PADDLESIZE_Y 2
+#define PADDLESIZE_Y 10
 #define PADDLEGAP 0
 #define PADDLESPEED 1
 

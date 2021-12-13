@@ -16,6 +16,8 @@
 typedef struct {
     float x_pos;
     float y_pos;
+    float old_x_pos;
+    float old_y_pos;
     char size;
     float x_speed;
     float y_speed;
@@ -208,8 +210,10 @@ void ball_incr(Ball *ball) {
         ball->y_speed *= -1;
     }
 
-    ball->y_pos += ball->y_speed;
+    ball->old_x_pos = ball->x_pos;
+    ball->old_y_pos = ball->y_pos;
     ball->x_pos += ball->x_speed;
+    ball->y_pos += ball->y_speed;
 
 }
 
@@ -235,161 +239,59 @@ void ball_bounceY(Ball *b, float *modify) {
     calculated = false;
 }
 
-/**
- * Written by: Alex Gunnarsson
- * 
- * @brief Update ball position and speed depending on 
- * if ball is going to hit roof or floor or collide with paddles.
- * 
- * @param ball Ball struct.
- * @param p1 Left paddle struct.
- * @param p2 Right paddle struct.
- */
-void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
+void ball_update(Ball *b, Paddle *p1, Paddle *p2) {
     if (freeze) {
         updateTimer--;
         if (updateTimer < 0) freeze = false;
         return;
     }
-  
-    // Check for bounce off Left paddle p1 iff it crosses border
-    if (ball->x_pos + ball->size > p1->x_pos + p1->x_size &&
-        ball->x_pos + ball->x_speed < p1->x_pos + p1->x_size) {
-        float xBef = ball->x_pos; // left side of ball
-        float yBef = ball->y_pos;
-        float t = (p1->x_pos + p1->x_size - xBef) / (ball->x_speed);
-        float yInt = yBef + t*ball->y_speed;  // intersection point
-        // check valid t
-        if (t >= 0 && t < 1) {
-            // if overlap
-            if ((yInt >= p1->y_pos && yInt <= p1->y_pos + p1->y_size) || // upper corner
-                (yInt + ball->size >= p1->y_pos && yInt + ball->size <= p1->y_pos + p1->y_size)) { // lower corner
-                // travel to intersection
-                ball->x_pos += t*ball->x_speed;
-                ball->y_pos += t*ball->y_speed;
-                // get new speeds
-                float modify = (ball->y_pos - (p1->y_pos + (p1->y_size - ball->size)/2.0)) / ((p1->y_size + ball->size)/2.0);
-                ball_bounce(ball, &modify);
-                // travel remaining distance
-                ball->x_pos += (1-t)*ball->x_speed;
-                ball->y_pos += (1-t)*ball->y_speed;
-                return;
-            }
+    float per_x, per_y, cross_x, cross_y, modify;
+
+    // left paddle
+    if (b->old_x_pos > p1->x_pos + p1->x_size && b->x_pos <= p1->x_pos + p1->x_size) {
+        per_x = (b->old_x_pos - (p1->x_pos + p1->x_size)) / (b->old_x_pos - b->x_pos);
+        cross_y = b->old_y_pos + (b->y_speed * per_x);
+
+        if (cross_y < p1->y_pos + p1->y_size && cross_y > p1->y_pos) {
+            b->x_pos = (p1->x_pos + p1->x_size) + b->x_speed * (1-per_x);
+
+            modify = (b->y_pos - (p1->y_pos + (p1->y_size - b->size)/2.0)) / ((p1->y_size + b->size)/2.0);
+            ball_bounce(b, &modify);
         }
     }
 
-    // Check for bounce off Right paddle p2 iff it crosses border
-    if (ball->x_pos < p2->x_pos &&
-        ball->x_pos + ball->size + ball->x_speed > p2->x_pos) {
-        float xBef = ball->x_pos + ball->size; // right side of ball
-        float yBef = ball->y_pos;
-        float t = (p2->x_pos - xBef) / (ball->x_speed);
-        float yInt = yBef + t*ball->y_speed;  // intersection point
-        // check valid t
-        if (t >= 0 && t < 1) {
-            // and if overlap
-            if ((yInt >= p2->y_pos && yInt <= p2->y_pos + p2->y_size) || // upper corner
-                (yInt + ball->size >= p2->y_pos && yInt + ball->size <= p2->y_pos + p2->y_size)) { // lower corner
-                // travel to intersection
-                ball->x_pos += t*ball->x_speed;
-                ball->y_pos += t*ball->y_speed;
-                // get new speeds
-                float modify = (ball->y_pos - (p2->y_pos + (p2->y_size - ball->size)/2.0)) / ((p2->y_size + ball->size)/2.0);
-                ball_bounce(ball, &modify);
-                // travel remaining distance
-                ball->x_pos += (1-t)*ball->x_speed;
-                ball->y_pos += (1-t)*ball->y_speed;
-                return;
-            }
+    // left top
+    if (b->old_y_pos + b->size < p1->y_pos + p1->y_size && b->y_pos >= p1->y_pos + p1->y_size) {
+        per_y = (b->old_y_pos - (p1->y_pos + p1->y_size)) / (b->old_y_pos - b->y_pos);
+        cross_x = b->old_x_pos + b->size + b->x_speed*per_y;
+
+        if (cross_x < p1->x_pos + p1->x_size && cross_x > p1->x_pos) {
+            b->y_pos = (p1->y_pos + p1->y_size) - b->size + b->y_speed * (1-per_y);
+
+            modify = 1;
+            ball_bounce(b, &modify);
         }
     }
 
-    // check for y bounce p1 upper side
-    if (ball->y_pos + ball->size < p1->y_pos &&
-        ball->y_pos + ball->size + ball->y_speed > p1->y_pos) {
-        
-        float t = (p1->y_pos - (ball->y_pos + ball->size)) / ball->y_speed;
-        float xInt = t*ball->x_speed;
-        if (t >= 0 && t < 1) {
-            if ((xInt >= p1->x_pos && xInt < p1->x_pos + p1->x_size) ||
-                (xInt + ball->size >= p1->x_pos && xInt + ball->size < p1->x_pos + p1->x_size)) {
-                
-                ball->x_pos += t*ball->x_speed;
-                ball->y_pos += t*ball->y_speed;
-                float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
-                ball_bounceY(ball, &modify);
-                ball->x_pos += (1-t)*ball->x_speed;
-                ball->y_pos += (1-t)*ball->y_speed;
-                return; 
-            }
+
+
+
+
+    // right paddle
+    if (b->old_x_pos + b->size < p2->x_pos && b->x_pos + b->size >= p2->x_pos) {
+        per_x = (p2->x_pos - (b->old_x_pos + b->size)) / (b->x_pos - b->old_x_pos);
+		cross_y = b->old_y_pos + b->size + (b->y_speed * per_x);
+
+        if (cross_y < p2->y_pos + p2->y_size && cross_y > p2->y_pos) {
+            b->x_pos = p2->x_pos - b->size - b->y_speed * (1 - per_x);
+
+            modify = (b->y_pos - (p2->y_pos + (p2->y_size - b->size)/2.0)) / ((p2->y_size + b->size)/2.0);
+            ball_bounce(b, &modify);
         }
     }
 
-    // check for y bounce p1 lower side
-    if (ball->y_pos > p1->y_pos + p1->y_size &&
-        ball->y_pos + ball->y_speed < p1->y_pos + p1->y_size) {
-
-        float t = (p1->y_pos + p1->y_size - ball->y_pos) / ball->y_speed;
-        float xInt = t*ball->x_speed;
-        if (t >= 0 && t < 1) {
-            if ((xInt >= p1->x_pos && xInt < p1->x_pos + p1->x_size) ||
-                (xInt + ball->size >= p1->x_pos && xInt + ball->size < p1->x_pos + p1->x_size)) {
-                
-                ball->x_pos += t*ball->x_speed;
-                ball->y_pos += t*ball->y_speed;
-                float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
-                ball_bounceY(ball, &modify);
-                ball->x_pos += (1-t)*ball->x_speed;
-                ball->y_pos += (1-t)*ball->y_speed;
-                return;
-            }
-        }
-    }
-
-    // check for y bounce p2 upper side
-    if (ball->y_pos + ball->size < p2->y_pos &&
-        ball->y_pos + ball->size + ball->y_speed > p2->y_pos) {
-
-        float t = (p2->y_pos - (ball->y_pos + ball->size)) / ball->y_speed;
-        float xInt = t*ball->x_speed;
-        if (t >= 0 && t < 1) {
-            if ((xInt >= p2->x_pos && xInt < p2->x_pos + p2->x_size) ||
-                (xInt + ball->size >= p2->x_pos && xInt + ball->size < p2->x_pos + p2->x_size)) {
-                
-                ball->x_pos += t*ball->x_speed;
-                ball->y_pos += t*ball->y_speed;
-                float modify = (ball->x_pos - (p2->x_pos + (p2->x_size - ball->size)/2.0)) / ((p2->x_size + ball->size)/2.0);
-                ball_bounceY(ball, &modify);
-                ball->x_pos += (1-t)*ball->x_speed;
-                ball->y_pos += (1-t)*ball->y_speed;
-                return;
-            }
-        }
-    }
-
-    // check for y bounce p2 lower side
-    if (ball->y_pos > p2->y_pos + p2->y_size &&
-        ball->y_pos + ball->y_speed < p2->y_pos + p2->y_size) {
-        
-        float t = (p2->y_pos + p2->y_size - ball->y_pos) / ball->y_speed;
-        float xInt = t*ball->x_speed;
-        if (t >= 0 && t < 1) {
-            if ((xInt >= p2->x_pos && xInt < p2->x_pos + p2->x_size) ||
-                (xInt + ball->size >= p2->x_pos && xInt + ball->size < p2->x_pos + p2->x_size)) {
-                
-                ball->x_pos += t*ball->x_speed;
-                ball->y_pos += t*ball->y_speed;
-                float modify = (ball->x_pos - (p2->x_pos + (p2->x_size - ball->size)/2.0)) / ((p2->x_size + ball->size)/2.0);
-                ball_bounceY(ball, &modify);
-                ball->x_pos += (1-t)*ball->x_speed;
-                ball->y_pos += (1-t)*ball->y_speed;
-                return;
-            }
-        }
-    }
-
-    ball_incr(ball);
-    ball_miss(ball, p1, p2);
+    ball_incr(b);
+    ball_miss(b, p1, p2);
 }
 
 /**
@@ -714,11 +616,15 @@ void game_screen(game_mode mode) {
 
     while (1) {
         draw_clear();
+
+        ball_update(&ball, &p1, &p2);
         
         // player 1
         if (!(btn4_ispressed() && btn3_ispressed())) {
-            if (btn4_ispressed()) move_paddle(&p1, UP);
-            if (btn3_ispressed()) move_paddle(&p1, DOWN);
+            // if (btn4_ispressed() && !(ball.y_pos + 1 + ball.size < p1.x_pos && ball.y_pos + 1 + ball.size > p1.x_pos - PADDLESPEED)) move_paddle(&p1, UP);
+            if (btn4_ispressed() && !(p1.y_pos - PADDLESPEED < ball.size + ball.y_pos && ball.x_pos >= p1.x_pos - ball.size && ball.x_pos <= p1.x_pos + p1.x_size)) move_paddle(&p1, UP);
+            // if (btn3_ispressed() && !(ball.y_pos + 1 < p1.x_pos + p1.x_size && ball.y_pos + 1 > p1.x_pos + p1.x_size + PADDLESPEED)) move_paddle(&p1, DOWN);
+            if (btn3_ispressed() && !(p1.y_pos + p1.y_size + PADDLESPEED > ball.y_pos && ball.x_pos >= p1.x_pos - ball.size && ball.x_pos <= p1.x_pos + p1.x_size)) move_paddle(&p1, DOWN);
         }
         
         // player2 movement
@@ -730,8 +636,6 @@ void game_screen(game_mode mode) {
         } else {
             move_ai(&p2, &ball, difficulty);
         }
-
-        ball_update(&ball, &p1, &p2);
 
         if (timer <= -1) break;     // termination condition
         draw_timer();
