@@ -110,17 +110,22 @@ void inits() {
  * 
  */
 int main() {
-    // while(1) {
-    //     PORTE |= 0x1;
-    //     delay(1000);
-    //     PORTE &= ~(0x1);
-    //     delay(1000);
-    // }
 
-    TRISECLR = 0xFF;
-    PORTE |= 0xFF;
+    // TRISECLR = 0xFF;
+    // PORTE |= 0xFF;
 
     inits();
+    TRISECLR = 0xff;
+    
+    while(1) {
+        draw_clear();
+        draw_pixel(10, 10);
+        PORTE |= 0x1;
+        delay(1000);
+        PORTE &= ~(0x1);
+        delay(1000);
+        draw_canvas();
+    }
     loading();
     
     draw_clear();
