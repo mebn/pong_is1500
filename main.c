@@ -84,10 +84,10 @@ selection menu() {
  * delays it for some specified time.
  * 
  */
-void loading() {
-    display_fullscreen_image(0, pong_image);
-    delay(1500);
-}
+// void loading() {
+//     display_fullscreen_image(0, pong_image);
+//     delay(1500);
+// }
 
 /**
  * @brief Collection of all Initializations
@@ -111,7 +111,7 @@ void inits() {
 int main() {
 
     inits();
-    loading();
+    // loading();
     
     draw_clear();
     draw_canvas();
