@@ -140,9 +140,9 @@ char eeprom_read(unsigned short address) {
     } while (I2C1STAT & PIC32_I2CSTAT_ACKSTAT);
 
     eeprom_wait();
-    I2C1CONSET = PIC32_I2CCON_RCEN;
+    I2C1CONSET = PIC32_I2CCON_RCEN; // recive enable bit
     eeprom_wait();
-    I2C1STATCLR = PIC32_I2CSTAT_I2COV;
+    I2C1STATCLR = PIC32_I2CSTAT_I2COV; // : I2C Receive Overflow Status bit
     char data = I2C1RCV;
 
     eeprom_nack();

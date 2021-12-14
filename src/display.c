@@ -35,6 +35,8 @@
 static uint8_t canvas[128*4] = {0};
 
 /**
+ * From labs.
+ * 
  * @brief Used to send data to the physical display.
  * 
  * @param data The data to send.
@@ -48,6 +50,8 @@ uint8_t spi_send_recv(uint8_t data) {
 }
 
 /**
+ * From labs.
+ * 
  * @brief Display on sequence. More info can be found here:
  * https://digilent.com/reference/_media/chipkit_shield_basic_io_shield:chipkit_basic_io_shield_rm.pdf
  * 
@@ -86,6 +90,8 @@ void display_on() {
 }
 
 /**
+ * From labs.
+ * 
  * @brief Inits for the display.
  * 
  */
@@ -126,6 +132,8 @@ void display_init() {
 }
 
 /**
+ * Written by: Alex Gunnarsson.
+ * 
  * @brief Checks whether or not a pixel is valid.
  * 
  * @param x X-coordinate of the pixel.
@@ -138,6 +146,8 @@ bool is_pixel(char x, char y) {
 }
 
 /**
+ * Written by: Marcus Nilszén & Alex Gunnarsson
+ * 
  * @brief [PRIVATE] Draw a string where the specified cordinate
  * is its upper left corner. Accepts both upper- and
  * lowercase letters but only prints uppercase.

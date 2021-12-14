@@ -237,7 +237,7 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
         float t = (p1->x_pos + p1->x_size - xBef) / (ball->x_speed);
         float yInt = yBef + t*ball->y_speed;  // intersection point
         // check valid t
-        if (t > 0 && t < 1) {
+        if (t >= 0 && t < 1) {
             // if overlap
             if ((yInt >= p1->y_pos && yInt < p1->y_pos + p1->y_size) || // upper corner
                 (yInt + ball->size >= p1->y_pos && yInt + ball->size < p1->y_pos + p1->y_size)) { // lower corner
@@ -263,7 +263,7 @@ void ball_update(Ball *ball, Paddle *p1, Paddle *p2) {
         float t = (p2->x_pos - xBef) / (ball->x_speed);
         float yInt = yBef + t*ball->y_speed;  // intersection point
         // check valid t
-        if (t > 0 && t < 1) {
+        if (t >= 0 && t < 1) {
             // and if overlap
             if ((yInt >= p2->y_pos && yInt < p2->y_pos + p2->y_size) || // upper corner
                 (yInt + ball->size >= p2->y_pos && yInt + ball->size < p2->y_pos + p2->y_size)) { // lower corner
