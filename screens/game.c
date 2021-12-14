@@ -328,15 +328,15 @@ int ball_collision(Ball *ball, Paddle *p1) {
                 (cross_x + ball->size < (float) p1->x_pos + p1->x_size && cross_x + ball->size > (float) p1->x_pos) ||
                 (cross_x < (float) p1->x_pos && cross_x + ball->size > (float) p1->x_pos + p1->x_size)) {
                 
-                // travel to intersection
-                float incrx = per_y*ball->x_speed;
-                float incry = per_y*ball->y_speed;
-                // get new speeds
-                float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
-                ball_bounceY(ball, &modify);
-                // travel remaining distance
-                ball->x_pos = ball->old_x_pos + incrx + (1-per_y)*ball->x_speed;
-                ball->y_pos = ball->old_y_pos + incry + (1-per_y)*ball->y_speed;
+                // // travel to intersection
+                // float incrx = per_y*ball->x_speed;
+                // float incry = per_y*ball->y_speed;
+                // // get new speeds
+                // float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
+                // ball_bounceY(ball, &modify);
+                // // travel remaining distance
+                // ball->x_pos = ball->old_x_pos + incrx + (1-per_y)*ball->x_speed;
+                // ball->y_pos = ball->old_y_pos + incry + (1-per_y)*ball->y_speed;
                 
                 return 1;
             }
@@ -355,15 +355,15 @@ int ball_collision(Ball *ball, Paddle *p1) {
                 (cross_x + ball->size < (float) p1->x_pos + p1->x_size && cross_x + ball->size > (float) p1->x_pos) ||
                 (cross_x < (float) p1->x_pos && cross_x + ball->size > (float) p1->x_pos + p1->x_size)) {
                     
-                // travel to intersection
-                float incrx = per_y*ball->x_speed;
-                float incry = per_y*ball->y_speed;
-                // get new speeds
-                float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
-                ball_bounceY(ball, &modify);
-                // travel remaining distance
-                ball->x_pos = ball->old_x_pos + incrx + (1-per_y)*ball->x_speed;
-                ball->y_pos = ball->old_y_pos + incry + (1-per_y)*ball->y_speed;
+                // // travel to intersection
+                // float incrx = per_y*ball->x_speed;
+                // float incry = per_y*ball->y_speed;
+                // // get new speeds
+                // float modify = (ball->x_pos - (p1->x_pos + (p1->x_size - ball->size)/2.0)) / ((p1->x_size + ball->size)/2.0);
+                // ball_bounceY(ball, &modify);
+                // // travel remaining distance
+                // ball->x_pos = ball->old_x_pos + incrx + (1-per_y)*ball->x_speed;
+                // ball->y_pos = ball->old_y_pos + incry + (1-per_y)*ball->y_speed;
                 
                 return 1;
             }
