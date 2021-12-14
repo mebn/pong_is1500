@@ -250,3 +250,10 @@ _gen_exception:
 	nop
 
 .end _gen_exception
+
+# from labs files
+.global enable_interrupt
+enable_interrupt:
+    ei
+    jr $ra
+    nop
