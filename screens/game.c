@@ -443,7 +443,7 @@ void move_ai(Paddle *p2, Ball *b, game_difficulty difficulty) {
 
                     endPos = (int) b->y_pos;
                     if (difficulty == HARD) {   // introduce random offset for chance to miss
-                        endPos += (random_binary() == 1 ? 1 : -1) * random_max(PADDLESIZE_Y * 2.0 / 3.0);
+                        endPos += (random_binary() == 1 ? 1 : -1) * random_max(PADDLESIZE_Y);
                     }
 
                     b->y_pos = yp;
