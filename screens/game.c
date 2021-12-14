@@ -236,17 +236,19 @@ void ball_incr(Ball *ball) {
  * @param modify The modification factor.
  */
 void ball_bounceY(Ball *b, float *modify) {
-    float max_xs = my_sqrt(3)/2 * BALLSPEED;
-    float diff = *modify > 0 ? max_xs - b->x_speed : -1*max_xs - b->x_speed;
-    float absmod = *modify > 0 ? *modify : -1 * (*modify);
-    b->x_speed = (1-absmod)*max_xs;
+    b->y_speed *= -1;
+    b->x_speed *= -1;
+//     float max_xs = my_sqrt(3)/2 * BALLSPEED;
+//     float diff = *modify > 0 ? max_xs - b->x_speed : -1*max_xs - b->x_speed;
+//     float absmod = *modify > 0 ? *modify : -1 * (*modify);
+//     b->x_speed = (1-absmod)*max_xs;
 
-    if (b->x_speed > max_xs || b->x_speed < -1*max_xs) {
-        b->x_speed = b->x_speed > 0 ? max_xs : -1*max_xs;
-    }
+//     if (b->x_speed > max_xs || b->x_speed < -1*max_xs) {
+//         b->x_speed = b->x_speed > 0 ? max_xs : -1*max_xs;
+//     }
 
-    correct_y(b);
-    // new direction, prediciton calculation invalid
+//     correct_y(b);
+//     // new direction, prediciton calculation invalid
     calculated = false;
 }
 
