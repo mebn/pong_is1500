@@ -21,9 +21,9 @@ ELFFILE		= $(PROGNAME).elf
 HEXFILE		= $(PROGNAME).hex
 
 # Find all source files automatically
-CFILES          = $(wildcard *.c)
-ASFILES         = $(wildcard *.S)
-SYMSFILES	= $(wildcard *.syms)
+CFILES          = $(wildcard *.c) $(wildcard */*.c)
+ASFILES         = $(wildcard *.S) $(wildcard */*.S)
+SYMSFILES	= $(wildcard *.syms) $(wildcard */*.syms)
 
 # Object file names
 OBJFILES        = $(CFILES:.c=.c.o)
